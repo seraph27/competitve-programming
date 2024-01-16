@@ -13,41 +13,33 @@ template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0;
 const char nl = '\n';
 
 void test_case() {
-    int n, k, x; cin >> n >> k >> x;
-    vector<int> vi(n);
+    int n; cin >> n;
+    vector<pair<int, int>> arrive(n);
+    vector<pair<int, int>> leave(n);
+
     for(int i = 0; i < n; i++){
-        cin >> vi[i];
+        int a, b; cin >> a >> b;
+        arrive[i] = {a, 1};
+        leave[i] = {b, -1};
     }
 
-    sort(all(vi));
-    int sum = accumulate(all(vi), 0);
+    arrive.insert(arrive.end(), all(leave));
 
-    int dp[n+5];
-    int init = accumulate(vi.begin() + (n - x), vi.end(), 0);
-    dp[0] = sum - init * 2;
-    int ans = dp[0];
-    for(int i = 0; i < k; i++){
-        int diff;
-        if(n-i-x-1 >= 0){
-            diff = vi[vi.size() - 1 - i] - vi[vi.size()-1-i-x] * 2;
-        } else{
-            diff = vi[vi.size() - 1 - i];
-        }
-
-        dp[i+1] = dp[i]+diff;
-        if(dp[i+1] > ans) ans = dp[i+1];
-    
+    sort(all(arrive));
+    int ans = 0;
+    int cnt = 0;
+    for(int i = 0; i < arrive.size()-1; i++){
+        cnt += arrive[i].second;
+        if(cnt > ans) ans = cnt;
     }
 
     cout << ans << nl;
-
 }
+
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    // freopen("mixmilk.in", "r", stdin);
-    // freopen("mixmilk.out", "w", stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) test_case();
 }
 
