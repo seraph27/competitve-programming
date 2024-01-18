@@ -22,11 +22,25 @@ void test_case() {
     int rowdiff = xb - xa;
     int coldiff = yb - ya;
 
-    int run = ceil(rowdiff/2);
-    cout << run  << nl;
-    
-    //cout << "not draw" << nl;
 
+    if(rowdiff % 2 == 1) {
+        if(abs(coldiff) <= 1){
+            cout << "Alice" << nl;
+            return;
+        } 
+        
+        int run = ceil(rowdiff/2.0) - 1;
+        int space = coldiff > 0 ? w-yb : yb-1;  //> 0 alice on the left, otherwise right
+        cout << (run >= (space + abs(coldiff) - 1) ? "Alice" : "Draw") << nl;
+    } else{
+        if(coldiff == 0){
+            cout << "Bob" << nl;
+            return;
+        } 
+        int run = rowdiff/2;
+        int space = coldiff > 0 ? ya-1 : w-ya;
+        cout << (run >= space + abs(coldiff) ? "Bob" : "Draw") << nl;
+    } 
 }
 int main() {
     cin.tie(0)->sync_with_stdio(0);
