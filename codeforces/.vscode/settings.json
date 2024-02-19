@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "iostream": "cpp",
-        "array": "cpp"
+        "array": "cpp",
+        "random": "cpp",
+        "bitset": "cpp"
     }
 }
