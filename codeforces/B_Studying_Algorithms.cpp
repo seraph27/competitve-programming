@@ -40,21 +40,15 @@ const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n; cin >> n;;
-    vector<pair<int, int>> movies(n);
-    for(auto&w: movies){
-        int a, b; cin >> a >> b;
-        w.first = b, w.second=a;
-    }
-
-    sort(all(movies));
-    int ans = 1;
-    int currend = movies[0].first;
-    for(int i = 1; i < n; i++){
-        if(movies[i].second < currend) continue;
-        currend = movies[i].first;
-        debug(currend);
-        ans++;
+    int n, x; cin >> n >> x;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    sort(all(vi));
+    int cnt = 0, ans = 0;
+    for(int i = 0; i < n; i++){
+        if(cnt+vi[i]>x)break;
+        cnt+=vi[i];
+        ans++; 
     }
     cout << ans << nl;
 }

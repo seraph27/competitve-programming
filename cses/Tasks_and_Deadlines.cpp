@@ -41,20 +41,19 @@ const char nl = '\n';
 
 void test_case() {
     int n; cin >> n;;
-    vector<pair<int, int>> movies(n);
-    for(auto&w: movies){
+    vector<pair<int, int>> task(n);
+    for(auto&w: task){
         int a, b; cin >> a >> b;
-        w.first = b, w.second=a;
+        w.first = a, w.second=b;
     }
 
-    sort(all(movies));
-    int ans = 1;
-    int currend = movies[0].first;
-    for(int i = 1; i < n; i++){
-        if(movies[i].second < currend) continue;
-        currend = movies[i].first;
-        debug(currend);
-        ans++;
+    sort(all(task));
+    
+    ll ans = 0;
+    ll currtime = 0;
+    for(auto&q : task){
+        currtime += q.first;
+        ans+=q.second-currtime;
     }
     cout << ans << nl;
 }

@@ -40,28 +40,29 @@ const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n; cin >> n;;
-    vector<pair<int, int>> movies(n);
-    for(auto&w: movies){
-        int a, b; cin >> a >> b;
-        w.first = b, w.second=a;
-    }
+    int movies, members; cin >> movies >> members;
+    vector<ar<int, 2>> vi(movies);
+    for(auto &a: vi) cin >> a[1] >> a[0];
+    sort(all(vi));
 
-    sort(all(movies));
-    int ans = 1;
-    int currend = movies[0].first;
-    for(int i = 1; i < n; i++){
-        if(movies[i].second < currend) continue;
-        currend = movies[i].first;
-        debug(currend);
-        ans++;
+    int ans = 0;
+    multiset<int> endtime;
+    for(int i = 0; i < members; i++){
+        endtime.insert(0);
     }
+    for(int i = 0; i < movies; i++){
+        auto it = endtime.upper_bound(vi[i][1]);
+        if(it == begin(endtime)) continue;
+        endtime.erase(--it);
+        endtime.insert(vi[i][0]);
+        ans++;
+    }    
     cout << ans << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("input.txt","r",stdin); freopen("output.txt","w",stdout);
+    //freopen("cardgame.in","r",stdin); freopen("cardgame.out","w",stdout);  //ucsao
     int t = 1;
     //cin >> t;
     while (t--) test_case();

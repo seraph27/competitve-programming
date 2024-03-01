@@ -40,23 +40,23 @@ const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n; cin >> n;;
-    vector<pair<int, int>> movies(n);
-    for(auto&w: movies){
-        int a, b; cin >> a >> b;
-        w.first = b, w.second=a;
-    }
+    int n; cin >> n;
+    vector<int>size(n); 
+    for(auto&a: size) cin >> a;
 
-    sort(all(movies));
-    int ans = 1;
-    int currend = movies[0].first;
+    multiset<int> tower;
+    tower.insert(size[0]);
     for(int i = 1; i < n; i++){
-        if(movies[i].second < currend) continue;
-        currend = movies[i].first;
-        debug(currend);
-        ans++;
-    }
-    cout << ans << nl;
+        auto it = tower.upper_bound(size[i]);
+        if(it != tower.end()){
+            tower.insert(size[i]);
+            tower.erase(it);           
+        } else{
+            tower.insert(size[i]);
+        }
+    } 
+    cout << tower.size() << nl;
+   
 }
 
 int main() {    

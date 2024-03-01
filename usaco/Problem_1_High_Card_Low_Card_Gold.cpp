@@ -40,28 +40,57 @@ const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n; cin >> n;;
-    vector<pair<int, int>> movies(n);
-    for(auto&w: movies){
-        int a, b; cin >> a >> b;
-        w.first = b, w.second=a;
+    int n; cin >> n;
+    vector<int> e1(n/2);
+    vector<int> e2(n/2);
+    deque<int> b;
+    vector<bool> check(2*n+1, false);
+    for(int i = 0; i < n/2; i++){
+        int a; cin >> a;
+        e1[i] = a;
+        check[a] = 1;
     }
 
-    sort(all(movies));
-    int ans = 1;
-    int currend = movies[0].first;
-    for(int i = 1; i < n; i++){
-        if(movies[i].second < currend) continue;
-        currend = movies[i].first;
-        debug(currend);
-        ans++;
+    for(int i = 0; i < n/2; i++){
+        int a; cin >> a;
+        e2[i] = a;
+        check[a] = 1;
+    }
+    sort(all(e1));
+    sort(all(e2));
+    reverse(all(e1));
+
+    for(int i = 1; i <= 2*n; i++){
+        if(!check[i]) b.push_back(i);
+    }
+
+    for(int&a: b) {
+        debug(a);
+    }
+    int ans = 0;
+    for(int i = 0; i < n/2; ++i){
+        int curr = b.back();
+        if(curr > e1[i]){
+            ans++;
+            b.pop_back();
+        }
+        
+    }
+    
+    for(int i = 0; i < n/2; ++i){
+        int curr = b.front();
+        if(curr < e2[i]){
+            ans++;  
+            b.pop_front(); 
+        }
+              
     }
     cout << ans << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("input.txt","r",stdin); freopen("output.txt","w",stdout);
+    freopen("cardgame.in","r",stdin); freopen("cardgame.out","w",stdout);  //ucsao
     int t = 1;
     //cin >> t;
     while (t--) test_case();
