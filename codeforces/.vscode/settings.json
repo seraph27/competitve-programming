@@ -3,6 +3,9 @@
         "iostream": "cpp",
         "array": "cpp",
         "random": "cpp",
-        "bitset": "cpp"
-    }
+        "bitset": "cpp",
+        "complex": "cpp",
+        "regex": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }
