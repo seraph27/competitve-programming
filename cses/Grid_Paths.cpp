@@ -40,26 +40,19 @@ const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n, x; cin >> n >> x;
-    debug(n, x);
-    vector<int> dp((int)1e6+5, 0);
-    vector<int> coins(n, 0);
-    fill(all(dp), 0);
+    int n; cin >> n;
+    vector<vector<int>> vi(n, vector<int>(n, 0)); 
+    vector<string> vv(n);
+    for(auto&a: vv) cin >> a;
+    vi[0][0] = 1;
     for(int i = 0; i < n; i++){
-        int coin; cin >> coin;
-        coins[i] = coin;
+        for(int j = 0; j < n; j++){                
+            if(vv[i][j] == '*') vi[i][j] = 0;
+            if(i+1<n) (vi[i+1][j] += vi[i][j]) %= mod;
+            if(j+1<n) (vi[i][j+1] += (vi[i][j])) %= mod;         
+        }
     }
-    dp[0] = 1;
-    debug(coins);
-    for(int i = 0; i <= x; i++){
-        for(int j = 0; j <= sz(coins); j++){
-            int c = coins[j];
-            if(i-c>=0){
-                dp[i] = (dp[i] + dp[i-c]) % mod;
-            }           
-        }   
-    }
-    cout << dp[x] << nl;
+    cout << vi[n-1][n-1] << nl;
 }
 
 int main() {    

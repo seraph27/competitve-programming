@@ -39,32 +39,60 @@ void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v..
 const int mod = 1e9+7;
 const char nl = '\n';
 
+int sumdigits(int start, int end, string s){
+    int sum = 0;
+    if(end-start>s.size()) return 0;
+    for(int i = start; i < end; i++){
+        sum += s[i]-'0';
+    }
+    return sum;
+}
 void test_case() {
-    int n, x; cin >> n >> x;
-    debug(n, x);
-    vector<int> dp((int)1e6+5, 0);
-    vector<int> coins(n, 0);
-    fill(all(dp), 0);
+    int n; cin >> n; 
+    vector<string> vv(n);
+    vector<vector<int>> vi(6, vector<int>(46, 0)); 
     for(int i = 0; i < n; i++){
-        int coin; cin >> coin;
-        coins[i] = coin;
+        string s; cin >> s;
+        vv[i] = s;
     }
-    dp[0] = 1;
-    debug(coins);
-    for(int i = 0; i <= x; i++){
-        for(int j = 0; j <= sz(coins); j++){
-            int c = coins[j];
-            if(i-c>=0){
-                dp[i] = (dp[i] + dp[i-c]) % mod;
-            }           
-        }   
+
+    for(auto &a: vv){
+        int sum = 0;
+        for(auto&c : a) sum += c-'0';
+        vi[a.length()][sum]++;
     }
-    cout << dp[x] << nl;
+    //first part longer
+    ll ans = 0;
+
+    for(auto&a: vv){
+        for(int i = a.size()%2; i < a.size()+1; i+=2){
+            int len = a.size()+i;           
+            int firsthalf = sumdigits(0, len/2, a);
+            int secondhalf = sumdigits(len/2, a.size(), a);           
+            if(firsthalf-secondhalf>=0){
+                ans+=vi[i][firsthalf-secondhalf];
+            }
+        }
+    }
+
+    for(auto&a: vv){
+        for(int j = a.size()%2; j < a.size(); j+=2){
+            int len = a.size()+j;
+            int firsthalf = sumdigits(a.size()-len/2, a.size(), a);
+            int secondhalf = sumdigits(0, a.size()-len/2, a);
+            if(firsthalf-secondhalf>=0){
+                ans+=vi[j][firsthalf-secondhalf];
+            }
+        }
+    }
+    cout << ans << nl;
+
+
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("cardgame.in","r",stdin); freopen("cardgame.out","w",stdout);  //ucsao
+    //freopen("input.txt","r",stdin); freopen("output.txt","w",stdout);
     int t = 1;
     //cin >> t;
     while (t--) test_case();

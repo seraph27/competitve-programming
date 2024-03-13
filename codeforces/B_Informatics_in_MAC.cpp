@@ -40,32 +40,47 @@ const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n, x; cin >> n >> x;
-    debug(n, x);
-    vector<int> dp((int)1e6+5, 0);
-    vector<int> coins(n, 0);
-    fill(all(dp), 0);
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a; 
+
+    vector<int> frontmex(n);
+    vector<int> backmex(n);
+    
+    int cnt = 0;
+    int prevbiggest = 0;
+    set<int> seen;
+    set<int> seen2;
+    for(int i = 0; i <= n; i++){
+        seen.insert(i);
+        seen2.insert(i);
+    }
+
     for(int i = 0; i < n; i++){
-        int coin; cin >> coin;
-        coins[i] = coin;
+        seen.erase(vi[i]);
+        frontmex[i] = *(seen.begin());
     }
-    dp[0] = 1;
-    debug(coins);
-    for(int i = 0; i <= x; i++){
-        for(int j = 0; j <= sz(coins); j++){
-            int c = coins[j];
-            if(i-c>=0){
-                dp[i] = (dp[i] + dp[i-c]) % mod;
-            }           
-        }   
+    for(int j = n-1; j >= 0; j--){
+        seen2.erase(vi[j]);
+        backmex[j] = *(seen2.begin());
     }
-    cout << dp[x] << nl;
+    
+    debug(frontmex, backmex);
+    for(int i = 0; i < n-1; i++){
+        if(frontmex[i] == backmex[i+1]){
+            cout << 2 << nl;
+            cout << 1 << " " << i+1 << nl;
+            cout << i+2 << " " << n << nl;
+            return;
+        }
+    }
+    cout << -1 << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("cardgame.in","r",stdin); freopen("cardgame.out","w",stdout);  //ucsao
+    //freopen("input.txt","r",stdin); freopen("output.txt","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) test_case();
 }

@@ -40,32 +40,44 @@ const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n, x; cin >> n >> x;
-    debug(n, x);
-    vector<int> dp((int)1e6+5, 0);
-    vector<int> coins(n, 0);
-    fill(all(dp), 0);
-    for(int i = 0; i < n; i++){
-        int coin; cin >> coin;
-        coins[i] = coin;
+    int n; cin >> n; 
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    sort(all(vi));
+    int a = vi.front(), b = vi.back();
+
+    vector<int> operations;
+    while(a!=b){
+        if(a%2==0){
+            a/=2;
+            b/=2;
+            operations.push_back(0);
+        } else{
+            a++;
+            b++;
+            a/=2;
+            b/=2;
+            operations.push_back(1);
+        }
     }
-    dp[0] = 1;
-    debug(coins);
-    for(int i = 0; i <= x; i++){
-        for(int j = 0; j <= sz(coins); j++){
-            int c = coins[j];
-            if(i-c>=0){
-                dp[i] = (dp[i] + dp[i-c]) % mod;
-            }           
-        }   
+    int sz = operations.size();
+    debug(operations);
+    if(sz==0 || sz > n){
+        cout << sz << nl;
+    } else{
+        cout << sz << nl;
+        for(int i = 0; i < sz; i++){  
+            cout << operations[i] << " ";
+        }
+        cout << nl;
     }
-    cout << dp[x] << nl;
+
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("cardgame.in","r",stdin); freopen("cardgame.out","w",stdout);  //ucsao
+    //freopen("input.txt","r",stdin); freopen("output.txt","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) test_case();
 }

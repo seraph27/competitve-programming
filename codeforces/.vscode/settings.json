@@ -5,7 +5,9 @@
         "random": "cpp",
         "bitset": "cpp",
         "complex": "cpp",
-        "regex": "cpp"
+        "regex": "cpp",
+        "initializer_list": "cpp",
+        "valarray": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

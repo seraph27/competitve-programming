@@ -41,7 +41,6 @@ const char nl = '\n';
 
 void test_case() {
     int n, x; cin >> n >> x;
-    debug(n, x);
     vector<int> dp((int)1e6+5, 0);
     vector<int> coins(n, 0);
     fill(all(dp), 0);
@@ -52,7 +51,7 @@ void test_case() {
     dp[0] = 1;
     debug(coins);
     for(int i = 0; i <= x; i++){
-        for(int j = 0; j <= sz(coins); j++){
+        for(int j = 0; j < sz(coins); j++){
             int c = coins[j];
             if(i-c>=0){
                 dp[i] = (dp[i] + dp[i-c]) % mod;
