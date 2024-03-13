@@ -39,45 +39,52 @@ void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v..
 const int mod = 1e9+7;
 const char nl = '\n';
 
+int gcd(int a, int b){
+    if(a == 0) return b;
+    return gcd(b%a, a);
+}
+
 void test_case() {
-    int m; cin >> m;
-    map<int, int> mm; 
-    for(int i = 0; i < m; i++){
-        int query, v; cin >> query >> v;
-        if(query==1) mm[v]++;
-        else {
-            if(!mm.size()){
-                cout << (v == 0 ? "YES":"NO") << nl;
-                continue;
-            }
-            bool returned = false;
-            for(auto it = mm.rbegin(); it != mm.rend(); it++){
-                int xx = 1<<(it->first);
-                int a = v/xx;
-                a = min(it->second, a);
-                debug(v, xx, a);
-                if(v >= a*xx) v-=a*xx;
-                else continue;
-                if(v==0){
-                    cout << "YES" << nl;
-                    returned = true;
-                    break; 
-                }  
-                if(v<0){ 
-                    break;         
-                }  
-            }
-            if(!returned){
-                cout << "NO" << nl;
-            }
+    int n; cin >> n;
+    vector<ll> vi(n);
+    for(auto&a: vi) cin >> a;
+    if(vi.size() == 1) {
+        cout << 1 << nl;
+        return;
+    }
+    sort(all(vi));
+    vector<ll> diff(n-1);
+    for(int i = 0; i < n-1; i++){
+        diff[i] = vi[i+1]-vi[i];
+    }
+    ll gcdd = diff[0];
+    for(int i = 1; i < n-1; i++){
+        gcdd = gcd(diff[i], gcdd);
+    }
+
+    int cnt = 1;
+    ll tot = 0;
+    for(int i = 0; i < diff.size(); i++){
+        tot+= diff[i]*cnt;
+        cnt++;
+    } 
+    ll res = 1;
+    for(int i = n-1; i > 0; i--){
+        if(vi[i]-vi[i-1] == gcdd){
+            res++;
+        } else {
+            break;
         }
     }
+    cout << tot/gcdd + res << nl;
+    debug(gcdd);
+    debug(vi, diff);
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("input.txt","r",stdin); freopen("output.txt","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) test_case();
 }
