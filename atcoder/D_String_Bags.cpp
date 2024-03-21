@@ -40,42 +40,35 @@ const int mod = 1e9+7;
 const int INF = 1001001001;
 const char nl = '\n';
 
+
 void test_case() {
-    string goal; cin >> goal;
-    int n; cin >> n;
-    vector<tuple<string, int, int>> vi;
-    int ans = INT_MAX;
-    while(n--){
-        int a; cin >> a;
-        vector<string> wordbag(a);
-        for(int i = 0; i < a; i++){
+    string t; int n; cin >> t >> n;
+    int tsize = t.size();
+    vector<vector<int>> dp(n+5, vector<int>(tsize+5, INF));  //dp[ith bag][letters]
+    dp[0][0] = 0;
+    for(int i = 0; i < n+1; i++){
+        for(int mv = 0; mv < tsize+1; mv++) {dp[i+1][mv] = dp[i][mv];}
+        int a; cin >> a; //for each letter
+        while(a>0){
+            a--;    
             string s; cin >> s;
-            wordbag[i]=s;
-            vi.emplace_back(make_tuple(s, s.length(), 1));          
-        }
-
-        for(auto&ss: wordbag){
-            for(int k = 0; k < (int)vi.size(); k++){
-                auto [st, curlen, cnt] = vi[k];
-                if(curlen+ss.length()<=goal.length()){
-                    bool ok2 = 1;
-                    for(int j = 0; j < (int)ss.length(); j++){
-                        if(ss[j]==goal[j+curlen]) ok2 = 0;                                                  
+            int slen = s.size(); 
+            for(int k = 0; k < t.size()+1; k++){ //compare to dp[i][k]
+                if(slen+k > tsize) continue;   
+                bool ok = true;
+                for(int ii = 0; ii < slen; ii++) {
+                    if(s[ii]!=t[k+ii]){ //check each char
+                        ok = false; 
+                        break;
                     }
-                    if(ok2) vi.emplace_back(make_tuple(st+ss, curlen+ss.length(), cnt+1));
                 }
-
+                if(ok) dp[i+1][k+slen] = min(dp[i+1][k+slen], dp[i][k]+1);
             }
-        }
-        for(auto [aa, b, c] : vi){
-            //cout << aa << " " << b << " " << c << nl;
-            if(b==goal.length()){
-                ans = min(ans, c);
-            } 
-        }
-        
-    }
-    cout << (ans==INT_MAX ? -1 : ans ) << nl;    
+        }   
+    }   
+
+    cout << (dp[n][tsize] == INF ? -1 : dp[n][tsize]) << nl;
+    
 }
 
 int main() {    
@@ -85,3 +78,44 @@ int main() {
     //cin >> t;
     while (t--) test_case();
 }
+
+
+
+// tle brute force 
+// void test_case() {
+//     string goal; cin >> goal;
+//     int n; cin >> n;
+//     vector<tuple<string, int, int>> vi;
+//     int ans = INT_MAX;
+//     while(n--){
+//         int a; cin >> a;
+//         vector<string> wordbag(a);
+//         for(int i = 0; i < a; i++){
+//             string s; cin >> s;
+//             wordbag[i]=s;
+//             vi.emplace_back(make_tuple(s, s.length(), 1));          
+//         }
+
+//         for(auto&ss: wordbag){
+//             for(int k = 0; k < (int)vi.size(); k++){
+//                 auto [st, curlen, cnt] = vi[k];
+//                 if(curlen+ss.length()<=goal.length()){
+//                     bool ok2 = 1;
+//                     for(int j = 0; j < (int)ss.length(); j++){
+//                         if(ss[j]==goal[j+curlen]) ok2 = 0;                                                  
+//                     }
+//                     if(ok2) vi.emplace_back(make_tuple(st+ss, curlen+ss.length(), cnt+1));
+//                 }
+
+//             }
+//         }
+//         for(auto [aa, b, c] : vi){
+//             //cout << aa << " " << b << " " << c << nl;
+//             if(b==goal.length()){
+//                 ans = min(ans, c);
+//             } 
+//         }
+        
+//     }
+//     cout << (ans==INT_MAX ? -1 : ans ) << nl;      
+// }
