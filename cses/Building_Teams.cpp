@@ -4,6 +4,7 @@
 #define db double
 #define all(x) x.begin(), x.end()
 #define sz(x) (int)x.size()
+#define pb push_back
 using namespace std;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
@@ -41,40 +42,51 @@ const char nl = '\n';
 
 void test_case() {
     int n, m; cin >> n >> m;
-    vector<string> spotty(n), plain(n);
-    for(auto&a: spotty) cin >> a;
-    for(auto&b: plain) cin >> b;
-    map<char, int> mp = {
-        {'A', 0},
-        {'C', 1},
-        {'G', 2},
-        {'T', 3}
-    };
-    int ans = 0;
+    vector<vector<int>> adj(n+1);
     for(int i = 0; i < m; i++){
-        for(int j = i+1; j < m; j++){
-            for(int k = j+1; k < m; k++){
-                bitset<64> b; 
-                for(string s: spotty){
-                    int cnt = mp[s[i]]*16+ mp[s[j]]*4+ mp[s[k]];
-                    b[cnt] = 1;
+        int a, b; cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
+    }
+    vector<int> vis(n+1, 0);
+    
+    bool ok = true;
+    for(int i = 1; i <= n; i++){
+        if(!vis[i]){
+            vis[i] = 1;
+            queue<int> bfs;
+            bfs.push(i);
+            while(!bfs.empty()){
+                int v = bfs.front();
+                int color = vis[v] == 1 ? 2 : 1;
+                bfs.pop();
+                for(auto&aa : adj[v]){
+                    if(vis[aa] == 0){
+                        vis[aa] = color;
+                        bfs.push(aa);
+                    } else{
+                        if(vis[aa] != color){
+                            ok = false;
+                            goto end;
+                        }
+                    }
                 }
-                bool ok = 1;
-                for(string ss: plain){
-                    int cnt = mp[ss[i]]*16+mp[ss[j]]*4+mp[ss[k]];
-                    if(b[cnt]) {ok = 0; break;}
-                }
-                ans+=ok;
             }
         }
     }
-    cout << ans << nl;
-
+    end:;
+    
+    if(!ok) cout << "IMPOSSIBLE" << nl;
+    else{
+        for(int i = 1; i <= n; i++){
+            cout << vis[i] << " ";
+        }
+    }
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    freopen("cownomics.in","r",stdin); freopen("cownomics.out","w",stdout);  //ucsao
+    //freopen("cardgame.in","r",stdin); freopen("cardgame.out","w",stdout);  //ucsao
     int t = 1;
     //cin >> t;
     while (t--) test_case();

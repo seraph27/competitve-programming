@@ -40,42 +40,41 @@ const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n, m; cin >> n >> m;
-    vector<string> spotty(n), plain(n);
-    for(auto&a: spotty) cin >> a;
-    for(auto&b: plain) cin >> b;
-    map<char, int> mp = {
-        {'A', 0},
-        {'C', 1},
-        {'G', 2},
-        {'T', 3}
-    };
-    int ans = 0;
-    for(int i = 0; i < m; i++){
-        for(int j = i+1; j < m; j++){
-            for(int k = j+1; k < m; k++){
-                bitset<64> b; 
-                for(string s: spotty){
-                    int cnt = mp[s[i]]*16+ mp[s[j]]*4+ mp[s[k]];
-                    b[cnt] = 1;
-                }
-                bool ok = 1;
-                for(string ss: plain){
-                    int cnt = mp[ss[i]]*16+mp[ss[j]]*4+mp[ss[k]];
-                    if(b[cnt]) {ok = 0; break;}
-                }
-                ans+=ok;
+    int n; cin >> n;
+    bitset<(int)3e5> bb; 
+    string s; cin >> s;
+    for(int i = 0; i < n; i++){
+        bb[i] = (s[i]=='0' ? 0 : 1);
+    }
+    int rones = bb.count();
+    int rzeros = n-rones;
+    int lones, lzeros = 0;
+    pair<float, int> ans =  {INT_MAX, -99};
+    for(int i = 0; i <= n; i++){
+        if(i>=1){
+            if(s[i-1]=='0'){
+                rzeros--;
+                lzeros++;
+            } else{
+                rones--;
+                lones++;
             }
         }
+        int left = (i%2) ? i/2+1 : i/2; 
+        int right = (n-i)%2 ? (n-i)/2+1 : (n-i)/2;
+        debug(left, right);
+        debug(lzeros, rones);
+        if(lzeros>=left && rones >=right) ans = min(ans, {abs(n/2.0-i), i});
+        debug(ans.first, ans.second);
     }
-    cout << ans << nl;
+    cout << ans.second << nl;
 
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    freopen("cownomics.in","r",stdin); freopen("cownomics.out","w",stdout);  //ucsao
+    //freopen("cownomics.in","r",stdin); freopen("cownomics.out","w",stdout);  //ucsao
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) test_case();
 }

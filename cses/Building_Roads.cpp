@@ -4,6 +4,7 @@
 #define db double
 #define all(x) x.begin(), x.end()
 #define sz(x) (int)x.size()
+#define pb push_back
 using namespace std;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
@@ -40,41 +41,41 @@ const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n, m; cin >> n >> m;
-    vector<string> spotty(n), plain(n);
-    for(auto&a: spotty) cin >> a;
-    for(auto&b: plain) cin >> b;
-    map<char, int> mp = {
-        {'A', 0},
-        {'C', 1},
-        {'G', 2},
-        {'T', 3}
-    };
-    int ans = 0;
+    int n, m; cin >> n >> m; 
+    vector<vector<int>> adj(n+1);
     for(int i = 0; i < m; i++){
-        for(int j = i+1; j < m; j++){
-            for(int k = j+1; k < m; k++){
-                bitset<64> b; 
-                for(string s: spotty){
-                    int cnt = mp[s[i]]*16+ mp[s[j]]*4+ mp[s[k]];
-                    b[cnt] = 1;
-                }
-                bool ok = 1;
-                for(string ss: plain){
-                    int cnt = mp[ss[i]]*16+mp[ss[j]]*4+mp[ss[k]];
-                    if(b[cnt]) {ok = 0; break;}
-                }
-                ans+=ok;
+        int a, b; cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
+    }
+    vector<bool> vis(n, 0);
+    auto dfs = [&](auto&& self, int v) -> void {
+        vis[v] = 1;
+        for(auto& u : adj[v]) {
+            if(!vis[u]) {
+                self(self, u);
             }
         }
-    }
-    cout << ans << nl;
+    };
 
+    vector<int> points;
+    int ans = 0;
+    for(int i = 1; i <= n; i++){
+        if(!vis[i]){
+            dfs(dfs, i);
+            ans++;
+            points.pb(i);
+        }
+    }
+    cout << ans-1 << nl;
+    for(int i = 0; i < points.size()-1; i++){
+        cout << points[i] << " " << points[i+1] << nl;
+    }
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    freopen("cownomics.in","r",stdin); freopen("cownomics.out","w",stdout);  //ucsao
+    //freopen("cardgame.in","r",stdin); freopen("cardgame.out","w",stdout);  //ucsao
     int t = 1;
     //cin >> t;
     while (t--) test_case();

@@ -64,11 +64,11 @@ void test_case() {
     ll ans = 0;
     for(int i = 0; i < each.size(); i++){       
         if(each[i]){
-            if(i!=0) each[i]+=zeros;
-            ans+=(each[i]*(each[i]-1))/2;
+            ans+=((ll)each[i]*(each[i]-1))/2;
+            ans+=((ll)each[i]*zeros);
         }
     }
-    cout << (ok ? zeros*(zeros-1)/2 : ans) << nl;
+    cout << (ok ? (ll)zeros*(zeros-1)/2 : ans+(ll)zeros*(zeros-1)/2) << nl;
 
 }
 
