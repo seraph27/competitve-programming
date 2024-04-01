@@ -39,35 +39,56 @@ void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v..
 const int mod = 1e9+7;
 const char nl = '\n';
 
-void test_case() {
-    string s; cin >> s;
-    vector<pair<int, int>> vi(26, {-1, -1});
-    for (int i = 0; i < s.size(); i++) {
-        if(vi[s[i]-'A'].first!=-1){
-            vi[s[i]-'A'].second=i;
-        } else{
-            vi[s[i]-'A'].first=i;
-        }
-    }
-    //for(auto&a: vi) cout << a.first << " " << a.second << nl;
-    int ans = 0;
+double calcdist(int x1, int y1, int x2, int y2){
+    return sqrt(pow((y2-y1), 2) + pow((x2-x1), 2));
+}
 
-    for(int idx = 0; idx < 26; idx++){
-        bitset<26> vis; 
-        for(int i = vi[idx].first+1; i < vi[idx].second; i++){
-            int id = s[i]-'A';
-            if(vis[id]) vis[id]=0;
-            else vis[id]=1;
-        }
-        debug(vis.count());
-        ans+=vis.count();
+void test_case() {
+    int n; cin >> n;
+    vector<double> dist;
+    vector<int> vx(n), vy(n);
+    vector<int> vp(n);
+    for(int i = 0; i < n; i++){
+        int x, y, p; cin >> x >> y >> p;
+        vx[i] = x; vy[i] = y;
+        vp[i] = p;
     }
-    cout << ans/2 << nl;
+
+    vector<vector<int>> adj(n);
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++){
+            if(i != j){
+                float calc = calcdist(vx[i], vy[i], vx[j], vy[j]);
+                if(vp[i] >= calc) adj[i].push_back(j);
+            }
+        }
+    }
+    // for(vector<int>&aa: adj) {
+    //     debug(aa);
+    // }
+    vector<int> vis(n, 0);
+    auto dfs = [&](auto&&dfs, int v, int cnt) -> int {
+        vis[v] = 1;
+        for(int u: adj[v]){
+            if(!vis[u]){
+                cnt = dfs(dfs, u, cnt+1);
+            }
+        }
+        return cnt;
+    };
+
+    int ans = 0;    
+    for(int i = 0; i < n; i++) {
+        vis.assign(n, 0);
+        ckmax(ans, dfs(dfs, i, 1));
+    }
+    cout << ans << nl;
+
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    freopen("circlecross.in","r",stdin); freopen("circlecross.out","w",stdout);
+    freopen("moocast.in","r",stdin); freopen("moocast.out","w",stdout);  //ucsao
     int t = 1;
     //cin >> t;
     while (t--) test_case();
