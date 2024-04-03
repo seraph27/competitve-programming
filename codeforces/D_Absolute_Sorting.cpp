@@ -45,7 +45,16 @@ void test_case() {
     vector<int> vi(n);
     for(auto&a: vi) cin >> a;
     
-    
+    int downdiff = -1, updiff = INF;
+    for(int i = 0; i < n-1; i++){
+        if(vi[i] < vi[i+1]) ckmin(updiff, (vi[i]+vi[i+1])/2);
+        else if(vi[i] > vi[i+1]) ckmax(downdiff, ((vi[i]+vi[i+1]%2 ? (vi[i] + vi[i+1] + 1) / 2 : (vi[i]+vi[i+1])/2)));
+        debug(vi[i]+vi[i+1]);
+    }
+    debug(downdiff, updiff);
+    if(downdiff==-1){cout << 0 << nl; return;}
+    if(updiff>=downdiff) cout << downdiff << nl;
+    else cout << -1 << nl;
 }
 
 int main() {    
