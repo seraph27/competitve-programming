@@ -36,21 +36,31 @@ void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v..
 #define debug(x...)
 #endif
 
+const ll INFLL = 1E18;
+const int INF = 1001001001;
 const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n, k; cin >> n >> k;
-    int start = 1;
-    int power = 2;
-    while(k>=0){
-        int cnt = (n-start)/power+1;
-        if(k-cnt<=0) break;
-        start <<= 1;
-        power <<= 1;
-        k-=cnt;
+    int n; cin >> n;
+
+    int rest = 0;
+    if(n/15 > 100) rest = n/15-100;
+    int actual = n-rest*15;
+    int ans = 0;
+    vector<int> dp(2000, INF);
+    dp[1] = 1, dp[3] = 1, dp[6] = 1, dp[10] = 1, dp[15] = 1;
+    ar<int, 5> vals = {1, 3, 6, 10, 15};
+    for(int i = 2; i < 2000; i++){
+        for(int j = 0; j < 5; j++){
+            if(i-vals[j] >= 1){
+                dp[i] = min(dp[i-vals[j]] + 1, dp[i]);
+            }
+        }
+        
     }
-    cout << start + (k-1)*power << nl;
+    cout << dp[actual] + rest << nl;
+    debug(rest, actual);
 }
 
 int main() {    
