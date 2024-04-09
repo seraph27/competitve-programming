@@ -36,21 +36,44 @@ void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v..
 #define debug(x...)
 #endif
 
+const ll INFLL = 1E18;
+const int INF = 1001001001;
 const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n, k; cin >> n >> k;
-    int start = 1;
-    int power = 2;
-    while(k>=0){
-        int cnt = (n-start)/power+1;
-        if(k-cnt<=0) break;
-        start <<= 1;
-        power <<= 1;
-        k-=cnt;
+    int n, m, k, d; cin >> n >> m >> k >> d;
+
+    vector<ll> cost(n);
+    for(int i = 0; i < n; i++){
+        vector<int> depth(m);
+        for(auto&a: depth){cin >> a; a++;}
+        vector<ll> dp(m, INFLL);
+
+        deque<int> mindp;
+        dp[0] = 1;
+        for(int j = 0; j < m-1; j++){
+            //keep track of idx only idx ok 
+            while(!mindp.empty() && dp[mindp.back()] > dp[j]) mindp.pop_back();
+            mindp.push_back(j);
+            while(j - mindp.front() > d) mindp.pop_front();
+            dp[j+1] = dp[mindp.front()] + depth[j+1];
+        }
+        cost[i] = dp[m-1];
     }
-    cout << start + (k-1)*power << nl;
+
+    ll ans = INFLL;
+    for(int i = 0; i + k <= n; i++){
+        ll tot = 0;
+        for(int j = i; j < i + k; j++){
+            tot += cost[j];  
+        }
+        ckmin(ans, tot);
+    }
+
+    cout << ans << nl;
+    
+
 }
 
 int main() {    

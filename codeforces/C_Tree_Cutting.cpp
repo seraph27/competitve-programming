@@ -36,21 +36,48 @@ void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v..
 #define debug(x...)
 #endif
 
+const int INF = 1001001001;
 const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
     int n, k; cin >> n >> k;
-    int start = 1;
-    int power = 2;
-    while(k>=0){
-        int cnt = (n-start)/power+1;
-        if(k-cnt<=0) break;
-        start <<= 1;
-        power <<= 1;
-        k-=cnt;
+    vector<vector<int>> vi(n+1);
+    for(int i = 0; i < n-1; i++){
+        int a, b; cin >> a >> b;
+        vi[a].push_back(b);
+        vi[b].push_back(a);
     }
-    cout << start + (k-1)*power << nl;
+
+    int l = 0, r = n, ans = 0; 
+    while(l <= r){
+        int mid = (l+r) >> 1;
+
+        int component = 0;
+        bool ok = true;
+        auto dfs = [&](auto &&dfs, int v, int parent) -> int {
+            int subtreecnt = 1;
+            for(int u: vi[v]){
+                if(u != parent){
+                    subtreecnt += dfs(dfs, u, v);
+                }
+            }
+            if(subtreecnt >= mid){
+                component++;
+                subtreecnt = 0;
+            }
+            return subtreecnt;
+        };
+        dfs(dfs, 1, -1);
+        if(component < k+1) ok = false;
+
+        if(ok) l = mid + 1, ans = mid;
+        else r = mid - 1;  
+    }
+
+    cout << ans << nl;
+
+
 }
 
 int main() {    

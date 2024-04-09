@@ -40,23 +40,61 @@ const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n, k; cin >> n >> k;
-    int start = 1;
-    int power = 2;
-    while(k>=0){
-        int cnt = (n-start)/power+1;
-        if(k-cnt<=0) break;
-        start <<= 1;
-        power <<= 1;
-        k-=cnt;
+    int n, m, a, b; cin >> n >> m >> a >> b; 
+    vector<vector<ll>> coord(n, vector<ll>(m));
+    int g0, x, y, z; cin >> g0 >> x >> y >> z;
+
+    ll num = g0;
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < m; j++){
+            coord[i][j] = num;
+            num = (num * x + y) % z;
+        }
     }
-    cout << start + (k-1)*power << nl;
+    vector<vector<ll>> hmin(n);
+    vector<deque<ll>> mins(n);
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < m; j++){  
+            while(!mins[i].empty() && coord[i][mins[i].back()] > coord[i][j]){
+                mins[i].pop_back();
+            }
+            mins[i].push_back(j);
+            while(j - mins[i].front() >= b){
+                mins[i].pop_front();
+            }
+            if(j>=b-1){
+                hmin[i].push_back(coord[i][mins[i].front()]);
+            }
+        }
+    }
+    debug(hmin);
+    ll ans = 0;
+    int lenn = hmin[0].size(); //horizontal
+    vector<deque<ll>> vmin(m); //saving each column    
+    for(int i = 0; i < lenn; i++){  //for each column
+        for(int j = 0; j < hmin.size(); j++){ //for each row
+            while(!vmin[i].empty() && hmin[vmin[i].back()][i] > hmin[j][i]){ //if the column isn't empty and 
+                vmin[i].pop_back();
+            }
+            vmin[i].push_back(j);
+            while(j - vmin[i].front() >= a){
+                vmin[i].pop_front();
+            }
+            debug(vmin);
+            if(j >= a-1){
+                ans+=hmin[vmin[i].front()][i];
+            }
+        }
+    }
+    cout << ans << nl;
+    
+    
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("input.txt","r",stdin); freopen("output.txt","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) test_case();
 }
