@@ -41,24 +41,10 @@ const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n, x; cin >> n >> x;
-    vector<int> vi(n+1);
-    int idx;
-    for(int i = 1; i <= n; i++){
-        cin >> vi[i];
-        if(vi[i] == x) idx = i;
-    }
-
-    int l = 1, r = n+1;
-    while(r-l > 1){
-        int mid = (l+r) >> 1;
-        debug(mid); 
-        if(x >= vi[mid]) l = mid;
-        else r = mid;
-    }
-
-    cout << 1 << nl;
-    cout << idx << " " << l << nl;
+    int a, b, c; cin >> a >> b >> c;
+    if(c > b && b > a) cout << "STAIR\n";
+    else if(b > c && b > a) cout << "PEAK\n";
+    else cout << "NONE\n";
 }
 
 int main() {    

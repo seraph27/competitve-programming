@@ -41,24 +41,20 @@ const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n, x; cin >> n >> x;
-    vector<int> vi(n+1);
-    int idx;
-    for(int i = 1; i <= n; i++){
-        cin >> vi[i];
-        if(vi[i] == x) idx = i;
-    }
-
-    int l = 1, r = n+1;
-    while(r-l > 1){
-        int mid = (l+r) >> 1;
-        debug(mid); 
-        if(x >= vi[mid]) l = mid;
-        else r = mid;
-    }
-
-    cout << 1 << nl;
-    cout << idx << " " << l << nl;
+    int n; cin >> n; 
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    sort(all(vi));
+    int minans = INF;
+    int minidx = n;
+    for(int i = 1; i < n; i++){
+        if(ckmin(minans, vi[i]-vi[i-1])) minidx = i;
+        debug(minidx);
+    } 
+    if(n==2) {cout << vi[0] << " " << vi[1] << nl; return;}
+    for(int i = minidx; i < n; i++) cout << vi[i] << " ";
+    for(int i = 0; i < minidx; i++) cout << vi[i] << " "; 
+    cout << nl;
 }
 
 int main() {    

@@ -40,31 +40,72 @@ const int INF = 1001001001;
 const int mod = 1e9+7;
 const char nl = '\n';
 
+vector<bool> dp(100005, false);
+
+void precalc(){
+    vector<int> vi;
+    for(int mask = 1; mask < 32; mask++){
+        int sum = 0;
+        for(int i = 0; i < 5; i++){
+            sum = sum*10 + (mask >> i & 1);
+        }
+        vi.push_back(sum);
+    }
+    dp[1] = 1;
+    for(int i = 1; i <= 100005; i++){
+        if(dp[i]){
+            for(int j : vi){
+                if(i*j <= 100005) dp[i*j] = 1;
+            }
+        }
+    }
+}
+
 void test_case() {
-    int n, x; cin >> n >> x;
-    vector<int> vi(n+1);
-    int idx;
-    for(int i = 1; i <= n; i++){
-        cin >> vi[i];
-        if(vi[i] == x) idx = i;
-    }
-
-    int l = 1, r = n+1;
-    while(r-l > 1){
-        int mid = (l+r) >> 1;
-        debug(mid); 
-        if(x >= vi[mid]) l = mid;
-        else r = mid;
-    }
-
-    cout << 1 << nl;
-    cout << idx << " " << l << nl;
+    int n; cin >> n;
+    cout << (dp[n] ? "YES" : "NO") << nl;
+    
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("input.txt","r",stdin); freopen("output.txt","w",stdout);
+    precalc();
     int t = 1;
     cin >> t;
     while (t--) test_case();
 }
+
+
+
+// void test_case() {
+//     int n; cin >> n;
+
+//     vector<int> choices;
+//     for(int mask = 0; mask < (1 << 5); mask++){
+//         string s = "";
+//         for(int i = 0; i < 5; i++){
+//             if(mask & (1 << i)) s+="1";
+//             else s+="0";
+//         }
+//         choices.push_back(stoi(s));
+//     }
+
+//     bool check = 0;
+//     while(n>1){
+//         for(int i = 1; i < choices.size()-1; i++){
+//             if(n%choices[i]==0 && choices[i] != 1){
+//                 n/=choices[i];
+//                 check = 1;
+
+//             } 
+//         }
+//         if(!check) break;
+//         check = 0;
+//     }
+//     bool ok = 1;
+//     for(auto&a: to_string(n)){
+//         if(a!='0' && a!='1') ok = 0;
+//     }
+//     cout << (ok ? "YES" : "NO") << nl;
+// }

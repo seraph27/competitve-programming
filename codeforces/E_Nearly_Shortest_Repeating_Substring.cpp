@@ -41,24 +41,21 @@ const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n, x; cin >> n >> x;
-    vector<int> vi(n+1);
-    int idx;
+    int n; string s; cin >> n >> s;
     for(int i = 1; i <= n; i++){
-        cin >> vi[i];
-        if(vi[i] == x) idx = i;
+        if(n%i == 0){
+            int diff = 0;
+            for(int j = 0; j < i; j++){
+                ar<int, 26> chars{};
+                for(int k = j; k < n; k+=i) chars[s[k]-'a']++;
+                diff+=accumulate(all(chars), 0) - *max_element(all(chars));
+            }
+            if(diff <= 1) {
+                cout << i << nl;
+                return;
+            }
+        }    
     }
-
-    int l = 1, r = n+1;
-    while(r-l > 1){
-        int mid = (l+r) >> 1;
-        debug(mid); 
-        if(x >= vi[mid]) l = mid;
-        else r = mid;
-    }
-
-    cout << 1 << nl;
-    cout << idx << " " << l << nl;
 }
 
 int main() {    

@@ -41,24 +41,18 @@ const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n, x; cin >> n >> x;
-    vector<int> vi(n+1);
-    int idx;
-    for(int i = 1; i <= n; i++){
-        cin >> vi[i];
-        if(vi[i] == x) idx = i;
-    }
-
-    int l = 1, r = n+1;
-    while(r-l > 1){
-        int mid = (l+r) >> 1;
-        debug(mid); 
-        if(x >= vi[mid]) l = mid;
-        else r = mid;
-    }
-
-    cout << 1 << nl;
-    cout << idx << " " << l << nl;
+    string s; cin >> s;
+    string hour = s.substr(0, 2);
+    string rest = s.substr(2, 5);
+    string add;
+    if(s >= "12:00") add = "PM";
+    else add = "AM";
+    int myint = stoi(hour);
+    if(myint > 12) myint-=12;
+    else if(myint == 0) myint+=12;
+    hour = (myint < 10 ? "0" + to_string(myint) : to_string(myint));
+    cout << hour + rest + " " + add << nl;
+    
 }
 
 int main() {    
