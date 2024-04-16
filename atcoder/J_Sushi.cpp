@@ -54,11 +54,12 @@ void test_case() {
         if(dp[a][b][c]>=0) return dp[a][b][c];
         debug("check");
         if(a==0&&b==0&&c==0) return 0;
-        auto ans = 1/(1-(double)(n-a-b-c)/n);   //pick nothing
-        if(a) ans += solve(solve, a-1, b, c) * a/n;
-        if(b) ans += solve(solve, a+1, b-1, c) * b/n;
-        if(c) ans += solve(solve, a, b+1, c-1) * c/n;
-        debug(ans);
+        double ans = 0.0;
+        if(a) ans += solve(solve, a-1, b, c) * a;
+        if(b) ans += solve(solve, a+1, b-1, c) * b;
+        if(c) ans += solve(solve, a, b+1, c-1) * c;
+        ans += n;
+        ans *= 1/(double)(a+b+c);
         return dp[a][b][c] = ans;
     };
     debug(sushi);
