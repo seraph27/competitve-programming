@@ -8,5 +8,6 @@
         "initializer_list": "cpp",
         "valarray": "cpp",
         "tuple": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": false
 }

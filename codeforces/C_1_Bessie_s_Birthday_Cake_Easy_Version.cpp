@@ -2,6 +2,7 @@
 #define ll long long
 #define ar array
 #define db double
+#define pb push_back
 #define all(x) x.begin(), x.end()
 #define sz(x) (int)x.size()
 using namespace std;
@@ -36,42 +37,30 @@ void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v..
 #define debug(x...)
 #endif
 
-const int mod = 1e9+7;
-const int INF = 1001001001;
 const ll INFLL = 100100100100100100;
+const int INF = 1001001001;
+const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n; cin >> n;
-    ar<int, 3> sushi{};
-    for(int i = 0; i < n; i++){
-        int s; cin >> s;
-        sushi[s-1]++;
-    }
-    vector dp(n+1, vector(n+1, vector(n+1, (double)-1)));
-    auto solve = [&](auto&& solve, int a, int b, int c) -> double {
-        if(dp[a][b][c]>=0) return dp[a][b][c];
-        debug("check");
-        if(a==0&&b==0&&c==0) return 0;
-        double ans = 0.0;
-        if(a) ans += solve(solve, a-1, b, c) * a;
-        if(b) ans += solve(solve, a+1, b-1, c) * b;
-        if(c) ans += solve(solve, a, b+1, c-1) * c;
-        ans += n;
-        ans *= 1/(double)(a+b+c);
-        return dp[a][b][c] = ans;
-    };
-    
-    auto ss = solve(solve, sushi[0], sushi[1], sushi[2]) ;
-    cout << fixed << setprecision(20) << ss << nl;  
+    int n, x, y; cin >> n >> x >> y;
+    vector<int> vi(x);
+    for(auto&a: vi) cin >> a;
+    int extra = 0;
+    sort(all(vi));
+    for(int i = 1; i < x; i++){
+        if(vi[i]-vi[i-1]==2) extra++;
+    }   
+    if(vi[0]+n-vi[x-1]==2)extra++;
+
+    debug(x, extra);
+    cout << x-2+extra << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("cardgame.in","r",stdin); freopen("cardgame.out","w",stdout);  //ucsao
+    //freopen("cownomics.in","r",stdin); freopen("cownomics.out","w",stdout);  //ucsao
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) test_case();
 }
-
-

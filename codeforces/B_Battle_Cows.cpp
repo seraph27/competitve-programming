@@ -2,6 +2,7 @@
 #define ll long long
 #define ar array
 #define db double
+#define pb push_back
 #define all(x) x.begin(), x.end()
 #define sz(x) (int)x.size()
 using namespace std;
@@ -36,42 +37,47 @@ void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v..
 #define debug(x...)
 #endif
 
-const int mod = 1e9+7;
-const int INF = 1001001001;
 const ll INFLL = 100100100100100100;
+const int INF = 1001001001;
+const int mod = 1e9+7;
 const char nl = '\n';
 
 void test_case() {
-    int n; cin >> n;
-    ar<int, 3> sushi{};
-    for(int i = 0; i < n; i++){
-        int s; cin >> s;
-        sushi[s-1]++;
+    int n, k; cin >> n >> k;
+    vector<int> rating(n);
+    for(auto&a: rating) cin >> a;
+    int cowrating = rating[k-1];
+    bool ok = 1;
+    int ans = 0;
+    int swapidx = 0;
+    for(int i = 0; i < k; i++){
+        if(cowrating < rating[i]){swapidx = i; ok = 0; break;}
     }
-    vector dp(n+1, vector(n+1, vector(n+1, (double)-1)));
-    auto solve = [&](auto&& solve, int a, int b, int c) -> double {
-        if(dp[a][b][c]>=0) return dp[a][b][c];
-        debug("check");
-        if(a==0&&b==0&&c==0) return 0;
-        double ans = 0.0;
-        if(a) ans += solve(solve, a-1, b, c) * a;
-        if(b) ans += solve(solve, a+1, b-1, c) * b;
-        if(c) ans += solve(solve, a, b+1, c-1) * c;
-        ans += n;
-        ans *= 1/(double)(a+b+c);
-        return dp[a][b][c] = ans;
-    };
+    swap(rating[0], rating[k-1]);
+    for(int i = 1; i < n; i++){
+        if(cowrating > rating[i]) ans++;
+        else break;
+    }  
+    int ans2 = 0;
+
+    if(!ok){
+        swap(rating[0], rating[k-1]);
+        swap(rating[k-1], rating[swapidx]);
+        for(int i = swapidx+1; i < n; i++){
+            if(cowrating > rating[i]) ans2++;
+            else break;
+        }
+        ans2 += (swapidx > 0 ? 1 : 0);
+    }
+    debug(ans,ans2, rating);
+    cout << max(ans, ans2) << nl;
     
-    auto ss = solve(solve, sushi[0], sushi[1], sushi[2]) ;
-    cout << fixed << setprecision(20) << ss << nl;  
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("cardgame.in","r",stdin); freopen("cardgame.out","w",stdout);  //ucsao
+    //freopen("cownomics.in","r",stdin); freopen("cownomics.out","w",stdout);  //ucsao
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) test_case();
 }
-
-
