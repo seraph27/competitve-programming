@@ -9,7 +9,12 @@
         "initializer_list": "cpp",
         "valarray": "cpp",
         "vector": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "barrier": "cpp",
+        "chrono": "cpp",
+        "latch": "cpp",
+        "limits": "cpp",
+        "semaphore": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }
