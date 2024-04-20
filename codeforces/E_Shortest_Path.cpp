@@ -43,43 +43,34 @@ const int INF = 1001001001;
 const ll INFLL = 1LL<<60;
 
 void test_case() {
-    int n, m; cin >> n >> m;
-    vector<vector<pii>> adj(n);
-    vector<ll> vtx(n, INFLL);
-    vector<ll> path(n, -1);
-    vtx[0] = 0;
-
-    for(int i = 0; i < m ; i++){
-        int a, b, w; cin >> a >> b >> w;
-        --a; --b;
-        adj[a].push_back({b, w});
-        adj[b].push_back({a, w});
+    int n, m, k; cin >> n >> m >> k;
+    vector<vector<pii>> adj(n+1);
+    vector<ll> vtx(n+1, INFLL);
+    vector<int> path(n+1, -1);
+    vector<vector<int>> forbid(n+1);
+    vtx[1] = 0;
+ 
+    for(int i = 0; i < m; i++){
+        int a, b; cin >> a >> b;
+        adj[a].push_back({b, 1});
+        adj[b].push_back({a, 1});
     }
+    for(int i = 0; i < k; i++){
+        int a, b, c; cin >> a >> b >> c;
+        forbid[a].push_back(b);
+    }
+    priority_queue<pii, vector<pii>, greater<pii>> pq;
+    pq.push({0, 1});
 
-    priority_queue<pii, vector<pii>, greater<pii>> q;
-    q.push({0, 0});
-
-    while(!q.empty()){
-        auto [val, idx] = q.top(); 
-        q.pop();
-        if(val != vtx[idx]) continue;
-        for(auto&[to, w] : adj[idx]){
-            if(ckmin(vtx[to], vtx[idx] + w)){
-                path[to] = idx;
-                q.push({vtx[to], to});
-            }
+    while(!pq.empty()){
+        auto [dist, idx] = pq.top(); pq.pop();
+        if(vtx[idx] != dist) continue;
+        for(auto &[to, w]: adj[idx]){
+            if(ckmin(vtx[to], vtx[idx] + dist)) path[to] = idx;
         }
     }
-    vector<int> ans;
-    if(vtx[n-1] == INFLL) {cout << -1 << nl; return;}
-    for (int v = n-1; v != 0; v = path[v]){
-        ans.push_back(v+1);
-    }
-    ans.push_back(1);
-    for(int i = ans.size()-1; i>=0; i--){
-        cout << ans[i] << " ";
-    }
-    cout << nl;
+
+
 }
 
 int main() {    
