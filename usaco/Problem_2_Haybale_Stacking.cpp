@@ -30,9 +30,19 @@ const char nl = '\n';
 const int INF = 1001001001;
 
 void seraph() {
-    int a; cin >> a;
-    cout << a << nl;
-    debug(a);
+    int n, k; cin >> n >> k;
+    vector<int> pref(n);
+    for(int i = 0; i < k; i++){
+        int a, b; cin >> a >> b;
+        fill(pref.begin() + b, pref.end(), 1);
+    }
+    debug(pref);
+    vector<int> norm(n);
+    for(int i = 0; i < n; i++){
+        norm[i] = (pref[i] - ((i-1) ? pref[i-1] : 0));
+    }
+    sort(all(norm));
+    cout << norm[n/2] << nl;
 }
 
 int main() {    
