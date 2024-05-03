@@ -42,20 +42,21 @@ void seraph() {
     while(q--){
         int a, b; cin >> a >> b;
         --a; 
-        int l = 0, r = n-1, ans = 0;
+        int l = a, r = n-1, ans = a;
         while(l<=r){
             int mid = (l+r)>>1;
-            if(pref[mid] - pref[a-1] <= b){
+            if(pref[mid] - (a-1>=0 ? pref[a-1] : 0) <= b){
                 l = mid + 1, ans = mid;
             } else{
                 r = mid - 1;
             }
         }
-
-        int mx = -INF, best;
+        ll mx = (int)-1e18, best = ans;
+        // debug(ans, max(a, ans-2), min(n-1, ans+2));
         for(int i = max(a, ans-2); i < min(n, ans+2); i++){
-            int sum = pref[i] - pref[a-1];
-            int ss = (b + (b - sum + 1)) * sum / 2;
+            int sum = pref[i] - (a-1>=0 ? pref[a-1] : 0);
+            debug(sum, i, pref[i], a);
+            ll ss = (ll)(b + (b - sum + 1)) * sum / 2;
             if(ckmax(mx, ss)) best = i;
         }
         cout << best+1 << " ";
