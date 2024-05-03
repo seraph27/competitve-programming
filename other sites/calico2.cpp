@@ -31,25 +31,37 @@ const int INF = 1001001001;
 
 void seraph() {
     int n, k; cin >> n >> k;
-    vector<int> hay(n);
-    for(int i=0; i<k; i++){
-        int a, b; cin >> a >> b;
-        --a, --b;
-        hay[a]++, hay[b+1]--;
-        debug(hay);
+    string block; cin >> block;
+    if(k>=n){
+        cout << -1 << nl;
+        return;
     }
-    for(int i=1; i<n; i++){
-        hay[i] += hay[i-1];
+    int ans = 0;
+    for(int curr = k; curr>=0; curr--){
+        int pos = curr;
+        while(true) {
+            if(pos >= n){
+                ans++;
+                break;
+            }
+            if(pos<curr-k) break;
+            if(pos<0) break;
+            if(block[pos] == '#') {
+                block[pos] = '-';
+                pos+=k+1;
+            } else{
+                pos--;
+            }
+        }
+
     }
-    debug(hay);
-    sort(all(hay));
-    cout << hay[n/2] << nl;
+    cout << ans << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("stacking.in","r",stdin); freopen("stacking.out","w",stdout);
+    //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) seraph();
 }

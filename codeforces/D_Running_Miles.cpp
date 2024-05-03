@@ -30,26 +30,32 @@ const char nl = '\n';
 const int INF = 1001001001;
 
 void seraph() {
-    int n, k; cin >> n >> k;
-    vector<int> hay(n);
-    for(int i=0; i<k; i++){
-        int a, b; cin >> a >> b;
-        --a, --b;
-        hay[a]++, hay[b+1]--;
-        debug(hay);
+    int n; cin >> n;
+    vector<ll> vi(n);
+    for(auto&a: vi) cin >> a;
+    
+    ll ans = 0;
+    vector<ll> lbest(n), rbest(n);
+    ll lmax = 0, rmax = -INF;
+    for(int i = 0; i < n; i++){
+        ckmax(lmax, vi[i]+i+1);
+        lbest[i] = lmax;
     }
-    for(int i=1; i<n; i++){
-        hay[i] += hay[i-1];
+    for(int j = n-1; j>=0; j--){
+        ckmax(rmax, vi[j]-j-1);
+        rbest[j] = rmax;
     }
-    debug(hay);
-    sort(all(hay));
-    cout << hay[n/2] << nl;
+    debug(rbest);
+    for(int m = 1; m<n-1; m++){
+        ckmax(ans, lbest[m-1] + vi[m] + rbest[m+1]);
+    }
+    cout << ans << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("stacking.in","r",stdin); freopen("stacking.out","w",stdout);
+    //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) seraph();
 }

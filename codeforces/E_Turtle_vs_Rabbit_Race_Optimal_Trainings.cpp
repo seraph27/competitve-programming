@@ -27,29 +27,47 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const int mod = 1e9+7;
 const char nl = '\n';
-const int INF = 1001001001;
+const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    int n, k; cin >> n >> k;
-    vector<int> hay(n);
-    for(int i=0; i<k; i++){
+    int n; cin >> n;
+    vector<int> tracks(n);
+    for(auto&a: tracks) cin >> a;
+    vector<int> pref(n);
+    for(int i = 0; i < n; i++){
+        pref[i] = (i-1>=0 ? pref[i-1] + tracks[i] : tracks[i]);
+    }
+    debug(pref);
+    int q; cin >> q;
+    while(q--){
         int a, b; cin >> a >> b;
-        --a, --b;
-        hay[a]++, hay[b+1]--;
-        debug(hay);
+        --a; 
+        int l = 0, r = n-1, ans = 0;
+        while(l<=r){
+            int mid = (l+r)>>1;
+            if(pref[mid] - pref[a-1] <= b){
+                l = mid + 1, ans = mid;
+            } else{
+                r = mid - 1;
+            }
+        }
+
+        int mx = -INF, best;
+        for(int i = max(a, ans-2); i < min(n, ans+2); i++){
+            int sum = pref[i] - pref[a-1];
+            int ss = (b + (b - sum + 1)) * sum / 2;
+            if(ckmax(mx, ss)) best = i;
+        }
+        cout << best+1 << " ";
+        
     }
-    for(int i=1; i<n; i++){
-        hay[i] += hay[i-1];
-    }
-    debug(hay);
-    sort(all(hay));
-    cout << hay[n/2] << nl;
+    cout << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("stacking.in","r",stdin); freopen("stacking.out","w",stdout);
+    //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) seraph();
 }

@@ -30,25 +30,31 @@ const char nl = '\n';
 const int INF = 1001001001;
 
 void seraph() {
-    int n, k; cin >> n >> k;
-    vector<int> hay(n);
-    for(int i=0; i<k; i++){
-        int a, b; cin >> a >> b;
-        --a, --b;
-        hay[a]++, hay[b+1]--;
-        debug(hay);
+    int n, q; cin >> n >> q;
+    vector<vector<int>> pref(n, vector<int>(n, 0));
+    for(auto&a: pref) {
+        string s; cin >> s;
+        for(int i = 0; i < n; i++){
+            if(s[i] == '*'){
+                a[i]++;
+            }
+        }
     }
-    for(int i=1; i<n; i++){
-        hay[i] += hay[i-1];
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++){
+            pref[i][j]+=((i-1>=0 ? pref[i-1][j] : 0) + (j-1>=0 ? pref[i][j-1] : 0) - (i-1>=0&&j-1>=0 ? pref[i-1][j-1] : 0)); 
+        }
     }
-    debug(hay);
-    sort(all(hay));
-    cout << hay[n/2] << nl;
+    for(int i = 0; i < q; i++){
+        int y1, x1, y2, x2; cin >> y1 >> x1 >> y2 >> x2;
+        --y1; --x1; --y2; --x2;
+        cout << pref[y2][x2] - (~(y1-1) ? pref[y1-1][x2] : 0) - (~(x1-1) ? pref[y2][x1-1] : 0) + (~(x1-1)&&~(y1-1) ? pref[y1-1][x1-1] : 0) << nl;
+    }
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("stacking.in","r",stdin); freopen("stacking.out","w",stdout);
+    //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
     //cin >> t;
     while (t--) seraph();

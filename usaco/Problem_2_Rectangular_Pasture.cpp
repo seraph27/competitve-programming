@@ -29,21 +29,45 @@ const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 1001001001;
 
+const int NX = 2505;
+int grid[NX][NX];
+ll prefsum(int x1, int y1, int x2, int y2) {
+    return grid[x2][y2] - (y1-1>=0 ? grid[x2][y1-1] : 0) - (x1-1>=0 ? grid[x1-1][y2] : 0) + (x1-1>=0 && y1-1>=0 ? grid[x1-1][y1-1] : 0);
+}
 void seraph() {
-    int n, k; cin >> n >> k;
-    vector<int> hay(n);
-    for(int i=0; i<k; i++){
-        int a, b; cin >> a >> b;
-        --a, --b;
-        hay[a]++, hay[b+1]--;
-        debug(hay);
+    int n; cin >> n;
+    vector<pii> coords(n);
+    for(int i = 0; i < n; i++){
+        int x, y; cin >> x >> y;
+        coords[i] = {x, y};
     }
-    for(int i=1; i<n; i++){
-        hay[i] += hay[i-1];
+    sort(all(coords));
+    for(int i = 0; i < n; i++){
+        coords[i].first = i+1;
     }
-    debug(hay);
-    sort(all(hay));
-    cout << hay[n/2] << nl;
+    sort(all(coords), [&](pii a, pii b) {return a.second < b.second;});
+    for(int i = 0; i < n; i++){
+        coords[i].second = i+1;
+    }                                       
+
+    memset(grid, 0, sizeof(grid));
+    for(int i = 0; i < coords.size(); i++){
+        grid[coords[i].first-1][coords[i].second-1] = 1;
+    }
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++){
+            grid[i][j] += ((j-1>=0 ? grid[i][j-1] : 0) + (i-1>=0 ? grid[i-1][j] : 0) - ((j-1>=0 && i-1>=0) ? grid[i-1][j-1] : 0));
+        }
+    }
+    ll ans = 0;
+    for(int i = 0; i < n; i++){
+        for(int j = i; j < n; j++){
+            int xx1 = min(coords[i].first, coords[j].first) - 1;
+            int xx2 = max(coords[i].first, coords[j].first) - 1;
+            ans += prefsum(0, i, xx1, j) * prefsum(xx2, i, n-1, j);
+        }
+    }
+    cout << ans + 1 << nl;
 }
 
 int main() {    
