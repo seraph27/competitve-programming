@@ -30,21 +30,40 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    int n; cin >> n;
-    vector<int> stone(n);
-    for(auto&a: stone) cin >> a;
-    sort(all(stone));
-    stone.erase(unique(all(stone)), stone.end());
-    debug(stone);
-    int mex = 1;
-    for(int i = 0; i < stone.size(); i++){
-        if(mex == stone[i]) mex++;
+    int n, k, m; cin >> n >> k >> m;
+    string s; cin >> s;
+    vector<ar<int, 26>> cnt(k, ar<int, 26>{});
+    ar<int, 26> seen{};
+    for(char c: s){
+        if(!seen[c-'a']){
+            seen[c-'a'] = 1;
+        }
+        for(int i = 0; i < k; i++){
+            if(seen[i]){
+                cnt[i][c-'a']++;
+            }
+        }
     }
-    int mx = stone[stone.size()-1];
-    if(mex > mx){
-        cout << (mx%2 ? "Alice" : "Bob") << "\n";
-    } else{
-        cout << (mex%2 ? "Alice" : "Bob") << "\n";
+    bool ok = 1;
+    int badidx = 0;
+    for(int i = 0; i < n; i++){
+        auto curr = cnt[i];
+        for(int j = 0; j < k; j++){
+            if(i == j && curr[j] < n){
+                ok = 0;
+                badidx = j;
+            } else if(curr[j] < n-1) {
+                ok = 0;
+                badidx = j;
+            }
+        }
+        if(!ok) break;
+    }
+
+    if(ok) cout << "YES" << nl;
+    else {
+        cout << "NO" << nl;
+        cout << string(n, char('a'+badidx)) << nl;
     }
 }
 
