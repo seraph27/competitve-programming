@@ -33,9 +33,25 @@ void seraph() {
     int n; cin >> n;
     vector<int> vi(n);
     for(auto&a: vi) cin >> a;
-    sort(all(vi));
-    
+    map<int, int> seen;
+    int i = 0, j = 0;
+    int best = 0;
+    while(j < n){
+        if(!seen[vi[j]]){
+            seen[vi[j]] = j;
+        } else{
+            seen[vi[j]] = j;
+            i = seen[vi[j]];
+            
+        }
+        j++;
+        ckmax(best, j - i);
+        debug(i, j);
+    }
+    ckmax(best, j - i);
+    cout << best << nl;
 }
+
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
