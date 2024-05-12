@@ -32,38 +32,28 @@ const int INF = 0x3f3f3f3f;
 void seraph() {
     int n, k, m; cin >> n >> k >> m;
     string s; cin >> s;
-    vector<ar<int, 26>> cnt(k, ar<int, 26>{});
-    ar<int, 26> seen{};
+    int msk = 0;
+    string res;
     for(char c: s){
-        if(!seen[c-'a']){
-            seen[c-'a'] = 1;
-        }
-        for(int i = 0; i < k; i++){
-            if(seen[i]){
-                cnt[i][c-'a']++;
-            }
+        msk |= 1 << (c-'a');
+        if(msk == (1 << k) - 1){  
+            res+=c;
+            msk = 0;
         }
     }
-    bool ok = 1;
-    int badidx = 0;
-    for(int i = 0; i < n; i++){
-        auto curr = cnt[i];
-        for(int j = 0; j < k; j++){
-            if(i == j && curr[j] < n){
-                ok = 0;
-                badidx = j;
-            } else if(curr[j] < n-1) {
-                ok = 0;
-                badidx = j;
-            }
-        }
-        if(!ok) break;
-    }
-
-    if(ok) cout << "YES" << nl;
-    else {
+    if(res.size()>=n){
+        cout << "YES" << nl;
+    } else{
         cout << "NO" << nl;
-        cout << string(n, char('a'+badidx)) << nl;
+        int bad;
+        for(int i = 0; i < 26; i++) if((msk & (1 << i)) == 0) {
+            bad = i;
+            break;
+        }
+        while(res.size() < n){
+            res += (char)('a'+bad);
+        }
+        cout << res << nl;
     }
 }
 
