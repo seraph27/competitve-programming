@@ -30,16 +30,34 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    int n; cin >> n;
-    vector<int> vi(n);
-    for(auto&a: vi) cin >> a;
-    sort(all(vi));
-    ll currbiggest = 0;
+    int n, m; cin >> n >> m;
+    vector<int> vi(n), nums(n); //vi is index, nums is position
     for(int i = 0; i < n; i++){
-        if(vi[i] > currbiggest+1) break;
-        currbiggest+=vi[i];
+        int a; cin >> a;
+        nums[i] = a-1;
+        vi[--a] = i;
     }
-    cout << currbiggest+1 << nl;
+    int ans = 1;
+    for(int i = 0; i < n-1; i++){
+        if(vi[i] > vi[i+1]) ans++;
+    }
+    auto check = [&](int val) {
+        return (val-1>=0 ? vi[val-1] > vi[val] : 0) + (val+1<n ? vi[val+1] < vi[val] : 0);
+    };
+    while(m--){
+        int x, y; cin >> x >> y;
+        --x; --y;
+        int change = 0;
+        if(nums[x] > nums[y]) swap(x, y);
+        change-= check(nums[x]) + check(nums[y]) - (nums[x] + 1 == nums[y] && x > y);
+        swap(nums[x], nums[y]);
+        swap(vi[nums[x]], vi[nums[y]]);
+        if(nums[x] > nums[y]) swap(x, y);
+        change += check(nums[x]) + check(nums[y]) - (nums[x] + 1 == nums[y] && x > y);
+        ans+=change;
+        cout << ans << nl;
+    }
+   
 }
 
 int main() {    

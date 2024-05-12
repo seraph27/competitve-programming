@@ -32,14 +32,15 @@ const int INF = 0x3f3f3f3f;
 void seraph() {
     int n; cin >> n;
     vector<int> vi(n);
-    for(auto&a: vi) cin >> a;
-    sort(all(vi));
-    ll currbiggest = 0;
     for(int i = 0; i < n; i++){
-        if(vi[i] > currbiggest+1) break;
-        currbiggest+=vi[i];
+        int a; cin >> a;
+        vi[--a] = i;
     }
-    cout << currbiggest+1 << nl;
+    int ans = 0;
+    for(int i = 0; i < n-1; i++){
+        if(vi[i] > vi[i+1]) ans++;
+    }
+    cout << ans+1 << nl;
 }
 
 int main() {    
