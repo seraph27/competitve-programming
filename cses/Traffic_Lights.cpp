@@ -30,31 +30,40 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    int n; cin >> n;
-    vector<int> vi(n);
-    for(auto&a: vi) cin >> a;
-    map<int, int> lastseen;
-    int i = -1, j = 0;
-    int best = 0;
-    while(j < n){  
-        if(!lastseen.count(vi[j])){
-            lastseen[vi[j]] = j;
-        } else{
-            i = max(i, lastseen[vi[j]]);
-            lastseen[vi[j]] = j;
-        }
-        debug(i, j);
-        ckmax(best, j - i);
-        j++;      
-    }
-    //ckmax(best, j - i);
-    cout << best << nl;
-}
+    int x, n; cin >> x >> n;
+    int ans = x;
+    map<int, pair<int, int>> seg;
+    seg[0] = {0, x};
 
+    int lcut = 0, rcut = 0;
+    for(int i = 0; i < n; i++){
+        int p; cin >> p;
+        auto it = seg.upper_bound(p);
+        if(it != seg.begin()) {
+            --it;
+            auto key = it->first;
+            auto [val1, val2] = it->second;
+            
+            debug(key, val1, val2, p);
+            debug(lcut, rcut);
+            if(p < rcut && p > lcut){
+                ans = max(p-val1, val2-p);
+            } else{
+                ckmin(ans, max(p-val1, val2-p));
+    
+                
+            }
+            seg[key] = {val1, p};
+            seg[p] = {p, val2};
+        }
+        cout << ans << " ";
+    }
+    
+}
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //jreopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
+    //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
     //cin >> t;
     while (t--) seraph();

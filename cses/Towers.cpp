@@ -41,22 +41,17 @@ const char nl = '\n';
 
 void test_case() {
     int n; cin >> n;
-    vector<int>size(n); 
-    for(auto&a: size) cin >> a;
-
-    multiset<int> tower;
-    tower.insert(size[0]);
-    for(int i = 1; i < n; i++){
-        auto it = tower.upper_bound(size[i]);
-        if(it != tower.end()){
-            tower.insert(size[i]);
-            tower.erase(it);           
-        } else{
-            tower.insert(size[i]);
-        }
-    } 
-    cout << tower.size() << nl;
-   
+    multiset<int> vi;
+    for(int i = 0; i < n; i++) {
+        int x; cin >> x;
+        auto it = vi.upper_bound(x);
+        vi.insert(x);
+        debug(*it);
+        if(it != vi.end()){
+            vi.erase(it);
+        } 
+    }
+    cout << vi.size() << nl;
 }
 
 int main() {    
