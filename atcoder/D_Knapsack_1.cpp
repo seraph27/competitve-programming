@@ -57,7 +57,6 @@ void test_case() {
             ckmax(dp[j+weight[i]],  dp[j] + value[i]);
         }
     }
-
     cout << dp[w] << nl;
 }
 

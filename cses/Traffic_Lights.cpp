@@ -31,32 +31,28 @@ const int INF = 0x3f3f3f3f;
 
 void seraph() {
     int x, n; cin >> x >> n;
-    int ans = x;
-    map<int, pair<int, int>> seg;
-    seg[0] = {0, x};
+    set<ar<int, 2>> seg;
+    multiset<int> dist;
+    dist.insert(x);
+    seg.insert({0, x});
 
-    int lcut = 0, rcut = 0;
     for(int i = 0; i < n; i++){
         int p; cin >> p;
-        auto it = seg.upper_bound(p);
+        auto it = seg.upper_bound({p, INF});
         if(it != seg.begin()) {
             --it;
-            auto key = it->first;
-            auto [val1, val2] = it->second;
-            
-            debug(key, val1, val2, p);
-            debug(lcut, rcut);
-            if(p < rcut && p > lcut){
-                ans = max(p-val1, val2-p);
-            } else{
-                ckmin(ans, max(p-val1, val2-p));
-    
-                
-            }
-            seg[key] = {val1, p};
-            seg[p] = {p, val2};
+            auto [left, right] = *it;
+            debug(left, right);
+            seg.erase(it);
+            seg.insert({left, p});
+            seg.insert({p, right});
+            dist.erase(dist.find(right-left));
+            dist.insert(p-left);
+            dist.insert(right-p);
+            debug(p, p-left, right-p);
         }
-        cout << ans << " ";
+        debug(seg.size(), dist.size());
+        cout << *prev(dist.end()) << " ";
     }
     
 }
