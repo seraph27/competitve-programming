@@ -31,14 +31,15 @@ const int INF = 0x3f3f3f3f;
 
 void seraph() {
     int n, m; cin >> n >> m;
-    vector<vector<int>> adj(2*m+2);
-    vector<vector<int>> radj(2*m+2);
-    vector<int> vis(2*m+2, 0), rep(2*m+2, 0), stk;
+    vector<vector<int>> adj(2*m);
+    vector<vector<int>> radj(2*m);
+    vector<int> vis(2*m, 0), rep(2*m, 0), stk;
     for(int i = 0; i < n; i++){
         char c1, c2; int x1, x2;
         cin >> c1 >> x1 >> c2 >> x2; 
         --x1; --x2;
-        x1 = 2*x1 ^ (c1 == '+');
+        debug(c1, c2, x1, x2);
+        x1 = 2*x1 ^ (c1 == '+'); 
         x2 = 2*x2 ^ (c2 == '+');
         int negx1 = x1 ^ 1;
         int negx2 = x2 ^ 1;
@@ -49,6 +50,7 @@ void seraph() {
         radj[x2].push_back(negx1);
     }
 
+    debug(adj);
     auto dfs1 = [&](auto&&dfs1, int v) -> void {
         vis[v] = 1;
         for(auto &e: adj[v]){
@@ -63,24 +65,34 @@ void seraph() {
         vis[v] = 1;
         rep[v] = i;
         for(auto &e: radj[v]){
-            if(rep[e] == -1){
+            if(!vis[e]){
                 dfs2(dfs2, e, i);
             }
         }
     };
 
-    for(int i = 0; i <= 2*m+2; i++){
+
+    for(int i = 0; i < 2*m; i++){
         if(!vis[i]) dfs1(dfs1, i);
     }
-    vis.assign(2*m+2, 0);
-    rep.assign(2*m+2, -1);
+    vis.assign(2*m, 0);
+    int j = 0;
     while(!stk.empty()) {
         int top = stk.back(); stk.pop_back();
         debug(top);
-        if(rep[top] == -1) dfs2(dfs2, top, top);
+        if(!vis[top]) dfs2(dfs2, top, j++);
     }
 
-    debug(rep);
+    for (int i = 0; i < 2*m; i += 2) {
+        if (rep[i] == rep[i + 1]) {
+            cout << "IMPOSSIBLE" << nl;
+            return;
+        }
+    }
+
+    for (int i = 0; i < 2*m; i += 2) {
+        cout << (rep[i] < rep[i + 1] ? "+" : "-") << " ";
+    }
 }
 
 int main() {    
