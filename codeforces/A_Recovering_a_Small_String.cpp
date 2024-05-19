@@ -31,13 +31,26 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
+    int n; cin >> n;
+    string ans = "aaa";
+    n-=3;
     
+    for(int x = 2; x>=0; x--){
+        if(n>=25){
+            ans[x] += 25;
+        } else{
+            ans[x] += n;
+        }
+        n-=25;
+        if(n<0) break;
+    }
+    cout << ans << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) seraph();
 }

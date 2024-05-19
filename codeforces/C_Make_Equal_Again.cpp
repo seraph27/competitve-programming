@@ -31,13 +31,56 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    if(vi[0] == vi[n-1]){
+        int cnt = 0;
+        int i = 0, j = n-1;
+        for(int i = 0; i < n; i++){
+            if(vi[i] == vi[0]) {
+                cnt++;
+            } else{
+                break;
+            }
+        }
+        for(int i = n-1; ~i; i--){
+            if(vi[i] == vi[n-1]) {
+                cnt++;
+            } else{
+                break;
+            }
+        }
+        if(cnt > n) {
+            cout << 0 << nl;
+            return;
+        }
+        cout << n - cnt << nl;
+    } else{
+        int cnt1 = 0;
+        for(int i = 0; i < n; i++){
+            if(vi[i] == vi[0]) {
+                cnt1++;
+            } else{
+                break;
+            }
+        }
+        int cnt2 = 0;
+        for(int i = n-1; ~i; i--){
+            if(vi[i] == vi[n-1]) {
+                cnt2++;
+            } else{
+                break;
+            }
+        }
+        cout << n - max(cnt1, cnt2) << nl;
+    }
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) seraph();
 }

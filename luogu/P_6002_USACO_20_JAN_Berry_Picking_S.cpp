@@ -31,6 +31,36 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
+    int n, k; cin >> n >> k;
+    vector<int> s(n);
+    int big = 0;
+    for(int i = 0; i < n; i++){
+        int a; cin >> a;
+        s[i] = a;
+        ckmax(big, a);
+    }
+    int ans = 0;
+    for(int cnt = 1; cnt <= big; cnt++){
+        int sum = 0;
+        for(int i = 0; i < n; i++){
+            sum += (s[i] / cnt);
+        }
+        if(sum < k/2) break;
+        if(sum >= k) {
+            ckmax(ans, k * cnt / 2);
+            continue;
+        }
+        sort(all(s), [&](int a, int b){return a % cnt > b % cnt;});
+        debug(s, cnt);
+        int tot = cnt * (sum - k / 2);
+        debug(tot);
+        for(int i = 0; i < n && i + sum < k; i++){
+            debug(i);
+            tot += s[i] % cnt;
+        }
+        ckmax(ans, tot);
+    }
+    cout << ans << nl;
     
 }
 

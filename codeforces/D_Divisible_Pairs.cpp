@@ -31,13 +31,24 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    
+    int n, x, y; cin >> n >> x >> y;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    ll ans = 0;
+    map<pair<int, int>, int> mp;
+    for(int i = 0; i < n; i++){
+        int currx = vi[i]%x, curry = vi[i]%y;
+        ans += mp[{(x-currx)%x, curry}];
+        mp[{currx, curry}]++;
+    }
+    cout << ans << nl;
+
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) seraph();
 }

@@ -3,7 +3,6 @@
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<ll, ll>
-#define pb push_back
 using namespace std;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
@@ -31,13 +30,22 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    
+    int a, b, c; cin >> a >> b >> c;
+    if((a+b+c)%2){
+        cout << -1 << nl;
+        return;
+    }
+    if(a+b < c) {
+        cout << a+b << nl;
+    } else{
+        cout << (a+b+c) / 2 << nl;
+    }
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) seraph();
 }

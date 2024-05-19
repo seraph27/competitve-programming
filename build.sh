@@ -1,1 +1,1 @@
-g++ -O2 -Wall -Wextra -Wshadow -o $1 $1.cpp
+g++ -o $1 $1.cpp

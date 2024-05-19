@@ -3,7 +3,6 @@
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<ll, ll>
-#define pb push_back
 using namespace std;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
@@ -31,7 +30,24 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    
+    ll n; int m, k; 
+    cin >> n >> m >> k;
+    map<int, vector<ll>> mp;
+    for(int i = 0; i < k; i++){
+        int p; ll q; cin >> p >> q;
+        mp[p].push_back(q);
+    }
+    ll ans = 0;
+    for(auto it = mp.begin(); it!=mp.end(); ++it){
+        auto val = it->second;
+        ll sum = 0;
+        for(int i = 0; i < val.size()-1; i++){
+            sum += (val[i+1] - val[i]) * (i+1);
+        }
+        sum += (n-val.back()) * val.size();
+        ckmax(ans, sum);
+    }
+    cout << ans << nl;
 }
 
 int main() {    
