@@ -15,7 +15,8 @@
         "latch": "cpp",
         "limits": "cpp",
         "semaphore": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "tuple": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled",
     // we try to make semantic highlighting look good
@@ -24,7 +25,7 @@
     "terminal.integrated.minimumContrastRatio": 1,
     // make the window's titlebar use the workbench colors
     "window.titleBarStyle": "custom",
-      // use Mocha as the base
+    // use Mocha as the base
     "workbench.colorTheme": "Catppuccin Latte",
     // pink as the accent color
     "catppuccin.accentColor": "mauve",
@@ -33,15 +34,19 @@
     // make Mocha specifically very dark
     // (this preserves other flavors!)
     "catppuccin.colorOverrides": {
-      "latte": {
-        "base": "#f9e5ff",
-        "mantle": "#fbefff",
-        "crust": "#fbefff",
-      },
+        "latte": {
+            "base": "#f3cdff",
+            "mantle": "#f1d7ff",
+            "crust": "#ffe5fd"
+        },
+        "mocha": {
+            "base": "#110f1a",
+            "mantle": "#12101a"
+        }
     },
     "catppuccin.customUIColors": {
         "latte": {
-          "statusBar.foreground": "accent",
-        },
-      },
+            "statusBar.foreground": "accent"
+        }
+    }
 }

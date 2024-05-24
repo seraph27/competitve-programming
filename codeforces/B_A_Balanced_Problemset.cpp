@@ -15,8 +15,7 @@ const char nl = '\n';
 void test_case() {
     int x, n; cin >> x >> n;
     int ans = INT_MAX;
-    for(int i = 1; i < sqrt(x); i++){
-        if(x%i == 0 && x/i >= n){
+    for(int i = 1; i < sqrt(x); i++){t
             ans = i;
         } else{
             cout << ans << nl;
