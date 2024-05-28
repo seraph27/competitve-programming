@@ -32,19 +32,26 @@ const int INF = 0x3f3f3f3f;
 
 void seraph() {
     int n; cin >> n;
-    vector<int> x(n);
-    for(auto&a: x) cin >> a;
-    ll ans = 0;
-    map<int, vector<ar<int, 2>>> mp;
-    for(int i = 2; i<n; i++){
-       mp[x[i-2]].push_back({x[i-1], x[i]});
-       auto curr = mp[x[i-2]];
-       
-    }
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    map<pair<int, int>, int> mp1, mp2, mp3;
+    map<ar<int, 3>, int> all;
+    ll sum = 0;
+    ll repeat = 0;
+    for(int i = 0; i+3 <= n; i++){
+        int x1 = vi[i], x2 = vi[i+1], x3 = vi[i+2];
+        sum += mp1[{x1, x2}];
+        sum += mp2[{x1, x3}];
+        sum += mp3[{x2, x3}];
+        sum -= all[{x1, x2, x3}] * 3;
+        mp1[{x1, x2}]++;
+        mp2[{x1, x3}]++;
+        mp3[{x2, x3}]++;
+        all[{x1, x2, x3}]++;
+    }  
+    
+    cout << sum << nl;
 
-    debug(vi);
-
-    cout << ans << nl;
 }
 
 int main() {    

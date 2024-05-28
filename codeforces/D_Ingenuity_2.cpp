@@ -32,19 +32,36 @@ const int INF = 0x3f3f3f3f;
 
 void seraph() {
     int n; cin >> n;
-    vector<int> x(n);
-    for(auto&a: x) cin >> a;
-    ll ans = 0;
-    map<int, vector<ar<int, 2>>> mp;
-    for(int i = 2; i<n; i++){
-       mp[x[i-2]].push_back({x[i-1], x[i]});
-       auto curr = mp[x[i-2]];
-       
+    string s; cin >> s;
+    map<char, int> mp;
+    for(char c: s) mp[c]++;
+    int tp = min(mp['S'], mp['N']), sd = min(mp['E'], mp['W']);
+    mp['S']-=tp; mp['N']-=tp;
+    mp['E']-=sd; mp['W']-=sd;
+    int pair = tp+sd;
+    int left = s.length()-pair*2;
+
+    if(mp['N']%2 || mp['W']%2 || mp['E']%2 || mp['S']%2 || !left && pair < 2) {
+        cout << "NO" << nl;
+        return;
     }
-
-    debug(vi);
-
-    cout << ans << nl;
+    map<char, int> rmv;
+    if(tp) {
+        rmv['N']++; rmv['S']++;
+    } else if(sd) {
+        rmv['E']++; rmv['W']++;
+    }
+    rmv['E'] += mp['E'] / 2;
+    rmv['S'] += mp['S'] / 2;
+    rmv['W'] += mp['W'] / 2;
+    rmv['N'] += mp['N'] / 2;
+    for(char c: s){
+        if(rmv[c]){
+            cout << "R";
+            rmv[c]--;
+        } else cout << "H";
+    }
+    cout << nl;
 }
 
 int main() {    
