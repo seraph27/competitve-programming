@@ -3,3 +3,4 @@
 *.json
 *.sh
 codeforces/.vscode/settings.json
+/atcoder/.vscode

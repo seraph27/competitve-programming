@@ -31,47 +31,33 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    int n, k, startb, starts; cin >> n >> k >> startb >> starts;
-    vector<int> perm(n+1), arr(n+1);
-    for(int i = 1; i <= n; i++) cin >> perm[i];
-    for(int i = 1; i <= n; i++) cin >> arr[i];
-
-    vector<int> vis(n+1, 0), vis2(n+1, 0);
-    vector<int> b_perm, s_perm;
-    for(int i = 0; i < min(n, k); i++){
-        if(!vis[startb]){
-            vis[startb] = 1;
-            b_perm.pb(arr[startb]);
-            startb = perm[startb];
-        }
-        if(!vis2[starts]){
-            vis2[starts] = 1;
-            s_perm.pb(arr[starts]);
-            starts = perm[starts];
-            debug(starts);
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    int mn = *min_element(all(vi)), mx = *max_element(all(vi));
+    int mnidx = 0, mxidx = 0;
+    for(int i = n-1; i>=0; i--){
+        if(vi[i] == mn) {
+            mnidx = i;
+            break;
         }
     }
-    auto solve = [&](auto&&solve, vector<int> perm) -> ll {
-        ll mx = -1<<20;
-        ll sum = 0;
-        for(int i = 0; i < min((int)perm.size(), k); i++){
-            ckmax(mx, (ll)(k-i) * perm[i] + sum);
-            sum+=perm[i];
+    for(int i = 0; i < n; i++){
+        if(vi[i] == mx){
+            mxidx = i;
+            break;
         }
-        return mx;
-    };
-    ll mxb = solve(solve, b_perm);
-    ll mxs = solve(solve, s_perm);
-    debug(mxb, mxs);
-
-    cout << (mxb > mxs ? "Bodya" : mxs > mxb ? "Sasha" : "Draw") << nl;
-    
+    }
+    int ans = 0;
+    if(mxidx > mnidx) ans--;
+    ans += mxidx + n-mnidx-1;
+    cout << ans << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) seraph();
 }
