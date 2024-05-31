@@ -1,1 +1,1 @@
-g++ -o $1 $1.cpp
+g++ -Wall -Wextra -Wshadow -o $1 -static-libstdc++ -DSERAPH $1.cpp
