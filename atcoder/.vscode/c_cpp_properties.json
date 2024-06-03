@@ -3,7 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "C:/Users/Seraph/Documents/competitve-programming/templates/ac-library"
             ],
             "defines": [
                 "_DEBUG",
@@ -11,9 +12,9 @@
                 "_UNICODE"
             ],
             "cStandard": "c17",
-            "intelliSenseMode": "windows-gcc-x64",
+            "intelliSenseMode": "${default}",
             "cppStandard": "c++17",
-            "compilerPath": "C:/msys64/ucrt64/bin/g++.exe"
+            "compilerPath": "D:/msys2/ucrt64/bin/g++.exe"
         }
     ],
     "version": 4
