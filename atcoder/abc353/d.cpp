@@ -1,10 +1,12 @@
 #include <bits/stdc++.h>
+#include <atcoder/all>
 #define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
+using namespace atcoder;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -26,22 +28,32 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
+using mint = modint998244353;
 const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
     int n; cin >> n;
-    vector<int> vi(n);
+    vector<ll> vi(n);
     for(auto&a: vi) cin >> a;
-    int height = vi[0];
-    for(int i = 1; i < n; i++) {
-        if(vi[i] > height) {
-            cout << i+1 << nl;
-            return;
-        }
+    vector<ll> pref(n);
+    for(int i = 0; i < n; i++) {
+        pref[i] = (i-1>=0 ? pref[i-1] : 0) + vi[i];
     }
-    cout << -1 << nl;
+    ll store[50]{};
+    mint normal = 0;
+    for(int i = n-1; i >= 0; i--) {
+        store[to_string(vi[i]).length()] += (i-1>=0 ? pref[i-1] : 0);
+        normal += vi[i] * (ll)i;
+    }
+    mint ans = 0;
+    for(int i = 0; i < 17; i++) {
+        store[i] %= 998244353;
+        ans+=store[i] * ((ll)pow(10.0, i) % 998244353);
+    }
+    ans+=normal.val();
+    cout << ans.val() << nl;
 }
 
 int main() {    

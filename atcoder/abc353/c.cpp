@@ -32,16 +32,24 @@ const int INF = 0x3f3f3f3f;
 
 void seraph() {
     int n; cin >> n;
-    vector<int> vi(n);
+    vector<ll> vi(n);
     for(auto&a: vi) cin >> a;
-    int height = vi[0];
-    for(int i = 1; i < n; i++) {
-        if(vi[i] > height) {
-            cout << i+1 << nl;
-            return;
+    sort(all(vi));
+    ll need = 0;
+    ll r = n;
+    for(ll i = 0; i < n; i++) {
+        r = max(r, i+1);
+        while(r-1>i && vi[r-1] + vi[i] >= (ll)1e8) {
+            r--;
         }
+        need += n-r;
     }
-    cout << -1 << nl;
+    ll ans = 0;
+    for(int i = 0; i < n; i++) {
+        ans += vi[i] * (ll)(n-1);
+    }
+    cout << ans - need * (ll)1e8;
+
 }
 
 int main() {    

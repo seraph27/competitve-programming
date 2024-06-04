@@ -31,17 +31,21 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    int n; cin >> n;
+    int n, k; cin >> n >> k;
     vector<int> vi(n);
     for(auto&a: vi) cin >> a;
-    int height = vi[0];
-    for(int i = 1; i < n; i++) {
-        if(vi[i] > height) {
-            cout << i+1 << nl;
-            return;
+    int fill = 0;
+    int ans = 1;
+    for(int i = 0; i < n; i++) {
+        auto curr = vi[i];
+        if(fill+curr<=k) {
+            fill+=curr;
+        } else {
+            fill = curr;
+            ans++;
         }
     }
-    cout << -1 << nl;
+    cout << ans << nl;
 }
 
 int main() {    
