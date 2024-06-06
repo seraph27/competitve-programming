@@ -34,27 +34,16 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    int n; cin >> n;
-    vector<ll> vi(n);
-    for(auto&a: vi) cin >> a;
-    vector<ll> pref(n);
-    for(int i = 0; i < n; i++) {
-        pref[i] = (i-1>=0 ? pref[i-1] : 0) + vi[i];
+    string s, t; cin >> s >> t;
+    int j = 0;
+    for(int i = 0; i < s.length(); i++) {
+        while(s[i]!=t[j]) {
+            j++;
+        }
+        cout << j+1 << " ";
+        j++;
     }
-    mint store[50]{};
-    mint normal = 0;
-    for(int i = n-1; i >= 0; i--) {
-        store[to_string(vi[i]).length()] += (i-1>=0 ? pref[i-1] : 0);
-        normal += vi[i] * (ll)i;
-    }
-    mint ans = 0;
-    vector<mint> pow(22, 1);
-    for(int i = 0; i < 18; i++) pow[i+1] = pow[i] * 10;
-    for(int i = 0; i < 18; i++) {
-        ans+=store[i] * pow[i];
-    }
-    ans+=normal;
-    cout << ans.val() << nl;
+    cout << nl;
 }
 
 int main() {    

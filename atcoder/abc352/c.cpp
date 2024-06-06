@@ -35,26 +35,19 @@ const int INF = 0x3f3f3f3f;
 
 void seraph() {
     int n; cin >> n;
-    vector<ll> vi(n);
-    for(auto&a: vi) cin >> a;
-    vector<ll> pref(n);
-    for(int i = 0; i < n; i++) {
-        pref[i] = (i-1>=0 ? pref[i-1] : 0) + vi[i];
+    vector<pair<int, int>> vi(n);
+    for(int i = 0; i < n; i++){
+        int a, b; cin >> a >> b;
+        vi[i] = {a, b};
     }
-    mint store[50]{};
-    mint normal = 0;
-    for(int i = n-1; i >= 0; i--) {
-        store[to_string(vi[i]).length()] += (i-1>=0 ? pref[i-1] : 0);
-        normal += vi[i] * (ll)i;
+    sort(all(vi), [&](auto &a, auto &b){return a.second-a.first < b.second-b.first;});
+    ll ans = 0; 
+    for(int i = 0; i < n-1; i++) {
+        ans += vi[i].first;
     }
-    mint ans = 0;
-    vector<mint> pow(22, 1);
-    for(int i = 0; i < 18; i++) pow[i+1] = pow[i] * 10;
-    for(int i = 0; i < 18; i++) {
-        ans+=store[i] * pow[i];
-    }
-    ans+=normal;
-    cout << ans.val() << nl;
+    ans += vi[n-1].second;
+
+    cout << ans << nl;
 }
 
 int main() {    
