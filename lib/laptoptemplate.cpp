@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include <atcoder/all>
+#include <atcoder/modint>
 #define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
