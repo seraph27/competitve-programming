@@ -35,22 +35,29 @@ const int INF = 0x3f3f3f3f;
 
 void seraph() {
     int n; cin >> n;
-    vector<int> a(n), b(n);
+    vector<vector<char>> vi1(n, vector<char>(n, 0)), vi2(n, vector<char>(n, 0));
     for(int i = 0; i < n; i++) {
-        cin >> a[i] >> b[i];
+        for(int j = 0; j < n; j++) {
+            char a; cin >> a;
+            vi1[i][j] = a;
+        }
     }
 
-    int dp[1<<n]{};
-    for(int msk = 0; msk < 1<<n; msk++) {
-        int ok = 0;
-        for(int i = 1; i < n; i++) {
-            for(int j = 0; j < i; j++) {
-                if(msk & (1 << i) && msk & (1 << j)) if((a[i] == a[j] || b[i] == b[j]) && !dp[msk ^ (1<<i) ^ (1<<j)]) ok = 1;
-            }
-        } //1 = takahashi can remove
-        dp[msk] = ok;
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            char a; cin >> a;
+            vi2[i][j] = a;
+        }
     }
-    cout << (dp[(1<<n)-1] == 0 ? "Aoki" : "Takahashi") << nl; 
+    
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            if(vi1[i][j] != vi2[i][j]) {
+                cout << i+1 << " " << j+1 << nl;
+                break;
+            }
+        }
+    }
 }
 
 int main() {    

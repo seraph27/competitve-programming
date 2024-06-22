@@ -34,23 +34,40 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    int n; cin >> n;
-    vector<int> a(n), b(n);
-    for(int i = 0; i < n; i++) {
-        cin >> a[i] >> b[i];
+    int n, m; cin >> n >> m;
+    vector<vector<int>> adj(n+1);
+    for(int i = 0; i < m; i++) {
+        int x1, x2; cin >> x1 >> x2;
+        --x1; --x2;
+        adj[x1].pb(x2);
+        adj[x2].pb(x1);
     }
 
-    int dp[1<<n]{};
-    for(int msk = 0; msk < 1<<n; msk++) {
-        int ok = 0;
-        for(int i = 1; i < n; i++) {
-            for(int j = 0; j < i; j++) {
-                if(msk & (1 << i) && msk & (1 << j)) if((a[i] == a[j] || b[i] == b[j]) && !dp[msk ^ (1<<i) ^ (1<<j)]) ok = 1;
+    debug(adj);
+    vector<int> vis(n+1, 0);
+    vector<int> sz(n+1, 0);
+    auto dfs = [&](auto&&dfs, int u, int id) -> void {
+        vis[u] = 1;
+        debug(sz[id], sz);
+        sz[id]++;
+        for(auto &e : adj[u]) {
+            if(!vis[e]) {
+                dfs(dfs, e, id);
             }
-        } //1 = takahashi can remove
-        dp[msk] = ok;
+        }
+    };
+
+    for(int i = 0; i < n; i++) {
+        if(!vis[i]) {
+            debug(i);
+            dfs(dfs, i, i);
+        }
     }
-    cout << (dp[(1<<n)-1] == 0 ? "Aoki" : "Takahashi") << nl; 
+    ll ans = 0;
+    for(int i = 0; i < n; i++) {
+        ans += (ll)sz[i]*(sz[i]-1)/2;
+    }
+    cout << ans-m << nl;
 }
 
 int main() {    

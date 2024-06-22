@@ -34,23 +34,16 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    int n; cin >> n;
-    vector<int> a(n), b(n);
-    for(int i = 0; i < n; i++) {
-        cin >> a[i] >> b[i];
+    int n, q; cin >> n >> q;
+    bitset<1001> b;
+    for(int i = 1; i <= n; i++) {
+        b.set(i);
     }
-
-    int dp[1<<n]{};
-    for(int msk = 0; msk < 1<<n; msk++) {
-        int ok = 0;
-        for(int i = 1; i < n; i++) {
-            for(int j = 0; j < i; j++) {
-                if(msk & (1 << i) && msk & (1 << j)) if((a[i] == a[j] || b[i] == b[j]) && !dp[msk ^ (1<<i) ^ (1<<j)]) ok = 1;
-            }
-        } //1 = takahashi can remove
-        dp[msk] = ok;
+    for(;q--;) {
+        int t; cin >> t;
+        b.flip(t);
     }
-    cout << (dp[(1<<n)-1] == 0 ? "Aoki" : "Takahashi") << nl; 
+    cout << b.count() << nl;
 }
 
 int main() {    

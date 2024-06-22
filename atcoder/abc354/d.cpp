@@ -34,23 +34,54 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    int n; cin >> n;
-    vector<int> a(n), b(n);
-    for(int i = 0; i < n; i++) {
-        cin >> a[i] >> b[i];
+    ll a, b, c, d; cin >> a >> b >> c >> d;
+    a+=(int)1e9; b+=(int)1e9; c+=(int)1e9; d+=(int)1e9;
+    ll dx = c-a, dy = d-b;
+    ll area = 0;
+    int top[8] = {1, 2, 1, 0, 1, 2, 1, 0}, bot[8] = {2, 1, 0, 1, 2, 1, 0, 1};
+    bool chk = 0;
+    if(c-a < 3) {
+        for(int i = a; i<=c; i++){
+            if(i%4 == 0) chk = 1;
+        }
     }
+    int start = a%4, end = c%4;
+    debug(chk);
+    ll ta = 0, ba = 0;
+    if(!chk && c-a < 3) {
+        if(end <= start) end +=4;
+        for(int i = start; i < end; i++) {
+            ta += top[i];
+            ba += bot[i];
+        }
+        dx = 0;
+    }
+    debug(start, end);
+    debug(ta, ba);
 
-    int dp[1<<n]{};
-    for(int msk = 0; msk < 1<<n; msk++) {
-        int ok = 0;
-        for(int i = 1; i < n; i++) {
-            for(int j = 0; j < i; j++) {
-                if(msk & (1 << i) && msk & (1 << j)) if((a[i] == a[j] || b[i] == b[j]) && !dp[msk ^ (1<<i) ^ (1<<j)]) ok = 1;
-            }
-        } //1 = takahashi can remove
-        dp[msk] = ok;
+    for(int i = 0; i < 4-start; i++) {
+        ta += top[3-i];
+        ba += bot[3-i];
     }
-    cout << (dp[(1<<n)-1] == 0 ? "Aoki" : "Takahashi") << nl; 
+    for(int i = 0; i < end; i++) {
+        ta += top[i];
+        ba += bot[i];
+    }
+    dx-=(4-start+end);
+    ta+=dx; ba+=dx;
+    
+    debug(ta, ba);
+    int start2 = abs(b%2), end2 = abs(d%2);
+    if(end2) {
+        area += ba;
+        dy--;
+    }
+    if(start2) {
+        area += ta;
+        dy--;
+    }
+    area += (ll)dy/2*(ta+ba);
+    cout << area << nl;
 }
 
 int main() {    

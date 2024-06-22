@@ -33,24 +33,61 @@ const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
-void seraph() {
-    int n; cin >> n;
-    vector<int> a(n), b(n);
-    for(int i = 0; i < n; i++) {
-        cin >> a[i] >> b[i];
+struct DSU {
+    vector<int> parent, sizes;
+    DSU(int sz) : parent(sz), sizes(sz, 1) {
+        for(int i = 0; i < sz; i++) parent[i] = i;
+    }
+    int find(int v) {
+        return parent[v] == v ? v : (parent[v] = find(parent[v]));
     }
 
-    int dp[1<<n]{};
-    for(int msk = 0; msk < 1<<n; msk++) {
-        int ok = 0;
-        for(int i = 1; i < n; i++) {
-            for(int j = 0; j < i; j++) {
-                if(msk & (1 << i) && msk & (1 << j)) if((a[i] == a[j] || b[i] == b[j]) && !dp[msk ^ (1<<i) ^ (1<<j)]) ok = 1;
-            }
-        } //1 = takahashi can remove
-        dp[msk] = ok;
+    void merge(int u, int v) {
+        u = find(u);
+        v = find(v);
+        if(u != v) {
+            if(sizes[u] < sizes[v]) swap(u, v);
+            parent[v] = u;
+            sizes[u] += sizes[v];
+        }
     }
-    cout << (dp[(1<<n)-1] == 0 ? "Aoki" : "Takahashi") << nl; 
+
+    bool connected(int u, int v) {
+        return find(u) == find(v);
+    }
+};
+
+void seraph() {
+    int n, m; cin >> n >> m;
+    vector<int> w(m), vk(m);
+    vector<vector<int>> edges(m);
+
+    for(int i = 0; i < m; i++) {
+        int k, c; cin >> k >> c;
+        vector<int> vtx(k);
+        for(auto&a: vtx) {
+            cin >> a;
+            --a;
+        }
+        edges[i] = vtx;
+        w[i] = c;
+        vk[i] = k;
+    }
+    vector<int> idx(m);
+    DSU uf(n);
+    iota(all(idx), 0);
+    sort(all(idx), [&](int a, int b) {return w[a] < w[b];});
+    ll ans = 0;
+    for(int a : idx) {
+        for(int i = 1; i < vk[a]; i++) {
+            if(!uf.connected(edges[a][0], edges[a][i])) {
+                uf.merge(edges[a][0], edges[a][i]);
+                ans+=w[a];
+            }
+        }
+    }
+    
+    cout << (uf.sizes[uf.find(0)] == n ? ans : -1) << nl;
 }
 
 int main() {    

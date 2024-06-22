@@ -35,22 +35,25 @@ const int INF = 0x3f3f3f3f;
 
 void seraph() {
     int n; cin >> n;
-    vector<int> a(n), b(n);
-    for(int i = 0; i < n; i++) {
-        cin >> a[i] >> b[i];
+    vector<int> stk;
+    int a; cin >> a;
+    stk.pb(a);
+    --n;
+    for(;n--;) {
+        int q; cin >> q;
+        stk.pb(q);
+        while(stk.size()>1) {
+            if(stk[stk.size()-1] == stk[stk.size()-2]) {
+                int tp = stk.back();
+                stk.pop_back();
+                stk.pop_back();
+                stk.pb(tp+1);
+            } else{
+                break;
+            } 
+        }
     }
-
-    int dp[1<<n]{};
-    for(int msk = 0; msk < 1<<n; msk++) {
-        int ok = 0;
-        for(int i = 1; i < n; i++) {
-            for(int j = 0; j < i; j++) {
-                if(msk & (1 << i) && msk & (1 << j)) if((a[i] == a[j] || b[i] == b[j]) && !dp[msk ^ (1<<i) ^ (1<<j)]) ok = 1;
-            }
-        } //1 = takahashi can remove
-        dp[msk] = ok;
-    }
-    cout << (dp[(1<<n)-1] == 0 ? "Aoki" : "Takahashi") << nl; 
+    cout << stk.size() << nl;
 }
 
 int main() {    
