@@ -1,12 +1,10 @@
 #include <bits/stdc++.h>
-#include <atcoder/modint>
 #define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -28,32 +26,26 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    ll n, m, k; cin >> n >> m >> k;
-    ll l = 0, r = 1e18+5, ans = 0;
-    while(l<=r) {
-        ll mid = (l+r)/2;
-        ll cnt = mid/n + mid/m - mid/(lcm(n, m))*2;
-        debug(cnt);
-        if(cnt < k) {
-            l = mid + 1;
-        } else {
-            r = mid - 1, ans = mid;
-        }
-    }
-    cout << ans << nl;
+    int n, m, k; cin >> n >> m >> k;
+    ll mx = 0;
+    vector<ll> vi(n);
+    iota(all(vi), 1);
+    reverse(all(vi));
+    reverse(vi.begin()+n-m, vi.end());
+    for(auto&a: vi) cout << a << " ";
+    cout << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) seraph();
 }
 

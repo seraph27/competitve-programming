@@ -34,19 +34,13 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    ll n, m, k; cin >> n >> m >> k;
-    ll l = 0, r = 1e18+5, ans = 0;
-    while(l<=r) {
-        ll mid = (l+r)/2;
-        ll cnt = mid/n + mid/m - mid/(lcm(n, m))*2;
-        debug(cnt);
-        if(cnt < k) {
-            l = mid + 1;
-        } else {
-            r = mid - 1, ans = mid;
-        }
+    string s; cin >> s;
+    vector<pair<char, int>> vi(s.length());
+    for(int i = 0; i < s.length(); i++) {
+        vi[i] = {s[i], i+1};
     }
-    cout << ans << nl;
+    sort(all(vi));
+    cout << (vi[0].first == vi[1].first ? vi[s.length()-1].second : vi[0].second) << nl;
 }
 
 int main() {    

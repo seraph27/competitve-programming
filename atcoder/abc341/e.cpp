@@ -33,20 +33,44 @@ const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
+struct fenwick {
+    vector<ll> ar;
+    ll sz;
+    fenwick(ll n) : ar(n+1), sz(n+1){};
+    
+    void add(ll idx, ll x) {
+        for(++idx; idx < sz; idx += idx & -idx) ar[idx]+=x;
+    }
+    ll query(ll idx) {
+        ll res = 0;
+        for(++idx; idx > 0; idx -= idx & -idx) res += ar[idx];
+        return res;
+    }
+    ll query(ll l, ll r) {
+        return query(r) - query(l-1);
+    }
+
+};
+
 void seraph() {
-    ll n, m, k; cin >> n >> m >> k;
-    ll l = 0, r = 1e18+5, ans = 0;
-    while(l<=r) {
-        ll mid = (l+r)/2;
-        ll cnt = mid/n + mid/m - mid/(lcm(n, m))*2;
-        debug(cnt);
-        if(cnt < k) {
-            l = mid + 1;
-        } else {
-            r = mid - 1, ans = mid;
+    int n, q; cin >> n >> q;
+    string s; cin >> s;
+    fenwick fw(n);
+    for(int i = 0; i < n-1; i++) {
+        if(s[i] == s[i+1]) fw.add(i, 1);
+    }
+    for(;q--;) {
+        ll type, l, r; cin >> type >> l >> r;
+        --l; --r;
+        for(int i = 0; i < n; i++) debug(fw.query(i, i));
+        if(type == 1) {
+            if(l>0) fw.add(l-1, fw.query(l-1, l-1) ? -1 : 1);
+            fw.add(r, fw.query(r, r) ? -1 : 1);
+        } else{
+            if(fw.query(l, r-1)) cout << "No" << nl;
+            else cout << "Yes" << nl;
         }
     }
-    cout << ans << nl;
 }
 
 int main() {    

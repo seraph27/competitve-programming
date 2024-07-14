@@ -34,19 +34,34 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    ll n, m, k; cin >> n >> m >> k;
-    ll l = 0, r = 1e18+5, ans = 0;
-    while(l<=r) {
-        ll mid = (l+r)/2;
-        ll cnt = mid/n + mid/m - mid/(lcm(n, m))*2;
-        debug(cnt);
-        if(cnt < k) {
-            l = mid + 1;
-        } else {
-            r = mid - 1, ans = mid;
-        }
+    int h, w, n; cin >> h >> w >> n;
+    vector<string> grid(h);
+    for(int o = 0; o < h; o++) {
+        grid[o] = string(w, '.');
     }
-    cout << ans << nl;
+    debug(grid);
+    const pii dirs[4] = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+    int dir = 0;
+    int i = 0, j = 0;
+    for(;n--;) {
+        if(grid[i][j] == '.') {
+            dir++;
+            if(dir>=4) dir-=4;
+        } else{
+            dir--;
+            if(dir<0) dir+=4;
+        }
+        int ny = i + dirs[dir].second, nx = j + dirs[dir].first;
+        if(nx<0) nx+=w;
+        if(ny<0) ny+=h;
+        if(nx>=w) nx-=w;
+        if(ny>=h) ny-=h;
+        grid[i][j] = (grid[i][j] == '.' ? '#' : '.');
+        i = ny, j = nx;
+    }
+    for(int o = 0; o < h; o++) {
+        cout <<  grid[o]<< nl;
+    }
 }
 
 int main() {    

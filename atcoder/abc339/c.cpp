@@ -34,19 +34,16 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    ll n, m, k; cin >> n >> m >> k;
-    ll l = 0, r = 1e18+5, ans = 0;
-    while(l<=r) {
-        ll mid = (l+r)/2;
-        ll cnt = mid/n + mid/m - mid/(lcm(n, m))*2;
-        debug(cnt);
-        if(cnt < k) {
-            l = mid + 1;
-        } else {
-            r = mid - 1, ans = mid;
-        }
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    ll mn = 4e18;
+    ll sum = 0;
+    for(int i = 0; i < n; i++) {
+        sum += vi[i];
+        ckmin(mn, sum);
     }
-    cout << ans << nl;
+    cout << (mn < 0 ? abs(mn)+sum : sum) << nl;
 }
 
 int main() {    

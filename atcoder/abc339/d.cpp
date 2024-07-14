@@ -34,19 +34,50 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    ll n, m, k; cin >> n >> m >> k;
-    ll l = 0, r = 1e18+5, ans = 0;
-    while(l<=r) {
-        ll mid = (l+r)/2;
-        ll cnt = mid/n + mid/m - mid/(lcm(n, m))*2;
-        debug(cnt);
-        if(cnt < k) {
-            l = mid + 1;
-        } else {
-            r = mid - 1, ans = mid;
+    int n; cin >> n;
+    vector<string> g(n);
+    for(auto&a: g) cin >> a;
+    const pii dirs[4]  = {{0, -1}, {0, 1}, {1, 0}, {-1, 0}};
+
+    int P1 = -1, P2 = -1; 
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            if(g[i][j] == 'P') {
+                if(P1<0) P1 = i*n+j;
+                else P2 = i*n+j;
+            }
         }
     }
-    cout << ans << nl;
+    queue<pii> bfs;
+    vector<vector<int>> dist(n*n, vector<int>(n*n, INF));
+    dist[P1][P2] = 0;
+    bfs.push({P1, P2});
+    while(!bfs.empty()){
+        auto [p1, p2] = bfs.front(); bfs.pop();
+        auto p1x = p1/n, p1y = p1%n, p2x = p2/n, p2y = p2%n;
+        if(p1 == p2) {
+            cout << dist[p1][p2] << nl;
+            return;
+        }
+
+        for(auto &[dx, dy] : dirs) {
+            auto chk = [&](auto x, auto y) -> ar<int, 2> {
+                int nx = x + dx, ny = y + dy;
+                if(nx < 0 || ny < 0 || nx >= n || ny >= n || g[nx][ny] == '#') return {x, y};
+                return{nx, ny};
+            };
+            auto tst1 = chk(p1x, p1y);
+            auto tst2 = chk(p2x, p2y);
+            int np1 = tst1[0]*n+tst1[1], np2 = tst2[0]*n+tst2[1];
+            if(ckmin(dist[np1][np2], dist[p1][p2]+1)){
+                bfs.push({np1, np2});
+            }
+        }
+    }
+    cout << -1 << nl;
+
+
+
 }
 
 int main() {    

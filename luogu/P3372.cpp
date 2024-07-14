@@ -1,12 +1,10 @@
 #include <bits/stdc++.h>
-#include <atcoder/modint>
 #define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -28,32 +26,74 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
+const ll MX = 1e5+5;
+ll n, a[MX], t[MX*3], mk[MX*3];
+
+void build(ll l, ll r, ll p) {
+    if(l == r) {
+        t[p] = a[l];
+        return;
+    }
+    ll m = l + ((r-l)>>1);
+    build(l, m, p<<1), build(m+1, r, (p<<1)|1);
+    t[p] = t[p<<1] + t[(p<<1)|1];
+}
+
+void push(ll tl, ll tr, ll p, ll m) {
+    if(mk[p]) {
+        t[p<<1] += mk[p]*(m-tl+1), t[(p<<1)|1] += mk[p]*(tr-m);
+        mk[p<<1] += mk[p], mk[(p<<1)|1] += mk[p];
+    }
+    mk[p] = 0;
+}
+
+void update(ll l, ll r, ll tl, ll tr, ll p, ll c) {
+    if(l<=tl && tr<=r) {
+        t[p] += (tr-tl+1)*c, mk[p]+=c;
+        return;
+    }
+    ll m = tl + ((tr-tl)>>1);
+    push(tl, tr, p, m);
+    if(l<=m) update(l, r, tl, m, p<<1, c);
+    if(r>m) update(l, r, m+1, tr, (p<<1)|1, c);
+    t[p] = t[p<<1] + t[(p<<1)|1];
+}
+
+ll getsum(ll l, ll r, ll tl, ll tr, ll p) {
+    if(l<=tl && tr<=r) return t[p];
+    ll sum = 0;
+    ll m = tl + ((tr-tl)>>1);
+    push(tl, tr, p, m);
+    if(l<=m) sum+=getsum(l, r, tl, m, p<<1);
+    if(r>m) sum+=getsum(l, r, m+1, tr, (p<<1)|1);
+    return sum;
+}
+
 void seraph() {
-    ll n, m, k; cin >> n >> m >> k;
-    ll l = 0, r = 1e18+5, ans = 0;
-    while(l<=r) {
-        ll mid = (l+r)/2;
-        ll cnt = mid/n + mid/m - mid/(lcm(n, m))*2;
-        debug(cnt);
-        if(cnt < k) {
-            l = mid + 1;
-        } else {
-            r = mid - 1, ans = mid;
+    ll q;
+    cin >> n >> q;
+    for(int i = 1; i <= n; i++) cin >> a[i];
+    build(1, n, 1);
+    for(;q--;) {
+        int tp, x, y; cin >> tp >> x >> y;
+        if(tp==1) {
+            int k; cin >> k;
+            update(x, y, 1, n, 1, k);
+        } else{
+            cout << getsum(x, y, 1, n, 1) << nl;
         }
     }
-    cout << ans << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
-    int t = 1;
+    int o = 1;
     //cin >> t;
-    while (t--) seraph();
+    while (o--) seraph();
 }
 

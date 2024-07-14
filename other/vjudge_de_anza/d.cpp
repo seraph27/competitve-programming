@@ -34,19 +34,13 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    ll n, m, k; cin >> n >> m >> k;
-    ll l = 0, r = 1e18+5, ans = 0;
-    while(l<=r) {
-        ll mid = (l+r)/2;
-        ll cnt = mid/n + mid/m - mid/(lcm(n, m))*2;
-        debug(cnt);
-        if(cnt < k) {
-            l = mid + 1;
-        } else {
-            r = mid - 1, ans = mid;
-        }
-    }
-    cout << ans << nl;
+    ll k, l, m, n, d; cin >> k >> l >> m >> n >> d;
+    unordered_set<int> s;
+    for(int i = k; i<=d; i+=k) s.insert(i);
+    for(int i = l; i<=d; i+=l) s.insert(i);
+    for(int i = m; i<=d; i+=m) s.insert(i);
+    for(int i = n; i<=d; i+=n) s.insert(i);
+    cout << s.size() << nl;
 }
 
 int main() {    
