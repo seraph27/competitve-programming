@@ -31,23 +31,37 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    int n, x; cin >> n >> x;
-    vector<int> cards(n);
-    for(auto&a: cards) cin >> a;
-    int ans = 1;
-    set<int> curr = {1};
-    for(int i = 0; i < n; i++) {
-        if(x%cards[i]!=0) continue;
-        auto nxt = curr;
-        for(auto &a: curr) {
-            if(x%(cards[i]*a) == 0) nxt.insert(cards[i]*a);
-        }
-        swap(curr, nxt);
-        if(*prev(curr.end())==x) {
-            ans++;
-            curr = {1, cards[i]};
-        }
+    int n; cin >> n;
+    vector<ll> vi(n);
+    for(auto&a: vi) cin >> a;
+    vector<vector<ll>> adj(n);
+    for(int i = 0; i < n-1; i++) {
+        int a, b; cin >> a >> b;
+        --a; --b;
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
+
+    int cnt = 0;
+    vector<vector<long long>> dp(n, vector<long long>(2, 0));
+    auto dfs = [&](auto&&dfs, int u, int p, int dep) -> pii {
+        dp[u][0] = 0;
+        dp[u][1] = vi[u];
+        for(auto&e: adj[u]) {
+            if(e!=p) {
+                auto [one, two] = dfs(dfs, e, u, dep+1);
+                ckmax(dp[u][0], dp[u][0]+dp[e][1]);
+                dp[u][1]+=dp[e][0];
+            }
+        }
+    };
+    
+    debug(dp);
+    ll tot = accumulate(all(vi), 0LL);
+    ll ans = tot;
+        dfs(dfs, 0, -1, 1);
+        ans+=tot-max(dp[n-1][0], dp[n-1][1]);
+
     cout << ans << nl;
 }
 

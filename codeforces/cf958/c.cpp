@@ -31,24 +31,18 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    int n, x; cin >> n >> x;
-    vector<int> cards(n);
-    for(auto&a: cards) cin >> a;
-    int ans = 1;
-    set<int> curr = {1};
-    for(int i = 0; i < n; i++) {
-        if(x%cards[i]!=0) continue;
-        auto nxt = curr;
-        for(auto &a: curr) {
-            if(x%(cards[i]*a) == 0) nxt.insert(cards[i]*a);
-        }
-        swap(curr, nxt);
-        if(*prev(curr.end())==x) {
-            ans++;
-            curr = {1, cards[i]};
+    ll n; cin >> n;
+    vector<ll> ans;
+    ans.pb(n);
+    for(int i = 0; i < 60; i++) {
+        if((n>>i) & 1LL) {
+            if((n^(1LL<<i)) != 0)ans.pb(n ^ (1LL<<i));
         }
     }
-    cout << ans << nl;
+    sort(all(ans));
+    cout << ans.size() << nl;
+    for(ll x : ans) cout << x << " ";
+    cout << nl;
 }
 
 int main() {    
