@@ -32,28 +32,23 @@ const int INF = 0x3f3f3f3f;
 
 void seraph() {
     int n; cin >> n;
-    string s; cin >> s;
-    int SZ = s.size();
-    ll ans = 1e18;
-    for(int sp = 0; sp < SZ-1; sp++){
-        vector<ll> each;
-        for(int i = 0; i < SZ; i++){
-            if(sp==i) each.emplace_back(((s[i]-'0')*10) + s[i+1]-'0'), i++;
-            else each.emplace_back(s[i]-'0');
-        }
-        vector<ll> dp(SZ-1, 1e18);
-        for(int i = 0; i < SZ-1; i++) {
-            ll mul = 1;
-            for(int j = i; j < SZ-1; j++) {
-                mul*=each[j];
-                ckmin(mul, (ll)1e15);
-                ckmin(dp[j], (i ? dp[i-1] : 0) + mul); //the reason this works, is because u try to improve the score, so in each iteration of i, you can decide to add
-                debug(dp, i, j, sp);
-            }
-        }
-        ckmin(ans, dp.back());
+    vector<int> vi(n);
+    vector<double> lg(n);
+    for(int i = 0; i < n; i++) cin >> vi[i], lg[i]=log(log((double)vi[i])); 
+    ll ans = 0;
+
+    for(int i = 0; i < n-1; i++) if(vi[i+1]<vi[i] && vi[i+1]==1) {
+        cout<<-1<<nl;
+        return;
     }
-    cout << ans << nl;
+    for(int i = 0; i < n-1; i++) {
+        if(lg[i]-lg[i+1]>1e-9) {
+            int diff = ceil((lg[i]-lg[i+1]-1e-9)/log(2));
+            ans+=diff;
+            lg[i+1]+=diff*log(2);
+        }
+    }
+    cout<<ans<<nl;
 }
 
 int main() {    

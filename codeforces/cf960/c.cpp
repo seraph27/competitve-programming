@@ -32,28 +32,53 @@ const int INF = 0x3f3f3f3f;
 
 void seraph() {
     int n; cin >> n;
-    string s; cin >> s;
-    int SZ = s.size();
-    ll ans = 1e18;
-    for(int sp = 0; sp < SZ-1; sp++){
-        vector<ll> each;
-        for(int i = 0; i < SZ; i++){
-            if(sp==i) each.emplace_back(((s[i]-'0')*10) + s[i+1]-'0'), i++;
-            else each.emplace_back(s[i]-'0');
+    vector<ll> vi(n);
+    for(auto&a : vi) cin >> a;
+    ll sum = reduce(all(vi));
+    map<ll, ll> mp;
+    ll mx = 0;
+    vector<ll> seconditer(n, 0);
+    for(int i = 0; i < n; i++) {
+        mp[vi[i]]++;
+        if(mp[vi[i]]>=2) {
+            ckmax(mx, vi[i]);
         }
-        vector<ll> dp(SZ-1, 1e18);
-        for(int i = 0; i < SZ-1; i++) {
-            ll mul = 1;
-            for(int j = i; j < SZ-1; j++) {
-                mul*=each[j];
-                ckmin(mul, (ll)1e15);
-                ckmin(dp[j], (i ? dp[i-1] : 0) + mul); //the reason this works, is because u try to improve the score, so in each iteration of i, you can decide to add
-                debug(dp, i, j, sp);
-            }
-        }
-        ckmin(ans, dp.back());
+        seconditer[i] = mx;
     }
-    cout << ans << nl;
+    ll sum2 = reduce(all(seconditer));
+    
+
+    debug(seconditer, sum2);
+    vector<ll> third(n, 0);
+    map<ll, ll> mp2;
+    ll mx2 = 0;
+    for(int i = 0; i < n; i++) {
+        mp2[seconditer[i]]++;
+        if(mp2[seconditer[i]]>=2) {
+            ckmax(mx2, seconditer[i]);
+        }
+        third[i] = mx2;
+    }
+    debug(third);
+    ll ans = 0;
+    ans+=sum;
+    ans+=sum2;
+    ll sum3 = reduce(all(third));
+    ans+=sum3;
+    int first = 0;
+    for(int i = 0; i < n; i++) {
+        if(third[i]>0) {
+            first = i;
+            break;
+        }
+    }
+    debug(sum3);
+    for(int i = 0; i < n-first-1; i++) {
+        sum3-=third[n-i-1];
+        ans+=sum3;
+    } 
+    debug(sum2, sum3);
+    cout<<ans<<nl;
 }
 
 int main() {    

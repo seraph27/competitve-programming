@@ -32,35 +32,30 @@ const int INF = 0x3f3f3f3f;
 
 void seraph() {
     int n; cin >> n;
-    string s; cin >> s;
-    int SZ = s.size();
-    ll ans = 1e18;
-    for(int sp = 0; sp < SZ-1; sp++){
-        vector<ll> each;
-        for(int i = 0; i < SZ; i++){
-            if(sp==i) each.emplace_back(((s[i]-'0')*10) + s[i+1]-'0'), i++;
-            else each.emplace_back(s[i]-'0');
+    if(n%2) return;
+    for(int i = 0; i < 1<<n; i++) {
+        string build = "";
+        for(int bit = n-1; bit>=0; bit--) {
+            if((i>>bit)&1) build.pb(')');
+            else build.pb('(');
         }
-        vector<ll> dp(SZ-1, 1e18);
-        for(int i = 0; i < SZ-1; i++) {
-            ll mul = 1;
-            for(int j = i; j < SZ-1; j++) {
-                mul*=each[j];
-                ckmin(mul, (ll)1e15);
-                ckmin(dp[j], (i ? dp[i-1] : 0) + mul); //the reason this works, is because u try to improve the score, so in each iteration of i, you can decide to add
-                debug(dp, i, j, sp);
+        int cnt = 0, bad = 0;
+        for(int j = 0; j < n; j++) {
+            cnt+=build[j]=='('? 1 : -1;
+            if(cnt<0) {
+                bad = 1;
+                break;
             }
         }
-        ckmin(ans, dp.back());
+        if(!bad&&cnt==0) cout << build << nl;
     }
-    cout << ans << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) seraph();
 }
 

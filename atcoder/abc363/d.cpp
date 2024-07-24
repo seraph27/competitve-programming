@@ -1,10 +1,12 @@
 #include <bits/stdc++.h>
+#include <atcoder/modint>
 #define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
+using namespace atcoder;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -26,41 +28,47 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
+using mint = modint998244353;
 const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    int n; cin >> n;
-    string s; cin >> s;
-    int SZ = s.size();
-    ll ans = 1e18;
-    for(int sp = 0; sp < SZ-1; sp++){
-        vector<ll> each;
-        for(int i = 0; i < SZ; i++){
-            if(sp==i) each.emplace_back(((s[i]-'0')*10) + s[i+1]-'0'), i++;
-            else each.emplace_back(s[i]-'0');
-        }
-        vector<ll> dp(SZ-1, 1e18);
-        for(int i = 0; i < SZ-1; i++) {
-            ll mul = 1;
-            for(int j = i; j < SZ-1; j++) {
-                mul*=each[j];
-                ckmin(mul, (ll)1e15);
-                ckmin(dp[j], (i ? dp[i-1] : 0) + mul); //the reason this works, is because u try to improve the score, so in each iteration of i, you can decide to add
-                debug(dp, i, j, sp);
-            }
-        }
-        ckmin(ans, dp.back());
+    //1 2 3 4 5 6 7 8 9 
+    //11 22 33 44 55 66 77 88 99
+    //101 111 121 131... 191
+    //202 212 222 .... 
+    //9 * 10 each = 90
+    //1001 1111 1221... 1991
+    //9*10 each 90
+    //10001 10101 10201 ...10901
+    //11011 11111 11211....
+    //19091 19191... 
+    //9*10*10 --> 9 + 9 + 90 + 90 + 900 + 900 + 9000...digit determines the row
+    ll n; cin >> n;
+    if(n==1) {cout<<0<<nl; return;}
+    n-=1;
+    string ans = "";
+    int base = 1;
+    for(ll start = 9, flag = 0; ; start*=(flag?10:1), flag^=1) {
+        if(n-start>0) n-=start;
+        else break;
+        base++;
     }
-    cout << ans << nl;
+    string ss = to_string(n);
+    int mid = (base+1)/2;
+    ans = to_string(stoll('1'+string(mid-1, '0'))+n-1);
+    for(int i = (base+1)/2; i < base; i++) {
+        ans.pb(ans[base-i-1]);   
+    }
+    cout<<ans<<nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) seraph();
 }
 

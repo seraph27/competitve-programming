@@ -32,27 +32,27 @@ const int INF = 0x3f3f3f3f;
 
 void seraph() {
     int n; cin >> n;
-    string s; cin >> s;
-    int SZ = s.size();
-    ll ans = 1e18;
-    for(int sp = 0; sp < SZ-1; sp++){
-        vector<ll> each;
-        for(int i = 0; i < SZ; i++){
-            if(sp==i) each.emplace_back(((s[i]-'0')*10) + s[i+1]-'0'), i++;
-            else each.emplace_back(s[i]-'0');
-        }
-        vector<ll> dp(SZ-1, 1e18);
-        for(int i = 0; i < SZ-1; i++) {
-            ll mul = 1;
-            for(int j = i; j < SZ-1; j++) {
-                mul*=each[j];
-                ckmin(mul, (ll)1e15);
-                ckmin(dp[j], (i ? dp[i-1] : 0) + mul); //the reason this works, is because u try to improve the score, so in each iteration of i, you can decide to add
-                debug(dp, i, j, sp);
+    vector<vector<int>> adj(n);
+    for(int i = 0; i < n-1; i++) {
+        int a, b; cin >> a >> b;
+        a--;b--;
+        adj[a].pb(b);
+        adj[b].pb(a);
+    }
+    pii dia = {-1, -1};
+    auto dfs = [&](auto&&s, int u, int p, int dep) -> void {
+        ckmax(dia, {dep, u});
+        for(auto&e: adj[u]) {
+            if(e!=p) {
+                s(s, e, u, dep+1);
             }
         }
-        ckmin(ans, dp.back());
-    }
+    };
+    dfs(dfs, 0, -1, 1);
+    auto end = dia.second;
+    dia = {-1, -1};
+    dfs(dfs, end, -1, 1);
+    auto ans = dia.first;
     cout << ans << nl;
 }
 
@@ -60,7 +60,6 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
     while (t--) seraph();
 }
 

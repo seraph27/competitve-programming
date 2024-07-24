@@ -31,29 +31,24 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void seraph() {
-    int n; cin >> n;
-    string s; cin >> s;
-    int SZ = s.size();
-    ll ans = 1e18;
-    for(int sp = 0; sp < SZ-1; sp++){
-        vector<ll> each;
-        for(int i = 0; i < SZ; i++){
-            if(sp==i) each.emplace_back(((s[i]-'0')*10) + s[i+1]-'0'), i++;
-            else each.emplace_back(s[i]-'0');
-        }
-        vector<ll> dp(SZ-1, 1e18);
-        for(int i = 0; i < SZ-1; i++) {
-            ll mul = 1;
-            for(int j = i; j < SZ-1; j++) {
-                mul*=each[j];
-                ckmin(mul, (ll)1e15);
-                ckmin(dp[j], (i ? dp[i-1] : 0) + mul); //the reason this works, is because u try to improve the score, so in each iteration of i, you can decide to add
-                debug(dp, i, j, sp);
-            }
-        }
-        ckmin(ans, dp.back());
+    ll n, m; cin >> n >> m;
+    vector<pair<ll, ll>> vii(n);
+    for(int i = 0; i < n; i++) cin >>vii[i].first;
+    for(int i = 0; i < n; i++) cin >>vii[i].second;
+    sort(all(vii));
+    vii.pb({4e18, 0LL});
+    vector<ll> vi(n+1), cnt(n+1);
+    for(int i = 0; i < n+1; i++) vi[i]=vii[i].first, cnt[i]=vii[i].second;
+    
+    ll ans = 0;
+    for(int i = 0; i < n; i++) {
+        ll x = min(m/vi[i], cnt[i]);
+        auto cntnxt = vi[i+1]-vi[i]<=1 ? cnt[i+1] : 0; 
+        ll y = min((m-(x*vi[i])) / (vi[i+1]), cntnxt);  //after buying as many x, how many more can you buy from k+1? 
+        ll buf = min(x, cntnxt-y); //the amount you can shift is bounded by (x and how many y you can shift over to gain +1)
+        ckmax(ans, min(vi[i]*x+vi[i+1]*y+buf, m));
     }
-    cout << ans << nl;
+    cout<<ans<<nl;
 }
 
 int main() {    
@@ -63,4 +58,3 @@ int main() {
     cin >> t;
     while (t--) seraph();
 }
-

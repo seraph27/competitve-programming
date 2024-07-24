@@ -26,34 +26,53 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
-void seraph() {
-    int n; cin >> n;
-    string s; cin >> s;
-    int SZ = s.size();
-    ll ans = 1e18;
-    for(int sp = 0; sp < SZ-1; sp++){
-        vector<ll> each;
-        for(int i = 0; i < SZ; i++){
-            if(sp==i) each.emplace_back(((s[i]-'0')*10) + s[i+1]-'0'), i++;
-            else each.emplace_back(s[i]-'0');
-        }
-        vector<ll> dp(SZ-1, 1e18);
-        for(int i = 0; i < SZ-1; i++) {
-            ll mul = 1;
-            for(int j = i; j < SZ-1; j++) {
-                mul*=each[j];
-                ckmin(mul, (ll)1e15);
-                ckmin(dp[j], (i ? dp[i-1] : 0) + mul); //the reason this works, is because u try to improve the score, so in each iteration of i, you can decide to add
-                debug(dp, i, j, sp);
-            }
-        }
-        ckmin(ans, dp.back());
+struct dsu{
+    vector<int> p, sz;
+    dsu(int n) : sz(n, 1), p(n) {
+        for(int i = 0; i < n; i++) p[i]=i;
     }
-    cout << ans << nl;
+    int find(int v) {
+        return p[v]==v ? v : (p[v]=find(p[v]));
+    }
+    void merge(int u, int v){
+        u = find(u), v = find(v);
+        if(u!=v) {
+            if(sz[u]<sz[v]) swap(u, v);
+            p[v]=u;
+            sz[u]+=sz[v];
+        }
+    } 
+    bool same(int u, int v) {
+        return find(u)==find(v);
+    }
+};
+
+void seraph() {
+    int n; cin >>n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    dsu uf(n);
+    vector<pii> ans;
+    for(int i = n-1; i>=1; i--){
+        vector<int> has(n, -1);
+        for(int j = 0; j < n; j++) {
+            if(uf.find(j)!=j) continue;
+            int now = has[vi[j]%i];
+            if(now!=-1) {
+                ans.pb({now+1, j+1});
+                uf.merge(now, j);
+                break;
+            }
+            has[vi[j]%i]=j;
+        }
+    }
+    cout<<"Yes"<<nl;
+    reverse(all(ans));
+    for(auto&[fi, se]:ans) cout<<fi <<" "<<se <<nl;
+
 }
 
 int main() {    

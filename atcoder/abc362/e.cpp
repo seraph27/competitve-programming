@@ -29,38 +29,42 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
+#include <atcoder/modint>
+using namespace atcoder;
+using mint = modint998244353;
 
-void seraph() {
+mint lol[82][82][82]; 
+
+void retard() {
     int n; cin >> n;
-    string s; cin >> s;
-    int SZ = s.size();
-    ll ans = 1e18;
-    for(int sp = 0; sp < SZ-1; sp++){
-        vector<ll> each;
-        for(int i = 0; i < SZ; i++){
-            if(sp==i) each.emplace_back(((s[i]-'0')*10) + s[i+1]-'0'), i++;
-            else each.emplace_back(s[i]-'0');
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    vector<mint> ans(n+1, 0);
+    ans[1] = n;
+    for(int i = 0; i < n; i++) { //j, i
+        for(int j = 0; j < i; j++) {
+            lol[j][i][2]++;
         }
-        vector<ll> dp(SZ-1, 1e18);
-        for(int i = 0; i < SZ-1; i++) {
-            ll mul = 1;
-            for(int j = i; j < SZ-1; j++) {
-                mul*=each[j];
-                ckmin(mul, (ll)1e15);
-                ckmin(dp[j], (i ? dp[i-1] : 0) + mul); //the reason this works, is because u try to improve the score, so in each iteration of i, you can decide to add
-                debug(dp, i, j, sp);
+        for(int j = 0; j < i; j++) { //k j i
+            for(int k = 0; k < j; k++) {
+                for(int l = 2; l <= n; l++) {
+                    if(vi[k]-vi[j]==vi[j]-vi[i]) lol[j][i][l]+=lol[k][j][l-1];
+                }
             }
         }
-        ckmin(ans, dp.back());
+        for(int j = 0; j < i; j++) {
+            for(int l = 2; l<=n; l++) {
+                ans[l]+=lol[j][i][l];
+            }
+        }
     }
-    cout << ans << nl;
+    for(int i = 1; i <=n; i++) cout<<ans[i].val()<<" ";
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
-    while (t--) seraph();
+    while (t--) retard();
 }
 
