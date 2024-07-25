@@ -54,8 +54,9 @@ void seraph() {
         }
         ll buffer = min(cnt[i], cnt[i+1]);
         auto left = (m-tot)/vi[i+1];
-        buffer=min({buffer, cnt[i+1]-left});
+        buffer=min({buffer, cnt[i+1]-left, m/vi[i]});
         tot+=vi[i+1]*min(cnt[i+1], left);
+        debug(buffer);
         
         if(buffer<0) buffer = 0;
         ckmax(ans, min(tot+buffer, m));

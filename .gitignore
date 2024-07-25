@@ -2,10 +2,11 @@
 *.prob
 *.json
 *.sh
+*.sh~
 codeforces/.vscode/settings.json
 /atcoder/.vscode
 atcoder/.vscode/c_cpp_properties.json
 
 in
-int
-out
+out1
+out2
