@@ -1,18 +1,16 @@
 #include <bits/stdc++.h>
-#include <atcoder/modint>
 #define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 
-#ifdef MISAKA
+#ifdef SERAPH
 struct _debug {
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
@@ -28,18 +26,35 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
-void atcoder() {
+void seraph() {
+    ll v1 = 0, v2 = 0, v3 = 0;
+    ll n, x; cin >> n >> x;
+    ll ans = 0;
+    for(ll a = 1; a <= n; a++) {
+        for(ll b = a; b<=n; b++) {
+            for(ll c = b; c<=n; c++) {
+                if(a*b+b*c+c*a>n) break;
+                if(a+b+c>x) break;
+                ans++;
+                if(a==b && b==c) v1++;
+                else if(a==b || b==c || c==a) v2++;
+                else v3++;
+            }
+            if(a*b>n) break;
+        }
+    }
+    cout<<v3*6+v2*3+v1<<nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
-    while (t--) atcoder();
+    cin >> t;
+    while (t--) seraph();
 }
+

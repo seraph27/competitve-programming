@@ -10,7 +10,7 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 
-#ifdef SERAPH
+#ifdef MISAKA
 struct _debug {
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
@@ -30,7 +30,7 @@ const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
-void seraph() {
+void shiina_mashiro() {
 }
 
 int main() {    
@@ -38,5 +38,5 @@ int main() {
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
     cin >> t;
-    while (t--) seraph();
+    while (t--) shiina_mashiro();
 }

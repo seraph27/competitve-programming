@@ -12,7 +12,7 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 
-#ifdef MISAKA
+#ifdef SERAPH
 struct _debug {
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
@@ -33,7 +33,21 @@ const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
-void atcoder() {
+void seraph() {
+    string s; cin >> s;
+    vector<int> cnt(26);
+    for(int i = 0; i < s.length(); i++) {
+        if((s[i]=='A' && cnt[1]) || s[i]=='A' && cnt[2]) {
+            cout<<"No"<<nl;
+            return;
+        }
+        if(s[i]=='B' && cnt[2]) {
+            cout<<"No"<<nl;
+            return;
+        }
+        cnt[s[i]-'A']++;
+    }
+    cout<<"Yes"<<nl;
 }
 
 int main() {    
@@ -41,5 +55,6 @@ int main() {
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
     //cin >> t;
-    while (t--) atcoder();
+    while (t--) seraph();
 }
+

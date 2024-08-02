@@ -1,18 +1,16 @@
 #include <bits/stdc++.h>
-#include <atcoder/modint>
 #define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 
-#ifdef MISAKA
+#ifdef SERAPH
 struct _debug {
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
@@ -28,18 +26,56 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
-void atcoder() {
+void seraph() {
+    string s; cin >> s;
+    vector<int> cnt(26), has(26), cost(26);
+    for(int i = 0; i < s.length(); i++) {
+        cnt[s[i]-'A']++;
+    }
+    int cb = cnt['B'-'A'], cs = cnt['S'-'A'], cc = cnt['C'-'A'];
+    int nb, ns, nc; cin >> nb >> ns >> nc;
+    has['B'-'A'] = nb, has['S'-'A'] = ns, has['C'-'A'] = nc;
+    int pb, ps, pc; cin >> pb >> ps >> pc;
+    cost['B'-'A'] = pb, cost['S'-'A'] = ps, cost['C'-'A'] = pc;
+    ll r; cin >> r;
+    ll one = cb*pb+cs*ps+cc*pc;
+    
+    ll ans = 0;
+    while(true) {
+        for(int i = 0; i < s.length(); i++) {
+            if(has[s[i]-'A']) has[s[i]-'A']--;
+            else {
+                if(r-cost[s[i]-'A']>=0) {
+                    r-=cost[s[i]-'A'];
+                } else{
+                    cout<<ans<<nl;
+                    return;
+                }
+            }
+        }
+        ans++;
+        int ok = 0;
+        for(int i = 0; i < cnt.size(); i++) {
+            if(cnt[i] && has[i]) {
+                ok = 1;
+                break;
+            }
+        }
+        debug(has);
+        if(!ok) break;
+    }
+    if(r) ans+=r/one;
+    cout<<ans<<nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
-    while (t--) atcoder();
+    while (t--) seraph();
 }
+

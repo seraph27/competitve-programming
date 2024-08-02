@@ -12,7 +12,7 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 
-#ifdef MISAKA
+#ifdef SERAPH
 struct _debug {
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
@@ -33,7 +33,26 @@ const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
-void atcoder() {
+void seraph() {
+    ll n, x, y; cin >> n >> x >> y;
+    vector<ll> sweet(n), salty(n);
+    for(auto&a: sweet) cin >> a;
+    for(auto&a: salty) cin >> a;
+    sort(all(sweet));
+    sort(all(salty));
+    ll ans = 4e18;
+    int cnt1 = 0, cnt2 = 0;
+    for(int i = n-1; ~i; i--) {
+        if(y>=0) {
+            cnt2++;
+            y-=salty[i];
+        }
+        if(x>=0) {
+            cnt1++;
+            x-=sweet[i];
+        }
+    }
+    cout<<min(cnt1, cnt2)<<nl;
 }
 
 int main() {    
@@ -41,5 +60,6 @@ int main() {
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
     //cin >> t;
-    while (t--) atcoder();
+    while (t--) seraph();
 }
+

@@ -1,16 +1,15 @@
 template<typename T> struct fenwick {
     int n; vector<T> bit;
     fenwick(int a) : n(a), bit(a+1) {}
-    T sum(int pos) {
+    T query(int pos) {
         T s = 0;
-        for (; pos; s += bit[pos], pos -= pos&-pos);
+        for (++pos; pos; s += bit[pos], pos -= pos&-pos);
         return s;
     }
     T query(int l, int r) {
-        return sum(r+1) - sum(l);
+        return query(r) - query(l-1);
     }
     void update(int pos, T x) {
-        pos++;
-        for (; pos <= n; bit[pos] += x, pos += pos&-pos);
+        for (++pos; pos <= n; bit[pos] += x, pos += pos&-pos);
     }
 };

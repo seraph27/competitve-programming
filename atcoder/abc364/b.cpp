@@ -12,7 +12,7 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 
-#ifdef MISAKA
+#ifdef SERAPH
 struct _debug {
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
@@ -33,7 +33,30 @@ const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
-void atcoder() {
+void seraph() {
+    int h, w; cin >> h >> w;
+    int row, col; cin >> row >> col;
+    --row;--col;
+    vector<string> grid(h);
+    for(auto&a: grid) cin >> a;
+    string s; cin >> s;
+    map<char, pii> dirs = {
+        {'U', {0, -1}},
+        {'R', {1, 0}},
+        {'L', {-1, 0}},
+        {'D', {0, 1}}
+    };
+
+    for(int i = 0; i < s.length(); i++) {
+        auto &[dc, dr] = dirs[s[i]];
+        int nr = row + dr, nc = col + dc;
+        debug(nr, nc);
+        if(nr<0 || nr>=h || nc<0 || nc>=w || grid[nr][nc]=='#') {
+            continue;
+        }
+        row = nr, col = nc;
+    }
+    cout<<row+1<<" "<< col+1<<nl;
 }
 
 int main() {    
@@ -41,5 +64,6 @@ int main() {
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
     //cin >> t;
-    while (t--) atcoder();
+    while (t--) seraph();
 }
+
