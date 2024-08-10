@@ -34,6 +34,19 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n, q; cin >> n >> q;
+    vector<ll> vi(n);
+    for(auto&a: vi) cin >> a;
+    sort(all(vi));
+    vector<ll> pref(n+1, 0);
+    for(int i = 0; i < n; i++) {
+        pref[i+1] += pref[i] + vi[i];
+    }
+    for(;q--;) {
+        ll X; cin >> X;
+        auto idx = prev(upper_bound(all(pref), X)) - pref.begin();
+        cout << idx << nl;
+    }
 }
 
 int main() {    
@@ -43,3 +56,4 @@ int main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+

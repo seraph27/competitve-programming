@@ -34,6 +34,16 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    for(int a = 0; a <= n; a++) {
+        for(int b = 0; b <= n; b++) {
+            for(int c = 0; c <= n; c++) {
+                if(a+b+c <= n) {
+                    cout<<a<<" "<<b<<" "<<c<<nl;
+                }
+            }
+        }
+    }
 }
 
 int main() {    
@@ -43,3 +53,4 @@ int main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+

@@ -29,11 +29,35 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #endif
 
 using mint = modint998244353;
-const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vector<vector<int>> a(n, vector<int>(n, 0));
+    a[n/2][n/2] = -1;
+    int dirsX[5] = {1, 0, -1, 0, 1};
+    int dirsY[5] = {0, 1, 0, -1, 0};
+
+    int place = 1, mod = 0, i = 0, j = 0;
+    while(place<n*n) {
+        a[i][j] = place;
+        place++;
+        auto ny = i+dirsY[mod], nx = j+dirsX[mod];
+        debug(ny, nx);
+        if(ny<0 || ny>=n || nx<0 || nx>=n || a[ny][nx]!=0) mod++;
+        mod%=4;
+        i+=dirsY[mod], j+=dirsX[mod];
+        debug(i, j);
+    }
+    for(i = 0; i < n; i++) {
+        for(j = 0; j < n; j++) {
+            if(a[i][j] == -1) cout<<'T'<<" ";
+            else cout<<a[i][j]<<(j==n-1?"":" ");
+        }
+        cout<<nl;
+    }
+
 }
 
 int main() {    
@@ -43,3 +67,4 @@ int main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+

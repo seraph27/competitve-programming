@@ -34,6 +34,9 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    string s; cin >> s;
+    s[s.length()-1] = '4';
+    cout<<s<<nl;
 }
 
 int main() {    
@@ -43,3 +46,4 @@ int main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+

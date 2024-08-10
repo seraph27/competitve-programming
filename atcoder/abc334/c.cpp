@@ -34,6 +34,36 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n, k; cin >> n >> k;
+    vector<ll> socks(k);
+    for(auto&a: socks) cin >> a;
+    if(k%2 == 0) {
+        ll ans = 0;
+        for(int i = 0; i < k-1; i+=2) {
+            ans += socks[i+1] - socks[i];
+        }
+        cout << ans << nl;
+        return;
+    }
+    vector<ll> prefF(1, 0), prefB(1, 0);
+    for(int i = 0; i < k-1; i+=2) {
+        prefF.pb(socks[i+1] - socks[i]);
+        prefF[prefF.size()-1] += prefF[prefF.size()-2];
+    }
+    for(int i = k-1; i > 0; i-=2) {
+        prefB.pb(socks[i] - socks[i-1]);
+        prefB[prefB.size()-1] += prefB[prefB.size()-2];
+    }
+    debug(prefF, prefB);
+
+    ll ans = 4e18;
+    debug(prefF, prefB);
+    for(int i = 0; i < k; i+=2) {
+        auto F = prefF[i/2];
+        auto B = prefB[(k-i-1)/2];
+        ckmin(ans, F + B);
+    }
+    cout << ans << nl;
 }
 
 int main() {    
@@ -43,3 +73,4 @@ int main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+

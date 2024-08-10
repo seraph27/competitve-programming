@@ -1,12 +1,10 @@
 #include <bits/stdc++.h>
-#include <atcoder/modint>
 #define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -28,18 +26,40 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    string s; cin >> s;
+
+
+    vector<vector<int>>dp (200050, vector<int>(3, 0));
+    string cond = "RPSR";
+
+    for(int i = 0; i < n; i++) {
+        int idx = -1;
+        for(int j = 0; j < 3; j++) {
+            if(s[i] == cond[j]) idx = j;
+        }
+
+        for(int j = 0; j < 3; j++) {
+            for(int k = 0; k < 3; k++) {
+                if(j == k) continue;
+                if(cond[k+1] == s[i]) continue;
+                ckmax(dp[i+1][k], dp[i][j] + (cond[idx+1] == cond[k]));
+            }
+        }
+    }
+    cout<<max({dp[n][0], dp[n][1], dp[n][2]})<<nl;
+
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
     while (t--) shiina_mashiro();
 }
+

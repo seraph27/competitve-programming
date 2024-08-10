@@ -34,6 +34,34 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n, q; cin >> n >> q;
+    vector<pii> vi(n);
+    for(int i = 0; i < n; i++) {
+        vi[i] = {i+1, 0};
+    }
+    reverse(all(vi));
+    
+    map<char, pii> dirs = {
+        {'R', {1, 0}},  
+        {'L', {-1, 0}},
+        {'U', {0, 1}},
+        {'D', {0, -1}}
+    };
+    int mv = 0;
+    for(;q--;) {
+        int type; cin >> type;
+        if(type==1) {
+            char c; cin >> c;
+            auto [x, y] = vi.back();
+            auto &dir = dirs.at(c);
+            vi.pb({x+dir.first, y+dir.second});
+            mv++;
+        } else{
+            int p; cin >> p;
+            auto &[x, y] = vi[vi.size()-p];
+            cout<<x<<" "<<y<<nl;
+        }
+    }
 }
 
 int main() {    
@@ -43,3 +71,4 @@ int main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+

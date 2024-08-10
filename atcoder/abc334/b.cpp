@@ -33,7 +33,15 @@ const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
+ll floor(ll x, ll m) {
+    ll to = (x % m + m) % m;
+    return (x - to) / m;
+}
 void shiina_mashiro() {
+    ll a, m; cin >> a >> m;
+    ll l, r; cin >> l >> r;
+    l-=a, r-=a;
+    cout<< floor(r, m) - floor(l-1, m) <<nl;
 }
 
 int main() {    
@@ -43,3 +51,4 @@ int main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+

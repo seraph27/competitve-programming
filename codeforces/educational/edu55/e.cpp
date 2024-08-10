@@ -1,12 +1,10 @@
 #include <bits/stdc++.h>
-#include <atcoder/modint>
 #define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -28,18 +26,28 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n, c; cin >> n >> c;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    vector<int> dp(500005, 0);
+    int cnt = 0, ans = 0;
+    for(int i = 0; i < n; i++) {
+        if(vi[i] == c) cnt++;
+        else dp[vi[i]] = max(cnt, dp[vi[i]]) + 1;
+        ckmax(ans, dp[vi[i]] - cnt);
+    }
+    cout<<ans+cnt<<nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
     while (t--) shiina_mashiro();
 }
+
