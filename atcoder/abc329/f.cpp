@@ -1,9 +1,3 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-
 #include <bits/stdc++.h>
 #include <atcoder/modint>
 #define ll long long
@@ -40,6 +34,22 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n, q; cin >> n >> q;
+    vector<set<int>> vi(n);
+    for(int i = 0; i < n; i++) {
+        int x; cin >> x;
+        vi[i].insert(x);
+    }
+
+    for(;q--;) {
+        int a, b; cin >> a >> b;
+        a--;b--;
+        if(vi[a].size() > vi[b].size()) swap(vi[a], vi[b]);
+        for(auto x : vi[a]) vi[b].insert(x);
+        vi[a].clear();
+        cout << vi[b].size() << nl;
+        debug(vi);
+    }
 }
 
 int main() {    
@@ -49,3 +59,4 @@ int main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+

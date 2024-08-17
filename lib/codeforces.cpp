@@ -1,3 +1,9 @@
+// Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
+
 #include <bits/stdc++.h>
 #define ll long long
 #define ar array

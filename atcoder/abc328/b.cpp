@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: B - 11/11
+// Contest: トヨタ自動車プログラミングコンテスト2023#7(AtCoder Beginner Contest 328)
+// URL: https://atcoder.jp/contests/abc328/tasks/abc328_b
+// Time Limit: 2000
+// Start: 2024/08/18 0:53:49
 
 #include <bits/stdc++.h>
 #include <atcoder/modint>

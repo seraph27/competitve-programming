@@ -1,9 +1,3 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-
 #include <bits/stdc++.h>
 #include <atcoder/modint>
 #define ll long long
@@ -40,6 +34,32 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    ll n, k; cin >> n >> k;
+    vector<ll> x(n+1), vi(n+1);
+    for(int i = 1; i <= n; i++) {
+        cin >> x[i];
+    }
+    for(int i = 1; i <= n; i++) {
+        cin >> vi[i];
+    }
+
+    vector<vector<int>> cycles;
+    vector<int> converge(n+1);
+    vector<int> vis(n+1, 0);
+    for(int i = 1, cnt = 1; i <= n; i++, cnt++) {
+        vector<int> newc;
+
+        auto now = i;
+        while(!vis[now]) {
+            vis[now] = cnt;
+            newc.pb(now);
+            now = x[now];
+        }
+        converge[now] = vis[x[now]];
+        cycles.pb(newc);
+    }
+    debug(cycles, converge);
+
 }
 
 int main() {    
@@ -49,3 +69,4 @@ int main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+

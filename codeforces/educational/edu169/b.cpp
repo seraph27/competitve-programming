@@ -1,18 +1,10 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-
 #include <bits/stdc++.h>
-#include <atcoder/modint>
 #define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -34,18 +26,30 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int l, r; cin >> l >> r;
+    int L, R; cin >> L >> R;
+    
+    int minus = 0;
+    if(l != L) minus++;
+    if(r != R) minus++;
+
+    if(r <L ||R < l) {
+        cout << 1 << nl;
+        return;
+    } 
+    cout << min({R - L, r - l, r - L, R - l}) + minus << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
+
