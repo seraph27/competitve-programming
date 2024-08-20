@@ -1,9 +1,10 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: D - Lucky PIN
+// Contest: 三井住友信託銀行プログラミングコンテスト2019
+// URL: https://atcoder.jp/contests/sumitrust2019/tasks/sumitb2019_d
+// Time Limit: 2000
+// Start: 2024/08/19 20:44:48
 
+//minimal template
 #include <bits/stdc++.h>
 #define sz(x) x.size()
 #define ll long long
@@ -12,7 +13,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -37,12 +37,35 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    string s; cin >> s;
+
+    int ans = 0;
+    for(int i = 0; i<1000; i++) {
+        string tomatch = to_string(i);
+        reverse(all(tomatch));
+        bool ok = 0;
+        while(tomatch.size() < 3) tomatch.pb('0');
+        reverse(all(tomatch));
+        for(int j = 0; j < s.length(); j++) {
+            if(s[j] == tomatch[tomatch.size()-1]) {
+                tomatch.pop_back();
+            }
+            if(tomatch.size() == 0) {
+                ok = 1;
+                break;
+            }
+        }
+        if(ok) ans++;
+    }
+    cout << ans << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+

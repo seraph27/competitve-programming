@@ -5,7 +5,6 @@
 // Start: $(DATE)
 
 #include <bits/stdc++.h>
-#define sz(x) x.size()
 #define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
@@ -33,10 +32,30 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
+const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n, m; cin >> n >> m;
+    vector<string> grid(n);
+    for(int i = 0; i < n; i++) cin >> grid[i];
+
+    int ans1 = 0, ans2 = 0;
+    for(int i = 0; i < n; i++) {
+        for(int j = 0, start = (i%2 == 0); j < m; j++, start ^= 1) {
+            debug(start);
+            if(grid[i][j]-'0' != start) ans1++;
+        }
+    }
+
+    for(int i = 0; i < n; i++) {
+        for(int j = 0, start = (i%2 == 1); j < m; j++, start ^= 1) {
+            if(grid[i][j]-'0' != start) ans2++;
+        }
+    }
+    cout << min(ans1, ans2) << nl;
+
 }
 
 int main() {    
@@ -46,3 +65,4 @@ int main() {
     cin >> t;
     while (t--) shiina_mashiro();
 }
+

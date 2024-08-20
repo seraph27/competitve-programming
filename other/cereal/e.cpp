@@ -1,3 +1,9 @@
+// Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
+
 #include <bits/stdc++.h>
 #define ll long long
 #define ar array
@@ -10,7 +16,7 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 
-#ifdef SERAPH
+#ifdef MISAKA
 struct _debug {
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
@@ -30,33 +36,47 @@ const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
-int n, m, k;
-int cores[101], cells[101];
-int gs[101][101];
+void shiina_mashiro() {
+    int n, k; cin >> n >> k;
+    map<int, int> mp;
+    map<int, set<int>> has;
+    for(int i = 0; i < k; i++) {
+        int a, b; cin >> a >> b;
+        mp[a+b]++;
+        has[a+b].insert(a);
+        has[a+b].insert(b);
+    }
+    int mn = k;
+    for(int i = 0, sum = 3; i < n/2; i++, sum+=2) {
+        ckmin(mn, k - (mp[sum] + (sum != (n+1) ? mp[sum + n] : 0)));
+        debug(mn, mp, k);
+    }
+    int get = 0;
+    for(int sum = 1; sum < n; sum+=2){
+        auto now = has[2*sum+1];
+        get += (now.find(sum) != now.end() ? 1 : 0);
+    }
+    int mn2 = k-get;
 
-void seraph() {
-    cin >> n >> m >> k;
-    for(int i = 1; i <= n; i++) for(int j = 1; j <= m; j++) {
-        cin >> gs[i][j];
+    int get2 = 0;
+    for(int sum = 2; sum <= n; sum+=2) {
+        auto now = has[2*sum+1];
+        auto now2 = has[n+1];
+        if(sum != n) get2 += (now.find(sum) != now.end() ? 1 : 0);
+        else get2 += (now2.find(sum) != now2.end() ? 1 : 0);
     }
 
-    for(int i = 1; i <= m; i++){ 
-        vector<int> cnt(k+1, 0);
-        for(int j = 1; j<=n; j++) if(!cores[j]) cnt[gs[j][i]]++;
-        for(int j = 1; j<=n; j++) {
-            if(gs[j][i] && !cores[j] && (cnt[gs[j][i]]>1 || cells[gs[j][i]])) {
-                cores[j] = i;
-                cells[gs[j][i]] = 1;
-            }
-        }
-    }
-    for(int i = 1; i <=n; i++) cout<<cores[i]<<nl;
-}
+    int mn3 = k-get2;
+    
+    debug(get, get2, mn, mn2, mn3);
+    cout << min({mn, mn2, mn3}) << nl;
+} 
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    while (t--) seraph();
+    cin >> t;
+    while (t--) shiina_mashiro();
 }
 

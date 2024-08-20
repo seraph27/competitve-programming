@@ -5,7 +5,6 @@
 // Start: $(DATE)
 
 #include <bits/stdc++.h>
-#define sz(x) x.size()
 #define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
@@ -33,16 +32,48 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
+const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+      vector<int> vi(n);
+      for(auto&a: vi) cin >> a;
+      int sum = 0;
+      map<int, int> mp;
+      for(int i = 0; i < n; i++) {
+        mp[vi[i]]++;
+        sum += vi[i];
+      }
+
+      while(sum >= 0) {
+    debug(mp, sum);
+          if(sum >= 4 && mp[2]) {
+            sum-=4;
+            mp[2]--;
+          } else if(sum >= 2 && mp[1]) {
+            sum -=2;
+            mp[1]--;
+          } else {
+            cout << "NO" << endl;
+            return;
+          }
+          if(sum%2) {
+            cout << "NO" << endl;
+      return;
+          }
+          if(sum == 0) {
+            cout << "YES" << endl;
+            return;
+          }
+      }
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
     while (t--) shiina_mashiro();
 }
+

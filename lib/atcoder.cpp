@@ -6,6 +6,7 @@
 
 #include <bits/stdc++.h>
 #include <atcoder/modint>
+#define sz(x) x.size()
 #define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
@@ -35,7 +36,6 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #endif
 
 using mint = modint998244353;
-const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 

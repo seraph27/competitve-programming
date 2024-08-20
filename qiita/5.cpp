@@ -1,9 +1,10 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: C - Half and Half
+// Contest: AtCoder Beginner Contest 095
+// URL: https://atcoder.jp/contests/abc095/tasks/arc096_a
+// Time Limit: 2000
+// Start: 2024/08/19 20:31:54
 
+//minimal template
 #include <bits/stdc++.h>
 #define sz(x) x.size()
 #define ll long long
@@ -12,7 +13,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -37,12 +37,15 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int a, b, c, x, y; cin >> a >> b >> c >> x >> y;
+    cout << min({c*max(x, y)*2, a*x + b*y, (x > y ? c*y*2 + a*(x-y) : c*x*2 + b*(y-x))});
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+

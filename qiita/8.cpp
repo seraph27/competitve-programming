@@ -1,9 +1,10 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: B - AtCoder Market
+// Contest: square869120Contest #6
+// URL: https://atcoder.jp/contests/s8pc-6/tasks/s8pc_6_b
+// Time Limit: 1000
+// Start: 2024/08/20 17:16:11
 
+//minimal template
 #include <bits/stdc++.h>
 #define sz(x) x.size()
 #define ll long long
@@ -12,7 +13,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -37,12 +37,30 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vector<int> va(n), vb(n);
+    for(int i = 0; i < n; i++) {
+        int a, b; cin >> a >> b;
+        va[i] = a; vb[i] = b;
+    }
+    ll sum = 0;
+    for(int i = 0; i < n; i++) sum += abs(va[i] - vb[i]);
+    sort(all(va));
+    sort(all(vb));
+    int mda = va[(va.size()-1)/2];
+    int mdb = vb[(vb.size()-1)/2];
+    for(int i = 0; i < n; i++) {
+        sum += abs(va[i] - mda);
+        sum += abs(vb[i] - mdb);
+    }
+    cout << sum << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+

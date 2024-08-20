@@ -1,9 +1,10 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: D. Longest Max Min Subsequence
+// Contest: Codeforces Round 967 (Div. 2)
+// URL: https://codeforces.com/contest/2001/problem/D
+// Time Limit: 2000
+// Start: 2024/08/20 23:42:28
 
+//minimal template
 #include <bits/stdc++.h>
 #define sz(x) x.size()
 #define ll long long
@@ -12,7 +13,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -37,12 +37,54 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) {
+        int x; cin >> x;
+        --x;
+        a = x;
+    }
+    
+    vector<int> pos(n, -1), ans(n, -1);
+    int cnt = 0;
+    for(int i = 0; i < n; i++) {
+        if(pos[vi[i]] == -1) {
+            pos[vi[i]] = i;
+            ans[i] = vi[i];
+        } else {
+            int temp = pos[vi[i]];
+            int flag = 0;
+            int last = -1;
+            while(ans[temp] != vi[i]) {
+                if(ans[temp] != -1) last = temp;
+                else continue;
+                if(!flag && last > ans[temp]) break;
+                if((!flag && last < ans[temp]) || (flag && last > ans[temp])) {
+                    ans[pos[vi[i]]] = -1;
+                    pos[vi[i]] = i;
+                    ans[i] = vi[i];
+                    break;
+                }
+                if(flag && last < ans[temp]) break;
+                last = temp;
+                temp++;
+                flag ^= 1;
+            }
+        }
+    }
+    for(int i = 0; i < n; i++) {
+        if(a[i] != -1) {
+            cout << i+1 << " ";
+        }
+    }
+    cout<<nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+

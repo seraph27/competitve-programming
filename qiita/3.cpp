@@ -1,9 +1,10 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: B - ATCoder
+// Contest: AtCoder Beginner Contest 122
+// URL: https://atcoder.jp/contests/abc122/tasks/abc122_b
+// Time Limit: 2000
+// Start: 2024/08/19 20:19:22
 
+//minimal template
 #include <bits/stdc++.h>
 #define sz(x) x.size()
 #define ll long long
@@ -12,7 +13,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -37,12 +37,31 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    string s; cin >> s;
+    int cnt = 0;
+    vector<int> res;
+    for(int i = 0; i < s.length(); i++) {
+        if(s[i]=='A' || s[i]=='C'||s[i]=='T'||s[i]=='G') {
+            cnt++;
+        } else{
+            res.pb(cnt);
+            cnt = 0;
+        }
+    }
+    if(cnt) res.pb(cnt);
+    if(!res.size()) {
+        cout<<0<<nl;
+        return;
+    }
+    sort(all(res), greater<int>());
+    cout << res[0] << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+
