@@ -1,11 +1,10 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: D2. Turtle and a MEX Problem (Hard Version)
+// Contest: Codeforces Round 968 (Div. 2)
+// URL: https://codeforces.com/contest/2003/problem/D2
+// Time Limit: 2000
+// Start: 2024/08/25 22:37:05
 
 #include <bits/stdc++.h>
-#include <atcoder/modint>
 #define sz(x) (int)x.size()
 #define ll long long
 #define ar array
@@ -13,7 +12,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -35,17 +33,59 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n, m; cin >> n >> m;
+    vector<int> mexvi(n+5, 0); //mex has what numbers? 
+    int mex = 0;
+    for(int i = 0; i < n; i++) {
+        int len; cin >> len;
+        vector<int> vi;
+        set<int> s;
+        for(int k = 0; k < len; k++) {
+            int x; cin >> x;
+            s.insert(x);
+        }
+        
+        int now = 0, flag = 0, idx = -1;
+        while(s.count(now) || !flag) {
+            if(!s.count(now)) {
+                flag = 1;
+                idx = now;
+            }
+            now++;
+        }
+        if(idx!=-1) mexvi[idx] = now;
+        ckmax(mex, now);
+    }
+
+    debug(mexvi);
+    vector<int> transfercnt(n+5, 0);
+    for(int i = 0; i < sz(mexvi); i++) {
+        while(mexvi[mexvi[i]] < mexvi[i]) {
+            mexvi[mexvi[i]] = mexvi[i];
+            transfercnt[i]++;
+        } 
+    }
+
+    debug(mexvi);
+    ll ans = 0;
+    for(int i = 0; i < min(mex+1, m+1); i++) {
+        ans+=max({mexvi[i], i, mexvi[mexvi[i]]});
+    }
+    debug(ans);
+    if(mex < m) {
+        ans+=(ll)(mex+1 + m) * (m-mex) / 2;
+    }
+    cout << ans << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }

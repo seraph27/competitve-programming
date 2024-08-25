@@ -1,11 +1,11 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: B - ムーアの法則
+// Contest: AtCoder Regular Contest 054
+// URL: https://atcoder.jp/contests/arc054/tasks/arc054_b
+// Time Limit: 2000
+// Start: 2024/08/23 11:27:36
 
+//minimal template
 #include <bits/stdc++.h>
-#include <atcoder/modint>
 #define sz(x) (int)x.size()
 #define ll long long
 #define ar array
@@ -13,8 +13,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -35,11 +33,28 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
-
 void shiina_mashiro() {
+    double p; cin >> p;
+
+    double l = 0, r = 100;
+    
+    auto f = [&](double m) {
+        return m + p / (pow(2, m/1.5));
+    };
+    
+    debug(p);
+    int cnt = 200;
+    while(cnt--) {
+        double m1 = l + (r-l) / 3;
+        double m2 = l + (r-l) * 2 / 3;
+        if(f(m1) < f(m2)) r = m2;
+        else l = m1;
+    }
+    debug(l, r);
+
+    cout << fixed << setprecision(20) << f(l) << nl;
 }
 
 int main() {    
@@ -49,3 +64,4 @@ int main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+

@@ -6,7 +6,7 @@
 
 //minimal template
 #include <bits/stdc++.h>
-#define sz(x) x.size()
+#define sz(x) (int)x.size()
 #define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()

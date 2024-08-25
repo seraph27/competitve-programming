@@ -1,11 +1,11 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: D - 薄氷渡り
+// Contest: 第８回日本情報オリンピック 予選（過去問）
+// URL: https://atcoder.jp/contests/joi2009yo/tasks/joi2009yo_d
+// Time Limit: 10000
+// Start: 2024/08/23 21:10:03
 
+//minimal template
 #include <bits/stdc++.h>
-#include <atcoder/modint>
 #define sz(x) (int)x.size()
 #define ll long long
 #define ar array
@@ -13,8 +13,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -35,11 +33,38 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int w, h; cin >> w >> h;
+    vector<vector<int>> grid(h, vector<int>(w, 0));
+    for(int i = 0; i < h; i++) for(int j = 0; j < w; j++) cin >> grid[i][j];
+
+    vector<vector<int>> vis(h, vector<int>(w, 0));
+          
+    const pair<int, int> dirs[4] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    
+    int ans = 0;
+    auto dfs = [&](auto&&s, int y, int x, int depth) -> int {
+        int mx = depth;
+        for(auto&[dy, dx] : dirs) {
+            int ny = dy + y, nx = dx + x;
+            if(ny < 0 || ny >= h || nx < 0 || nx >= w || vis[ny][nx] || !grid[ny][nx]) continue;
+            vis[y][x] = 1;
+            ckmax(mx, s(s, ny, nx, depth+1));
+            vis[y][x] = 0;
+        }
+        return mx;
+    };
+
+    for(int i = 0; i < h; i++) for(int j = 0; j < w; j++) {
+        if(grid[i][j]) {
+            ckmax(ans, dfs(dfs, i, j, 1));
+            vis.assign(h, vector<int>(w, 0));
+        }
+    }
+    cout << ans << nl;
 }
 
 int main() {    
@@ -49,3 +74,4 @@ int main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+

@@ -1,11 +1,11 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: D - 射撃王
+// Contest: AtCoder Beginner Contest 023
+// URL: https://atcoder.jp/contests/abc023/tasks/abc023_d
+// Time Limit: 5000
+// Start: 2024/08/22 22:33:33
 
+//minimal template
 #include <bits/stdc++.h>
-#include <atcoder/modint>
 #define sz(x) (int)x.size()
 #define ll long long
 #define ar array
@@ -13,8 +13,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -35,11 +33,44 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vector<ar<ll, 2>> vi(n);
+    for(int i = 0; i < n; i++) {
+	ll h, s; cin >> h >> s;
+	vi[i] = {h, s};
+    }
+    ll l = 0, r = 4e18, ans = 0;
+    while(l<=r) {
+	ll mid = l + (r-l)/2;
+	int ok = 1;
+	vector<ll> f;
+	for(int i = 0; i < n; i++) {
+	    if(vi[i][0]>mid) {
+		ok = 0;
+		break;
+	    }
+	    f.pb((mid - vi[i][0]) / vi[i][1]);
+	}
+	sort(all(f));
+	for(int i = 0; i < sz(f); i++) {
+	    if(f[i] < i) {
+		ok = 0;
+		break;
+	    } 
+	}
+
+	if(ok) {
+	    r = mid - 1, ans = mid;
+	} else{
+	    l = mid + 1;
+	}
+    }
+
+    cout << ans << nl;
 }
 
 int main() {    
@@ -49,3 +80,4 @@ int main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+

@@ -4,8 +4,8 @@
 // Time Limit: $(TIMELIM)
 // Start: $(DATE)
 
+//minimal template
 #include <bits/stdc++.h>
-#include <atcoder/modint>
 #define sz(x) (int)x.size()
 #define ll long long
 #define ar array
@@ -13,8 +13,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -35,17 +33,43 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int singers, shows; cin >> singers >> shows;
+    cout << singers << nl;
+    vector<pair<int, int>> ans;
+    int cnt = 0;
+    for(int i = 1; i <= singers; i++) {
+        int has = 0;
+        while(1) {
+            int add = min(shows - has, singers-cnt);
+            ans.pb({add, i});
+            cnt += add;
+            cnt %= singers;
+            has += add;
+            if(has >= shows) break;
+        }
+    }
+    int newl = 0;
+    for(auto &[len, id] : ans) {
+        if(len == singers) {
+            cout << len << " " << id << " " << 0 << " " << id << nl;
+        } else {
+            newl++;
+            cout << len << " " << id << (newl<2 ? ' ' : nl);
+            newl%=2;
+        }
+    }
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
+
+

@@ -1,11 +1,11 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: Breadth First Search
+// Contest: ALDS1 - ALDS1_11_C
+// URL: https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ALDS1_11_C&lang=ja
+// Time Limit: 1000
+// Start: 2024/08/24 10:12:31
 
+//minimal template
 #include <bits/stdc++.h>
-#include <atcoder/modint>
 #define sz(x) (int)x.size()
 #define ll long long
 #define ar array
@@ -13,8 +13,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -35,11 +33,38 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vector<vector<int>> adj(n+1);
+    for(int i = 0; i < n; i++) {
+        int id, p; cin >> id >> p;
+        for(int j = 0; j < p; j++) {
+            int x; cin >> x;
+            adj[id].pb(x);
+        }
+    }
+
+    queue<pair<int, int>> bfs;
+    bfs.push({1, 0});
+    vector<int> vis(n+1, 0), dep(n+1, -1);
+    dep[1] = 0;
+    while(!bfs.empty()) {
+        auto [tp, depth] = bfs.front(); bfs.pop();
+        vis[tp] = 1;
+        for(auto &e : adj[tp]) {
+            if(!vis[e]) {
+                dep[e] = depth+1;
+                bfs.push({e, depth+1});
+                vis[e] = 1;
+            }
+        }
+    }
+
+    for(int i = 1; i <= n; i++) cout << i << " " << dep[i] << nl;
+
 }
 
 int main() {    
@@ -49,3 +74,4 @@ int main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+
