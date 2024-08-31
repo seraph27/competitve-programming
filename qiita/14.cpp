@@ -54,7 +54,6 @@ void shiina_mashiro() {
         }
         if(cnt < k) continue;
         ll sum = 0;
-        debug(mark);
         for(int j = 1; j < vi.size(); j++) {
             if(!mark[j]) {
                 vi[j] = max(vi[j], vi[j-1]);
@@ -65,8 +64,6 @@ void shiina_mashiro() {
                 vi[j] = vi[j-1]+1;
             }
         }
-        debug(vi);
-        debug(sum);
         ckmin(ans, sum);
         vi = temp;
     }

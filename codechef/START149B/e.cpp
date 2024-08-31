@@ -35,14 +35,29 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
+vector<int> spff(int n) {
+    vector<int> spf(n + 1);
+    for (int i = 1; i <= n; ++i) spf[i] = i;
+    for (int i = 2; i * i < n; ++i){
+        if (spf[i] == i) {
+            for (int j = i * i; j < n; j += i)
+                if (spf[j] == j)
+                   spf[j] = i;
+        }
+    }
+    return spf;
+}
 void shiina_mashiro() {
+    int n; cin >> n;
+    debug(spff(n));
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
+
 

@@ -10,7 +10,7 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 
-#ifdef SERAPH
+#ifdef MISAKA
 struct _debug {
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
@@ -32,58 +32,37 @@ const int INF = 0x3f3f3f3f;
 
 void seraph() {
     int n; cin >> n;
-    vector<int> aa(n), bb(n), cc(n);
-    for(int i = 0; i < n; i++) {
-        cin >> aa[i];
-    }
-    for(int i = 0; i < n; i++) {
-        cin >> bb[i];
-    }
-    for(int i = 0; i < n; i++) {
-        cin >> cc[i];
-    }
-    vector<int> a(n+1, 0), b(n+1, 0), c(n+1, 0);
-    for(int i = 0; i < n; i++) {
-        a[i+1] += a[i] + aa[i];
-    }
-    for(int i = 0; i < n; i++) {
-        b[i+1] += b[i] + bb[i];
-    }
-    for(int i = 0; i < n; i++) {
-        c[i+1] += c[i] + cc[i];
-    }
-    ll tot = accumulate(all(aa), 0LL);
-    ll sum = (tot + tot%3)/3;
-    auto search = [&](auto left, auto mid, auto right) -> ar<int, 6> {    
-        int r = 2;
-        ll curr = 0;
-        for(int l = 2; l < n; l++) {
-            while(curr < sum && r < n) {
-                curr+=mid[r]-mid[r-1];
-                r++;
-            }
-            if(mid[r] - mid[l-1] < sum) continue;
-            ll calca = left[l-1];
-            ll calcc = right[n+1] - right[r];
-            ll calca2 = left[n+1]-left[r];
-            ll calcc2 = right[l-1];
-            debug(calca, calcc, calca2, calcc2);
-            if(calca >= sum && calcc >= sum) {
-                return {1, l-1, l, r, r+1, n};    
-            }
-            if(calca2 >= sum && calcc2 >= sum) {
-                return {1, l-1, l, r, r+1, n}; 
+    vector<ar<ll, 3>> vi(n);
+    for(int ii = 0; ii < 3; ii++) for(int i = 0; i < n; i++) cin >> vi[i][ii];
+    vector<ar<ll, 3>> pref(n+1);
+    for(int ii = 0; ii < 3; ii++) for(int i = 0; i < n; i++) pref[i+1][ii] += pref[i][ii] + vi[i][ii];
+    for(int i = 0; i < 3; i++) pref[0][i] = 0;
+    ll tot = 0;
+    for(int i = 0; i < n; i++) tot+=vi[i][0];
+
+    vector<int> seq = {0, 1, 2};
+    vector<pii> ans;
+    do {
+        for(int l = 1, r = 1; r<=n;r++) {
+            ll avg = (tot+2)/3;
+            while(l+1<=r && pref[r][seq[1]] - pref[l][seq[1]] >= avg) l++; //[l, r] good
+            debug(l, r);
+            debug(pref);
+            if((pref[l-1][seq[0]] >= avg) && (pref[n][seq[2]] - pref[r][seq[2]] >= avg)) {
+                ans.pb({seq[0], 1});
+                ans.pb({seq[0], l-1});
+                ans.pb({seq[1], l});
+                ans.pb({seq[1], r});
+                ans.pb({seq[2], r+1});
+                ans.pb({seq[2], n});
+                sort(all(ans));
+                for(auto &[id, val] : ans) cout << val << " ";
+                cout << nl;
+                return;
             }
         }
-        return {0, 0, 0, 0, 0, 0};
-    };
-    auto res = search(a, b, c);
-    auto res2 = search(a, c, b);
-    auto res3 = search(b, a, c);
-    auto res4 = search(b, c, a);
-    auto res5 = search(c, a, b);
-    auto res6 = search(c, b, a);
-    debug(res, res2, res3, res4, res5, res6);
+    } while(next_permutation(all(seq)));
+
     cout << -1 << nl;
 }
 

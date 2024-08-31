@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: C. Dora and C++
+// Contest: Codeforces Round 969 (Div. 2)
+// URL: https://codeforces.com/contest/2007/problem/C
+// Time Limit: 2000
+// Start: 2024/08/30 22:37:51
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -12,6 +12,7 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -36,13 +37,26 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
-}
+    int n, a, b; cin >> n >> a >> b;
+    vector<int> vi(n);
+    int diff = gcd(a, b);
+    for(auto&x: vi) {
+        cin >> x;
+        x%=diff;
+    }
+    sort(all(vi));
+    int ans = vi[n-1]-vi[0];
+    for(int i = 1; i < n; i++) {
+        ckmin(ans, vi[i-1]+diff-vi[i]);
+    }
+
+    cout<<ans<<nl;
+} 
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
-

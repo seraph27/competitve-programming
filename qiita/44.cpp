@@ -37,6 +37,34 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    vector<int> init;
+    const int MX = 1e6+5;
+    for(int i = 1; ; i++) {
+        int cnt = i*(i+1)*(i+2)/6;
+        if(cnt >= MX) break;
+        init.pb(cnt);
+    }
+
+    vector<int> dp(MX, INF), dp2(MX, INF);
+    dp[0] = 0;
+    dp2[0] = 0;
+
+    for(int i = 0; i < MX; i++) {
+        for(int j = 0; j < sz(init); j++) {
+            if(i + init[j] < MX) {
+                ckmin(dp[i + init[j]], dp[i] + 1);
+            }
+            if(init[j]%2 && i + init[j] < MX) {
+                ckmin(dp2[i + init[j]], dp2[i] + 1);
+            }
+        }
+    }
+
+    while(true) {
+        int n; cin >> n;
+        if(n == 0) break;
+        cout << dp[n] << " " << dp2[n] << nl;
+    }
 }
 
 int main() {    

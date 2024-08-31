@@ -41,50 +41,29 @@ void shiina_mashiro() {
     vector<int> vi(n);
     for(auto&a: vi) {
         int x; cin >> x;
-        --x;
-        a = x;
     }
-    
-    vector<int> pos(n, -1), ans(n, -1);
-    int cnt = 0;
+
+    set<int> s;
+    deque<int> cur;
     for(int i = 0; i < n; i++) {
-        if(pos[vi[i]] == -1) {
-            pos[vi[i]] = i;
-            ans[i] = vi[i];
-        } else {
-            int temp = pos[vi[i]];
-            int flag = 0;
-            int last = -1;
-            while(ans[temp] != vi[i]) {
-                if(ans[temp] != -1) last = temp;
-                else continue;
-                if(!flag && last > ans[temp]) break;
-                if((!flag && last < ans[temp]) || (flag && last > ans[temp])) {
-                    ans[pos[vi[i]]] = -1;
-                    pos[vi[i]] = i;
-                    ans[i] = vi[i];
-                    break;
-                }
-                if(flag && last < ans[temp]) break;
-                last = temp;
-                temp++;
-                flag ^= 1;
+        if(!s.count(vi[i])) {
+            s.insert(vi[i]);
+            cur.pb(vi[i]);
+        } else{
+            if(cur.size()>1 && cur[1] > cur.front()) {
+                cur.pop_front();
+                cur.pb(vi[i]);
             }
         }
     }
-    for(int i = 0; i < n; i++) {
-        if(a[i] != -1) {
-            cout << i+1 << " ";
-        }
-    }
-    cout<<nl;
+    debug(vi);
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

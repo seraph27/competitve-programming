@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: Maximise Sum
+// Contest: START149D
+// URL: https://www.codechef.com/START149D/problems/P4149
+// Time Limit: 1000
+// Start: 2024/08/29 0:14:17
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -36,13 +36,32 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    int mn = INF, idx = -1;
+    for(int i = 0; i < n; i++) {
+        if(ckmin(mn, abs(vi[i]))) idx = i;
+    }
+    ll sum = 0;
+    for(int i = 0; i < n; i++) {
+        if(i!=idx) {
+            if(vi[i]<0) {
+                vi[idx]*=-1;
+            }
+            sum+=abs(vi[i]);
+        }
+    }
+    sum+=vi[idx];
+    debug(vi);
+    cout << sum << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: F. Eri and Expanded Sets
+// Contest: Codeforces Round 969 (Div. 2)
+// URL: https://codeforces.com/contest/2007/problem/F
+// Time Limit: 3000
+// Start: 2024/08/30 22:37:51
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -12,6 +12,7 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -42,7 +43,6 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
-

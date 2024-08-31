@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: Easy Subarray Sum
+// Contest: START149B
+// URL: https://www.codechef.com/START149B/problems/P3149
+// Time Limit: 1000
+// Start: 2024/08/28 23:47:15
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -36,13 +36,28 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    int ans = 0;
+    vector<int> vi(n);
+    for(int i = 0; i < n; i++) cin >> vi[i];
+    int l = 0, r = n-1;
+    for(;l<n;l++) {
+        if(vi[l]>0) break;
+    }
+    for(;r>=0;r--) {
+        if(vi[r]>0) break;
+    }
+    for(int i = l; i <= r; i++) {
+        if(vi[i] < 0) ans++;
+    }
+    cout << ans << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: Magical World
+// Contest: START149D
+// URL: https://www.codechef.com/START149D/problems/P2149
+// Time Limit: 1000
+// Start: 2024/08/29 0:00:34
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -36,13 +36,19 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int a, b, x; cin >> a >> b >> x;
+    int ans;
+    if(a*b<=x*x) ans = 0;
+    else if(a<=x*x || b<=x*x) ans = 1; 
+    else ans = 2;
+    cout<<ans<<nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 
