@@ -1,8 +1,8 @@
-// Problem: D. Iris and Game on the Tree
-// Contest: Codeforces Round 969 (Div. 2)
-// URL: https://codeforces.com/contest/2007/problem/D
+// Problem: C. Nikita and LCM
+// Contest: Codeforces Round 948 (Div. 2)
+// URL: https://codeforces.com/contest/1977/problem/C
 // Time Limit: 2000
-// Start: 2024/08/30 22:37:51
+// Start: 2024/09/14 16:56:18
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -36,43 +36,49 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
+vector<int> divs(int v) {
+    vector<int> res;
+    int i = 1;
+    for(; i * i < v; i++) {
+        if(v % i == 0) {
+            res.pb(i);
+            res.pb(v/i);
+        } 
+    }
+    if(i*i == v) res.pb(i);
+    return res;
+}
 void shiina_mashiro() {
     int n; cin >> n;
-    vector<vector<int>> adj(n);
-    for(int i = 0; i < n-1; i++) {
-        int u, v; cin >> u >> v;
-        --u; --v;
-        adj[u].pb(v);
-        adj[v].pb(u);
+    vector<int> vi(n);
+    for(int i = 0; i < n; i++) {
+        cin >> vi[i];
     }
 
-    string s; cin >> s;
-
-    map<char, int> mp;
-    mp['0'] = 0, mp['1'] = 1, mp['?'] = 2;
-
-    vector<int> leafs(3, 0);
-    int notleafs = 0;
-    auto dfs = [&](auto &&ds, int u, int p) -> void {
-        if(adj[u].size()==1 && adj[u][0] == p) leafs[mp[s[u]]]++;
-        else if(u!=0 && s[u] == '?') notleafs++;
-        for(auto &e: adj[u]) if(e != p) {
-            ds(ds, e, u);
+    ll lc = 1;
+    ll mx = *max_element(all(vi));
+    for(int i = 0; i < n; i++) {
+        lc = lcm(lc, vi[i]);
+        if(lc > mx) {
+            cout << n << nl;
+            return;
         }
-    };
-    dfs(dfs, 0, -1);
-    
-    int root = mp[s[0]];
-    if(root == 2) {
-        if(leafs[0] != leafs[1]) {
-            cout << max(leafs[0], leafs[1]) + leafs[2] / 2 << nl;
-        } else {
-            cout << max(leafs[0], leafs[1]) + (leafs[2] + (notleafs&1)) / 2 << nl;
-        }
-    } else {
-        cout << leafs[root ^ 1] + (leafs[2] + 1) / 2 << nl;
     }
-    debug(leafs, notleafs);
+
+    auto get = divs(lc);
+    debug(get, lc);
+
+    int ans = 0;
+    for(int i = 0; i < sz(get); i++) {
+        if(count(all(vi), get[i]) != 0) continue;
+        int cnt = 0;
+        ll lc2 = 1;
+        for(int j = 0; j < n; j++) {
+            if(get[i]%vi[j]==0) cnt++, lc2 = lcm(lc2, vi[j]);
+        }
+        if(count(all(vi), lc2) == 0) ckmax(ans, cnt);
+    }
+    cout << ans << nl;
 
 }
 

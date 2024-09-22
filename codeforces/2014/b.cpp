@@ -1,8 +1,8 @@
-// Problem: D. Iris and Game on the Tree
-// Contest: Codeforces Round 969 (Div. 2)
-// URL: https://codeforces.com/contest/2007/problem/D
-// Time Limit: 2000
-// Start: 2024/08/30 22:37:51
+// Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -12,7 +12,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -37,43 +36,12 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
-    int n; cin >> n;
-    vector<vector<int>> adj(n);
-    for(int i = 0; i < n-1; i++) {
-        int u, v; cin >> u >> v;
-        --u; --v;
-        adj[u].pb(v);
-        adj[v].pb(u);
-    }
-
-    string s; cin >> s;
-
-    map<char, int> mp;
-    mp['0'] = 0, mp['1'] = 1, mp['?'] = 2;
-
-    vector<int> leafs(3, 0);
-    int notleafs = 0;
-    auto dfs = [&](auto &&ds, int u, int p) -> void {
-        if(adj[u].size()==1 && adj[u][0] == p) leafs[mp[s[u]]]++;
-        else if(u!=0 && s[u] == '?') notleafs++;
-        for(auto &e: adj[u]) if(e != p) {
-            ds(ds, e, u);
-        }
-    };
-    dfs(dfs, 0, -1);
-    
-    int root = mp[s[0]];
-    if(root == 2) {
-        if(leafs[0] != leafs[1]) {
-            cout << max(leafs[0], leafs[1]) + leafs[2] / 2 << nl;
-        } else {
-            cout << max(leafs[0], leafs[1]) + (leafs[2] + (notleafs&1)) / 2 << nl;
-        }
-    } else {
-        cout << leafs[root ^ 1] + (leafs[2] + 1) / 2 << nl;
-    }
-    debug(leafs, notleafs);
-
+    int n, k; cin >> n >> k;
+    int low = n-k;
+    int ans = (n+1)/2;
+    int ans2 = (low+1)/2;
+    debug(n, low, ans);
+    cout << ((ans2-ans)%2 ? "No" : "Yes") << nl;
 }
 
 int main() {    
@@ -83,3 +51,5 @@ int main() {
     cin >> t;
     while (t--) shiina_mashiro();
 }
+
+

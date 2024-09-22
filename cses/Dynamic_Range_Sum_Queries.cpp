@@ -1,8 +1,8 @@
-// Problem: D. Iris and Game on the Tree
-// Contest: Codeforces Round 969 (Div. 2)
-// URL: https://codeforces.com/contest/2007/problem/D
-// Time Limit: 2000
-// Start: 2024/08/30 22:37:51
+// Problem: Dynamic Range Sum Queries
+// Contest: CSES Problem Set
+// URL: https://cses.fi/problemset/task/1648
+// Time Limit: 1000
+// Start: 2024/09/09 22:33:06
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -12,7 +12,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -36,50 +35,51 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
+template<typename T> struct fenwick {
+    int n; vector<T> bit;
+    fenwick(int a) : n(a), bit(a+1) {}
+    T sum(int pos) {
+        T s = 0;
+        for (; pos; s += bit[pos], pos -= pos&-pos);
+        return s;
+    }
+    T query(int l, int r) {
+        return sum(r+1) - sum(l);
+    }
+    void update(int pos, T x) {
+        pos++;
+        for (; pos <= n; bit[pos] += x, pos += pos&-pos);
+    }
+};
+
 void shiina_mashiro() {
-    int n; cin >> n;
-    vector<vector<int>> adj(n);
-    for(int i = 0; i < n-1; i++) {
-        int u, v; cin >> u >> v;
-        --u; --v;
-        adj[u].pb(v);
-        adj[v].pb(u);
+    int n, q; cin >> n >> q;
+    fenwick<ll> fw(n);
+    for(int i = 0; i < n; i++) {
+        int x; cin >> x;
+        fw.update(i, x);
     }
-
-    string s; cin >> s;
-
-    map<char, int> mp;
-    mp['0'] = 0, mp['1'] = 1, mp['?'] = 2;
-
-    vector<int> leafs(3, 0);
-    int notleafs = 0;
-    auto dfs = [&](auto &&ds, int u, int p) -> void {
-        if(adj[u].size()==1 && adj[u][0] == p) leafs[mp[s[u]]]++;
-        else if(u!=0 && s[u] == '?') notleafs++;
-        for(auto &e: adj[u]) if(e != p) {
-            ds(ds, e, u);
-        }
-    };
-    dfs(dfs, 0, -1);
     
-    int root = mp[s[0]];
-    if(root == 2) {
-        if(leafs[0] != leafs[1]) {
-            cout << max(leafs[0], leafs[1]) + leafs[2] / 2 << nl;
-        } else {
-            cout << max(leafs[0], leafs[1]) + (leafs[2] + (notleafs&1)) / 2 << nl;
+    for(;q--;) {
+        int type; cin >> type;
+        debug(fw.query(0, 0));
+        if(type == 1) {
+            int p, x; cin >> p >> x;
+            --p;
+            fw.update(p, x - fw.query(p, p));
+        } else{
+            int l, r; cin >> l >> r;
+            --l;--r;
+            cout << fw.query(l, r) << nl;
         }
-    } else {
-        cout << leafs[root ^ 1] + (leafs[2] + 1) / 2 << nl;
     }
-    debug(leafs, notleafs);
-
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+

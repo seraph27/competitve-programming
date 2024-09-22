@@ -1,8 +1,8 @@
-// Problem: D. Iris and Game on the Tree
-// Contest: Codeforces Round 969 (Div. 2)
-// URL: https://codeforces.com/contest/2007/problem/D
+// Problem: G. Sakurako's Task
+// Contest: Codeforces Round 970 (Div. 3)
+// URL: https://codeforces.com/contest/2008/problem/G
 // Time Limit: 2000
-// Start: 2024/08/30 22:37:51
+// Start: 2024/09/01 22:41:43
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -37,43 +37,34 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
-    int n; cin >> n;
-    vector<vector<int>> adj(n);
-    for(int i = 0; i < n-1; i++) {
-        int u, v; cin >> u >> v;
-        --u; --v;
-        adj[u].pb(v);
-        adj[v].pb(u);
-    }
-
-    string s; cin >> s;
-
-    map<char, int> mp;
-    mp['0'] = 0, mp['1'] = 1, mp['?'] = 2;
-
-    vector<int> leafs(3, 0);
-    int notleafs = 0;
-    auto dfs = [&](auto &&ds, int u, int p) -> void {
-        if(adj[u].size()==1 && adj[u][0] == p) leafs[mp[s[u]]]++;
-        else if(u!=0 && s[u] == '?') notleafs++;
-        for(auto &e: adj[u]) if(e != p) {
-            ds(ds, e, u);
-        }
-    };
-    dfs(dfs, 0, -1);
+    int n, k; cin >> n >> k;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
     
-    int root = mp[s[0]];
-    if(root == 2) {
-        if(leafs[0] != leafs[1]) {
-            cout << max(leafs[0], leafs[1]) + leafs[2] / 2 << nl;
-        } else {
-            cout << max(leafs[0], leafs[1]) + (leafs[2] + (notleafs&1)) / 2 << nl;
-        }
-    } else {
-        cout << leafs[root ^ 1] + (leafs[2] + 1) / 2 << nl;
+    int gd = vi[0];
+    for(int i = 1; i < n; i++) {
+        gd = gcd(gd, vi[i]);
     }
-    debug(leafs, notleafs);
+    
+    if(sz(vi)==1) {
+        if(vi[0] < k) cout<<k<<nl;
+        else cout<<k-1<<nl;
+        return;
+    }
 
+
+    ll l = 0, r = 1e18, ans = 0;
+    while(l<=r) {
+        ll mid = l + (r-l)/2;
+        
+        ll has = mid - min((ll)n, mid/gd+1) + 1;
+        if(has >= k) {
+            r = mid - 1, ans = mid;
+        } else {
+            l = mid + 1;
+        }
+    }
+    cout << ans << nl;
 }
 
 int main() {    

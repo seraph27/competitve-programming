@@ -1,8 +1,8 @@
-// Problem: D. Iris and Game on the Tree
-// Contest: Codeforces Round 969 (Div. 2)
-// URL: https://codeforces.com/contest/2007/problem/D
-// Time Limit: 2000
-// Start: 2024/08/30 22:37:51
+ / Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -12,7 +12,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -36,45 +35,53 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
+
 void shiina_mashiro() {
-    int n; cin >> n;
-    vector<vector<int>> adj(n);
-    for(int i = 0; i < n-1; i++) {
-        int u, v; cin >> u >> v;
-        --u; --v;
-        adj[u].pb(v);
-        adj[v].pb(u);
+    int n, m, h; cin >> n >> m >> h;
+    vector<int> horse(h);
+    for(auto&a: horse) {
+        cin >> a; --a;
     }
-
-    string s; cin >> s;
-
-    map<char, int> mp;
-    mp['0'] = 0, mp['1'] = 1, mp['?'] = 2;
-
-    vector<int> leafs(3, 0);
-    int notleafs = 0;
-    auto dfs = [&](auto &&ds, int u, int p) -> void {
-        if(adj[u].size()==1 && adj[u][0] == p) leafs[mp[s[u]]]++;
-        else if(u!=0 && s[u] == '?') notleafs++;
-        for(auto &e: adj[u]) if(e != p) {
-            ds(ds, e, u);
-        }
-    };
-    dfs(dfs, 0, -1);
+    vector<vector<ar<ll, 2>>> adj(2*n);
+    for(int i = 0; i < m; i++) {
+        int u, v, w; cin >> u >> v >> w;
+        --u;--v;
+        adj[u].pb({v, w});
+        adj[v].pb({u, w});
+        adj[u+n].pb({v+n, w/2});
+        adj[v+n].pb({u+n, w/2});
+    }
+    for(int i = 0; i < h; i++) {
+            adj[horse[i]].pb({horse[i]+n, 0});
+    }
     
-    int root = mp[s[0]];
-    if(root == 2) {
-        if(leafs[0] != leafs[1]) {
-            cout << max(leafs[0], leafs[1]) + leafs[2] / 2 << nl;
-        } else {
-            cout << max(leafs[0], leafs[1]) + (leafs[2] + (notleafs&1)) / 2 << nl;
+    auto dijk = [&](int start) -> vector<ll> {
+        priority_queue<ar<ll, 2>, vector<ar<ll, 2>>, greater<ar<ll, 2>>> pq;
+        vector<ll> vtx1(2*n, 4e18);
+        vtx1[start] = 0;
+        pq.push({0, start});
+        while(!pq.empty()) {
+            auto [d, v] = pq.top(); pq.pop();
+            if(d != vtx1[v]) continue;
+            for(auto &[e, w]: adj[v]) {
+                if(ckmin(vtx1[e], d + w)) {
+                    pq.push({vtx1[e], e});
+                }
+            }
         }
-    } else {
-        cout << leafs[root ^ 1] + (leafs[2] + 1) / 2 << nl;
-    }
-    debug(leafs, notleafs);
+        return vtx1;
+    };
 
+    auto robin = dijk(0), mar = dijk(n-1);
+    ll ans = 4e18;
+    for(int i = 0; i < n; i++) {
+        debug(robin[i], robin[i+n], mar[i], mar[i+n], i);
+        ckmin(ans, max(min(robin[i], robin[i+n]), min(mar[i], mar[i+n])));
+    }
+
+    cout << (ans==4e18 ? -1 : ans) << nl;
 }
+
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
@@ -83,3 +90,5 @@ int main() {
     cin >> t;
     while (t--) shiina_mashiro();
 }
+
+

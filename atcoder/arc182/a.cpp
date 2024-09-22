@@ -1,10 +1,11 @@
-// Problem: D. Iris and Game on the Tree
-// Contest: Codeforces Round 969 (Div. 2)
-// URL: https://codeforces.com/contest/2007/problem/D
+// Problem: A - Chmax Rush!
+// Contest: AtCoder Regular Contest 182
+// URL: https://atcoder.jp/contests/arc182/tasks/arc182_a
 // Time Limit: 2000
-// Start: 2024/08/30 22:37:51
+// Start: 2024/09/07 14:04:40
 
 #include <bits/stdc++.h>
+#include <atcoder/modint>
 #define sz(x) (int)x.size()
 #define ll long long
 #define ar array
@@ -12,7 +13,7 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+using namespace atcoder;
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -35,51 +36,56 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
+using mint = modint998244353;
 
 void shiina_mashiro() {
-    int n; cin >> n;
-    vector<vector<int>> adj(n);
-    for(int i = 0; i < n-1; i++) {
-        int u, v; cin >> u >> v;
-        --u; --v;
-        adj[u].pb(v);
-        adj[v].pb(u);
+    int n, q; cin >> n >> q;
+    vector<int> vp(q), vq(q);
+    for(int i = 0; i < q; i++) {
+        cin >> vp[i] >> vq[i];
     }
-
-    string s; cin >> s;
-
-    map<char, int> mp;
-    mp['0'] = 0, mp['1'] = 1, mp['?'] = 2;
-
-    vector<int> leafs(3, 0);
-    int notleafs = 0;
-    auto dfs = [&](auto &&ds, int u, int p) -> void {
-        if(adj[u].size()==1 && adj[u][0] == p) leafs[mp[s[u]]]++;
-        else if(u!=0 && s[u] == '?') notleafs++;
-        for(auto &e: adj[u]) if(e != p) {
-            ds(ds, e, u);
-        }
-    };
-    dfs(dfs, 0, -1);
     
-    int root = mp[s[0]];
-    if(root == 2) {
-        if(leafs[0] != leafs[1]) {
-            cout << max(leafs[0], leafs[1]) + leafs[2] / 2 << nl;
-        } else {
-            cout << max(leafs[0], leafs[1]) + (leafs[2] + (notleafs&1)) / 2 << nl;
+    vector<int> vis(q, 0);
+    auto change = [&](int pos, int x) -> bool {
+        if(vis[pos] != 0 && vis[pos]!=x) {
+            return false;
+        } else{
+            vis[pos]=x;
         }
-    } else {
-        cout << leafs[root ^ 1] + (leafs[2] + 1) / 2 << nl;
+        return true;
+    };
+    mint ans = 1;
+    for(int i = 0; i < q; i++) for(int j = i+1; j < q; j++) {
+        if(vq[i] <= vq[j]) continue;
+        else {
+            if(vp[i]==vp[j]) {
+                cout << 0 << nl;
+                return;
+            } else if(vp[i] > vp[j]) {
+                if(!change(i, 1) or !change(j, -1)) {
+                    cout<<0<<nl;
+                    return;
+                }
+            } else {
+                if(!change(i, -1) or !change(j, 1)) {
+                    cout << 0 << nl;
+                    return;
+                }
+            }
+        }
+    } 
+    debug(vis);
+    for(int i = 0; i < q; i++) {
+        if(vis[i]==0) ans*=2;
     }
-    debug(leafs, notleafs);
-
+    cout << ans.val() << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+

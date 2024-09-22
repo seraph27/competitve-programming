@@ -1,8 +1,8 @@
-// Problem: D. Iris and Game on the Tree
-// Contest: Codeforces Round 969 (Div. 2)
-// URL: https://codeforces.com/contest/2007/problem/D
+// Problem: E. Prefix GCD
+// Contest: Codeforces Round 973 (Div. 2)
+// URL: https://codeforces.com/contest/2013/problem/E
 // Time Limit: 2000
-// Start: 2024/08/30 22:37:51
+// Start: 2024/09/20 23:35:50
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -38,42 +38,29 @@ const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
     int n; cin >> n;
-    vector<vector<int>> adj(n);
-    for(int i = 0; i < n-1; i++) {
-        int u, v; cin >> u >> v;
-        --u; --v;
-        adj[u].pb(v);
-        adj[v].pb(u);
+    deque<int> vi;
+    for(int i = 0; i < n; i++) {
+        int x; cin >> x;
+        vi.pb(x);
     }
-
-    string s; cin >> s;
-
-    map<char, int> mp;
-    mp['0'] = 0, mp['1'] = 1, mp['?'] = 2;
-
-    vector<int> leafs(3, 0);
-    int notleafs = 0;
-    auto dfs = [&](auto &&ds, int u, int p) -> void {
-        if(adj[u].size()==1 && adj[u][0] == p) leafs[mp[s[u]]]++;
-        else if(u!=0 && s[u] == '?') notleafs++;
-        for(auto &e: adj[u]) if(e != p) {
-            ds(ds, e, u);
-        }
+    sort(all(vi));
+    int front = vi[0];
+    vi.pop_front();
+    auto op = [&](int a, int b) -> bool {
+        return gcd(a, front) < gcd(b, front);
     };
-    dfs(dfs, 0, -1);
-    
-    int root = mp[s[0]];
-    if(root == 2) {
-        if(leafs[0] != leafs[1]) {
-            cout << max(leafs[0], leafs[1]) + leafs[2] / 2 << nl;
-        } else {
-            cout << max(leafs[0], leafs[1]) + (leafs[2] + (notleafs&1)) / 2 << nl;
+    sort(all(vi), op);
+    ll ans = front;
+    for(int i = 1; i < n; i++) {
+        if(front != gcd(front, vi[0])) {
+            front = gcd(front, vi[0]);
+            vi.pop_front();
+            sort(all(vi), op);
         }
-    } else {
-        cout << leafs[root ^ 1] + (leafs[2] + 1) / 2 << nl;
+        ans+=front;
     }
-    debug(leafs, notleafs);
 
+    cout << ans << nl;
 }
 
 int main() {    

@@ -1,8 +1,8 @@
-// Problem: D. Iris and Game on the Tree
-// Contest: Codeforces Round 969 (Div. 2)
-// URL: https://codeforces.com/contest/2007/problem/D
+// Problem: D. World is Mine
+// Contest: EPIC Institute of Technology Round Summer 2024 (Div. 1 + Div. 2)
+// URL: https://codeforces.com/contest/1987/problem/D
 // Time Limit: 2000
-// Start: 2024/08/30 22:37:51
+// Start: 2024/09/05 10:50:20
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -38,41 +38,33 @@ const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
     int n; cin >> n;
-    vector<vector<int>> adj(n);
-    for(int i = 0; i < n-1; i++) {
-        int u, v; cin >> u >> v;
-        --u; --v;
-        adj[u].pb(v);
-        adj[v].pb(u);
+    map<int, int> mp;
+    for(int i = 0; i < n; i++) {
+        int x; cin >> x;
+        mp[x]++;
+    }
+    vector<int> vi;
+    for(auto &[k, v] : mp) {
+        vi.pb(v);
     }
 
-    string s; cin >> s;
-
-    map<char, int> mp;
-    mp['0'] = 0, mp['1'] = 1, mp['?'] = 2;
-
-    vector<int> leafs(3, 0);
-    int notleafs = 0;
-    auto dfs = [&](auto &&ds, int u, int p) -> void {
-        if(adj[u].size()==1 && adj[u][0] == p) leafs[mp[s[u]]]++;
-        else if(u!=0 && s[u] == '?') notleafs++;
-        for(auto &e: adj[u]) if(e != p) {
-            ds(ds, e, u);
+    debug(vi);
+    int nn = sz(vi);
+    vector dp(nn+5, vector<int>(nn+5, INF));
+    dp[0][0] = 0;
+    //dp[i][j] := max cakes eat by bob by the ith idx picking j cakes  //112222333444567 --> 2433111 if i pick 3 -> 4, 4 -> 6
+    for(int i = 0; i <= nn; i++) {
+        for(int j = 0; j <= nn; j++) {
+            if(dp[i][j] + vi[i] <= i - j) {
+                ckmin(dp[i+1][j+1], dp[i][j] + vi[i]);
+            }
+            ckmin(dp[i+1][j], dp[i][j]);
         }
-    };
-    dfs(dfs, 0, -1);
-    
-    int root = mp[s[0]];
-    if(root == 2) {
-        if(leafs[0] != leafs[1]) {
-            cout << max(leafs[0], leafs[1]) + leafs[2] / 2 << nl;
-        } else {
-            cout << max(leafs[0], leafs[1]) + (leafs[2] + (notleafs&1)) / 2 << nl;
-        }
-    } else {
-        cout << leafs[root ^ 1] + (leafs[2] + 1) / 2 << nl;
     }
-    debug(leafs, notleafs);
+    int jj = nn;
+    while(dp[nn][jj]==INF) jj--;
+
+    cout << nn - jj  << nl;
 
 }
 

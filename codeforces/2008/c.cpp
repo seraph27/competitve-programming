@@ -1,8 +1,8 @@
-// Problem: D. Iris and Game on the Tree
-// Contest: Codeforces Round 969 (Div. 2)
-// URL: https://codeforces.com/contest/2007/problem/D
+// Problem: C. Longest Good Array
+// Contest: Codeforces Round 970 (Div. 3)
+// URL: https://codeforces.com/contest/2008/problem/C
 // Time Limit: 2000
-// Start: 2024/08/30 22:37:51
+// Start: 2024/09/01 22:41:43
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -36,50 +36,37 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
+vector<int> add;
+void init() {
+    int now = 1, curr = 1;
+    while(now < INF) {
+        add.pb(now);
+        curr++;
+        now+=curr;
+    }
+}
 void shiina_mashiro() {
-    int n; cin >> n;
-    vector<vector<int>> adj(n);
-    for(int i = 0; i < n-1; i++) {
-        int u, v; cin >> u >> v;
-        --u; --v;
-        adj[u].pb(v);
-        adj[v].pb(u);
-    }
-
-    string s; cin >> s;
-
-    map<char, int> mp;
-    mp['0'] = 0, mp['1'] = 1, mp['?'] = 2;
-
-    vector<int> leafs(3, 0);
-    int notleafs = 0;
-    auto dfs = [&](auto &&ds, int u, int p) -> void {
-        if(adj[u].size()==1 && adj[u][0] == p) leafs[mp[s[u]]]++;
-        else if(u!=0 && s[u] == '?') notleafs++;
-        for(auto &e: adj[u]) if(e != p) {
-            ds(ds, e, u);
-        }
-    };
-    dfs(dfs, 0, -1);
     
-    int root = mp[s[0]];
-    if(root == 2) {
-        if(leafs[0] != leafs[1]) {
-            cout << max(leafs[0], leafs[1]) + leafs[2] / 2 << nl;
+    int l, r; cin >> l >> r;
+    int ans = 0;
+    debug(sz(add));
+    for(int i = 0; i < sz(add); i++) {
+        if(l+add[i] <= r){
+            ans++;
         } else {
-            cout << max(leafs[0], leafs[1]) + (leafs[2] + (notleafs&1)) / 2 << nl;
+            break;
         }
-    } else {
-        cout << leafs[root ^ 1] + (leafs[2] + 1) / 2 << nl;
     }
-    debug(leafs, notleafs);
+    cout<<ans+1<<nl;
 
+    debug(add);
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
+    init();
     cin >> t;
     while (t--) shiina_mashiro();
 }

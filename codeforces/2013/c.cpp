@@ -1,8 +1,8 @@
-// Problem: D. Iris and Game on the Tree
-// Contest: Codeforces Round 969 (Div. 2)
-// URL: https://codeforces.com/contest/2007/problem/D
+// Problem: C. Password Cracking
+// Contest: Codeforces Round 973 (Div. 2)
+// URL: https://codeforces.com/contest/2013/problem/C
 // Time Limit: 2000
-// Start: 2024/08/30 22:37:51
+// Start: 2024/09/20 23:35:49
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -38,42 +38,54 @@ const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
     int n; cin >> n;
-    vector<vector<int>> adj(n);
-    for(int i = 0; i < n-1; i++) {
-        int u, v; cin >> u >> v;
-        --u; --v;
-        adj[u].pb(v);
-        adj[v].pb(u);
-    }
 
-    string s; cin >> s;
-
-    map<char, int> mp;
-    mp['0'] = 0, mp['1'] = 1, mp['?'] = 2;
-
-    vector<int> leafs(3, 0);
-    int notleafs = 0;
-    auto dfs = [&](auto &&ds, int u, int p) -> void {
-        if(adj[u].size()==1 && adj[u][0] == p) leafs[mp[s[u]]]++;
-        else if(u!=0 && s[u] == '?') notleafs++;
-        for(auto &e: adj[u]) if(e != p) {
-            ds(ds, e, u);
-        }
-    };
-    dfs(dfs, 0, -1);
-    
-    int root = mp[s[0]];
-    if(root == 2) {
-        if(leafs[0] != leafs[1]) {
-            cout << max(leafs[0], leafs[1]) + leafs[2] / 2 << nl;
+    auto guess = [&](string s, int type, int isfront) -> int {
+        if(isfront) {
+            if(!type) s+='0';
+            else s+='1';
         } else {
-            cout << max(leafs[0], leafs[1]) + (leafs[2] + (notleafs&1)) / 2 << nl;
+            if(!type) s = '0'+s;
+            else s = '1'+s;
         }
-    } else {
-        cout << leafs[root ^ 1] + (leafs[2] + 1) / 2 << nl;
-    }
-    debug(leafs, notleafs);
+        
+        cout << "? " + s << endl;
+        int get; cin >> get;
+        return get;
+    };
 
+    string ans = "";
+
+    int last = 0;
+    while(sz(ans) < n) {
+        if(guess(ans, 0, 1)) {
+            ans+='0';
+            continue;
+        }
+        if(guess(ans, 1, 1)) {
+            ans+='1';
+            continue;
+        }
+        break;
+    }
+    char bk = ans[0];
+    debug(ans);
+    int b = bk-'0';
+    b^=1;
+    debug(bk);
+
+    while(sz(ans) < n) {
+        if(guess(ans, b, 0)) {
+            ans = to_string(b)+ans;
+            continue;
+        }
+        if(guess(ans, b^1, 0)) {
+            ans = to_string(b^1)+ans;
+            continue;
+        }
+        break;
+    }
+
+    cout << "! " + ans << endl;
 }
 
 int main() {    
