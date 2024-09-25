@@ -82,10 +82,6 @@ void shiina_mashiro() {
         }
         return up[x][0];
     };
-
-    auto path = [&](int x, int y) -> int {
-
-    }
     
     int m; cin >> m;
     for(;m--;) {

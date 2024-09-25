@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: A - Appraiser
+// Contest: AtCoder Regular Contest 184
+// URL: https://atcoder.jp/contests/arc184/tasks/arc184_a
+// Time Limit: 2000
+// Start: 2024/09/23 15:47:38
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -12,7 +12,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -45,12 +44,62 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n, m, q; cin >> n >> m >> q;
+    
+    int queries = 0;
+    auto ask = [&](int c1, int c2) -> int {
+        queries++;
+        assert(c1>=1 && c1 <= n && c2 >= 1 && c2 <=n);
+        cout << "? " << c1 << " " << c2 << endl;
+        int res; cin >> res;
+        return res;
+    };
+    
+    set<int> real, fake;
+    set<int> rn, fn;
+    int now = 1;
+    for(int i = 1; i <= n; i++) {
+        if(i==now) {
+            rn.emplace(i);
+            continue;
+        }
+        int ret = ask(now, i);
+        if(!ret) rn.emplace(i);
+        else fn.emplace(i);
+
+        if(rn.size()==11 || fn.size()==11) {
+            if(fn.size() > rn.size()) swap(fn, rn);
+            for(auto &c : rn) real.emplace(c);
+            for(auto &c2 : fn) fake.emplace(c2);
+            rn.clear();
+            fn.clear();
+            now = i+1;
+        }
+        debug(real, fake, rn, fn, now, i);
+    }
+    if(rn.size()) {
+        if(!ask(*real.begin(), *rn.begin())) {
+            for(auto&c : rn) real.emplace(c);
+        } else for(auto&c2 : rn) fake.emplace(c2);
+    } 
+    if(fn.size()) {
+        if(!ask(*real.begin(), *fn.begin())) {
+            for(auto&c : fn) real.emplace(c); 
+        } else for(auto &c2 : fn) fake.emplace(c2);
+    }
+    debug(queries);
+    cout << "!";
+    for(auto &c : fake) {
+        cout << " " << c;
+    }
+    cout << endl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+

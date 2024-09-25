@@ -40,6 +40,39 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    reverse(all(vi));
+    vector<double> exp(n+5), add(n+5), sqr(n+5);
+    exp[0] = 1;
+    add[0] = 1;
+    sqr[0] = 1;
+    for(int i = 0; i <= n; i++) {
+        exp[i+1] = exp[i]*0.9;
+        add[i+1] = add[i] + exp[i+1];
+        if(i>0) sqr[i] = sqrt(i);
+    }
+    debug(exp, add, sqr);
+    vector<pair<double, int>> dp1(n+5, {-INF, 0});
+    dp1[0] = {0, 0};
+    for(int i = 0; i < n; i++) {
+        vector<pair<double, int>> dp2(n+5, {-INF, 0});
+        for(int j = 0; j < i; j++) {
+            ckmax(dp2[j], dp1[j]);
+            double pick = dp1[j].first + 1200/sqr[dp1[j].second];
+            pick*=add[dp1[j].second];
+            pick+=exp[dp1[j].second+1]*vi[j];
+            pick/=add[dp1[j].second+1];
+            pick-=1200/sqr[dp1[j].second+1];
+            debug(pick);
+            pair<double, int> ad = {pick, dp1[j].second+1};
+            ckmax(dp2[j], ad);
+        }
+        debug(dp1, dp2);
+        swap(dp1, dp2);
+    }
+    cout << dp1[n].first << nl;
 }
 
 int main() {    

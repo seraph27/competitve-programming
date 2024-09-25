@@ -38,23 +38,20 @@ const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
     int n; cin >> n;
-    vector<ll> vi;
+    vector<ar<ll, 2>> vi;
     for(int i = 0; i < n; i++) {
-        ll x; cin >> x;
-        if(vi.size()) {
-            auto tp = vi.back();
-            while (vi.size() && tp > x) {
-                ll diff = (tp + x + 1) / 2;
-                x = diff;
-                vi.pop_back();
-            } 
-            vi.pb(x);
-        } else {
-            vi.pb(x);
+        ll tot; cin >> tot;
+        ll cnt = 1;
+        while(vi.size() && vi.back()[0] >= tot / cnt) {
+            tot+=vi.back()[0] * vi.back()[1], cnt+=vi.back()[1];
+            vi.pop_back();
         }
+        debug(tot, cnt);
+        vi.pb({tot/cnt, cnt - tot%cnt});
+        if(tot%cnt!=0) vi.pb({tot/cnt+1, tot%cnt});
         debug(vi);
     }
-    cout << vi[sz(vi)-1] - vi[0] << nl;
+    cout << vi[sz(vi)-1][0] - vi[0][0] << nl;
 }
 
 int main() {    

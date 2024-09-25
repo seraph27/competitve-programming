@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: D - Cross Explosion
+// Contest: トヨタ自動車プログラミングコンテスト2024#9（AtCoder Beginner Contest 370）
+// URL: https://atcoder.jp/contests/abc370/tasks/abc370_d
+// Time Limit: 4000
+// Start: 2024/09/24 2:36:47
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -12,7 +12,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -45,12 +44,44 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int h, w, q; cin >> h >> w >> q;
+
+    vector<set<int>> row(h+1), col(w+1);
+    for(int i = 1; i <= h; i++) for(int j = 1; j <= w; j++) {
+        row[i].insert(j);
+        col[j].insert(i);
+    }
+    debug(row, col);
+    auto del = [&](int y, int x) -> void {
+        if(row[y].count(x)) row[y].erase(x);
+        if(col[x].count(y)) col[x].erase(y);
+    };
+
+    for(;q--;) {
+        int r, c; cin >> r >> c;
+        if(row[r].count(c)) {
+            del(r, c);
+        } else{
+            set<ar<int, 2>> todel;
+            auto it = row[r].lower_bound(c);
+            if(it != row[r].end()) todel.insert({r, *it});
+            if(it != row[r].begin()) todel.insert({r, *prev(it)});
+            auto it2 = col[c].lower_bound(r);
+            if(it2 != col[c].end()) todel.insert({*it2, c});
+            if(it2 != col[c].begin()) todel.insert({*prev(it2), c});
+            for(auto &xx : todel) del(xx[0], xx[1]);
+        }
+    }
+    int ans = 0;
+    for(int i = 1; i <= h; i++) ans+=row[i].size();
+    cout << ans << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+

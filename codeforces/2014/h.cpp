@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: H. Robin Hood Archery
+// Contest: Codeforces Round 974 (Div. 3)
+// URL: https://codeforces.com/contest/2014/problem/H
+// Time Limit: 3000
+// Start: 2024/09/22 19:44:37
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -12,18 +12,10 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
-template<typename T, typename S> constexpr T ifloor(const T a, const S b){return a/b-(a%b&&(a^b)<0);}
-template<typename T, typename S> constexpr T iceil(const T a, const S b){return ifloor(a+b-1,b);}
-template<typename T> T isqrt(const T &x){T y=sqrt(x+2); while(y*y>x) y--; return y;}
-template<typename T>
-void sort_unique(vector<T> &vec){
-    sort(vec.begin(),vec.end());
-    vec.resize(unique(vec.begin(),vec.end())-vec.begin());
-}
 
 #ifdef MISAKA
 struct _debug {
@@ -44,7 +36,18 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
+vector<unsigned long long> rg(1e6+5);
 void shiina_mashiro() {
+    int n, q; cin >> n >> q;
+    vector<ll> vi(n);
+    for(auto&a: vi) cin >> a;
+    vector<ll> pref(n+1);
+    for(int i = 0; i < n; i++) pref[i+1]=pref[i]^rg[vi[i]];
+    for(;q--;) {
+        int l, r; cin >> l >> r;
+        if((pref[r]^pref[l-1])==0) cout << "Yes" << nl;
+        else cout << "No" << nl;
+    }
 }
 
 int main() {    
@@ -52,5 +55,8 @@ int main() {
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
     cin >> t;
+    for(int i = 0; i < 1e6+5; i++) {
+        rg[i] = rng();
+    }
     while (t--) shiina_mashiro();
 }
