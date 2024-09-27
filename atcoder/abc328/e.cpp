@@ -1,22 +1,28 @@
-// Problem: E - Maximize Rating
-// Contest: HHKBプログラミングコンテスト2023(AtCoder Beginner Contest 327)
-// URL: https://atcoder.jp/contests/abc327/tasks/abc327_e
+// Problem: E - Modulo MST
+// Contest: トヨタ自動車プログラミングコンテスト2023#7(AtCoder Beginner Contest 328)
+// URL: https://atcoder.jp/contests/abc328/tasks/abc328_e
 // Time Limit: 2000
-// Start: 2024/08/18 1:24:03
+// Start: 2024/09/26 13:40:02
 
 #include <bits/stdc++.h>
-#include <atcoder/modint>
+#define sz(x) (int)x.size()
 #define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
+template<typename T, typename S> constexpr T ifloor(const T a, const S b){return a/b-(a%b&&(a^b)<0);}
+template<typename T, typename S> constexpr T iceil(const T a, const S b){return ifloor(a+b-1,b);}
+template<typename T> T isqrt(const T &x){T y=sqrt(x+2); while(y*y>x) y--; return y;}
+template<typename T>
+void sort_unique(vector<T> &vec){
+    sort(vec.begin(),vec.end());
+    vec.resize(unique(vec.begin(),vec.end())-vec.begin());
+}
 
 #ifdef MISAKA
 struct _debug {
@@ -34,46 +40,10 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
-const int mod = 1e9+7;
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
-    int n; cin >> n;
-    vector<int> vi(n+1);
-    for(int i = 1; i <= n; i++) cin >> vi[i];
-    vector<double> sqr(n+5), exp(n+5, 0);
-    double c = 1;
-    for(int i = 1; i <= n; i++) {
-        exp[i] += exp[i-1];
-        exp[i] += c;
-        c*=0.9;
-        sqr[i] = sqrt(i); 
-    }
-    debug(exp, sqr);
-    //dp[i][j]:= maximum rating picking up until ith idx picking j different contests;
-
-    vector<vector<double>> dp(n+5, vector<double>(n+5, 0));
-    dp[1][1] = vi[1];
-
-    for(int i = 1; i <= n; i++) {
-        for(int j = 1; j <= i; j++) {
-            if(j==1) {
-                ckmax(dp[i][j], max(dp[i-1][1], (double)vi[i]));
-            } else {
-                ckmax(dp[i][j], max(dp[i-1][j-1]*0.9 + vi[i], dp[i-1][j]));
-            }
-        }
-    }
-    double ans = -1200;
-    for(int j = 1; j <= n; j++) {
-        double res = dp[n][j] / exp[j] - 1200 / sqr[j]; 
-        ckmax(ans, res);
-    }
-    cout << fixed << setprecision(20) << ans << nl;
-
-
 }
 
 int main() {    
@@ -83,3 +53,4 @@ int main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+
