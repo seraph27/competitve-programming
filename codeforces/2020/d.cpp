@@ -85,31 +85,23 @@ const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
     int n, m; cin >> n >> m;
-    set<int> s;
-    for(int i = 1; i <= n; i++) s.emplace(i);
-    DSU uf(n+1);
+    DSU uf(n);
+    vector<vector<int>> imos(11, vector<int>(n+5, 0));
     while(m--) {
         int a, d, k; cin >> a >> d >> k;
-        if(k < s.size()) {
-            vector<int> save;
-            for(int i = 1; i <= k; i++) {
-                uf.merge(a, a+d*i);
-                save.emplace_back(a+d*i);
-            } 
-            for(auto &x: save) s.erase(x);
-        } else {
-            vector<int> save;
-            for(auto &x : s) {
-                if((x-a)%d==0) {
-                    uf.merge(a, x);
-                    save.emplace_back(x);
-                }
-            }
-            for(auto&x: save) s.erase(x);
+        imos[d][--a]++;
+        imos[d][a+k*d]--;
+        debug(a, a+k*d);
+    }
+    for(int i = 1; i <= 10; i++) {
+        for(int j = 0; j+i <= n; j++) {
+            imos[i][j+i]+=imos[i][j]; 
+            if(imos[i][j]) uf.merge(j, j+i);
         }
+        debug(imos);
     }
     set<int> ans;
-    for(int i = 1; i <= n; i++) ans.insert(uf.find(i));
+    for(int i = 0; i < n; i++) ans.insert(uf.find(i));
     cout << sz(ans) << nl;
 }
 

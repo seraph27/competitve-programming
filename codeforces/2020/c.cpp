@@ -45,19 +45,8 @@ const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
     ll b, c, d; cin >> b >> c >> d;
-    ll ans = 0;
-    for(int i = 0; i <= 61; i++) {
-        int bit = (d>>i&1);
-        int calc2 = 1 - (1 & (c>>i&1));
-        if(calc2%2==bit) {
-            ans|=(1LL<<i);
-        } 
-    }
-    if((ans|b) - (ans&c) != d) {
-        cout << -1 << nl;
-        return;
-    }
-    cout << ans << nl;
+    ll x = c^d;
+    cout << ((x|b)-(x&c)==d ? x : -1) << nl;
 }
 
 int main() {    
