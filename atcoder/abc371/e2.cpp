@@ -1,8 +1,8 @@
-// Problem: E - Modulo MST
-// Contest: トヨタ自動車プログラミングコンテスト2023#7(AtCoder Beginner Contest 328)
-// URL: https://atcoder.jp/contests/abc328/tasks/abc328_e
-// Time Limit: 2000
-// Start: 2024/09/26 13:40:02
+// Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -43,81 +43,22 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
-struct DSU {
-    vector<int> f, siz;
-    
-    DSU() {}
-    DSU(int n) {
-        init(n);
-    }
-    
-    void init(int n) {
-        f.resize(n);
-        iota(f.begin(), f.end(), 0);
-        siz.assign(n, 1);
-    }
-    
-    int find(int x) {
-        while (x != f[x]) {
-            x = f[x] = f[f[x]];
-        }
-        return x;
-    }
-    
-    bool same(int x, int y) {
-        return find(x) == find(y);
-    }
-    
-    bool merge(int x, int y) {
-        x = find(x);
-        y = find(y);
-        if (x == y) {
-            return false;
-        }
-        siz[x] += siz[y];
-        f[y] = x;
-        return true;
-    }
-    
-    int size(int x) {
-        return siz[find(x)];
-    }
-};
-
 void shiina_mashiro() {
-    ll n, m, k; cin >> n >> m >> k;
-    vector<ar<ll, 3>> edges(m);
-    for(int i = 0; i < m; i++) {
-        int u, v; cin >> u >> v;
-        --u; --v;
-        ll w; cin >> w;
-        edges[i] = {u, v, w};
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    vector<int> lst(n, -1);
+    ll ans = 0;
+    for(int i = 0; i < n; i++) {
+        vi[i]--;
+        ans+=(ll)(i-lst[vi[i]]) * (lst[vi[i]] + 1);
+        debug(ans);
+        lst[vi[i]] = i;
     }
-    
-    vector<int> use;
-    ll ans = 1LL<<60;
-    auto dfs = [&](auto&&s, int u) -> void {
-        if(sz(use)>=n) return;
-        if(u==sz(edges)) {
-            DSU uf(n);
-            ll cost = 0;
-            int bad = 0;
-            debug(use);
-            for(auto&e : use) {
-                if(uf.same(edges[e][0], edges[e][1])) bad = 1;
-                uf.merge(edges[e][0], edges[e][1]);
-                cost += edges[e][2];
-            }
-            if(!bad) ckmin(ans, cost%k);
-        }
-        s(s, u+1);
-        use.pb(u);
-        s(s, u+1);
-        use.pop_back();
-    };
-    dfs(dfs, 0);
+    for(int i = 0; i < n; i++) {
+        ans+=(ll)(n-lst[i]) * (lst[i]+1);
+    }
     cout << ans << nl;
-
 }
 
 int main() {    
@@ -127,4 +68,5 @@ int main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+
 

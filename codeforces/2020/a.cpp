@@ -36,13 +36,32 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    ll n, k; cin >> n >> k;
+    if(k==1 || k > n) {
+        cout << n << nl;
+        return;
+    } else {
+        ll temp = k;
+        ll op = 0;
+        while(n!=0) {
+            ll temp = 1;
+            while(n-temp*k>=0){
+                temp*=k;
+            }
+            debug(temp);
+            op+=n/temp;
+            n-=temp*(n/temp);
+        }
+        cout << op << nl;
+        return;
+    }
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 
