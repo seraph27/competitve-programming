@@ -15,6 +15,14 @@ using namespace std;
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
+template<typename T, typename S> constexpr T ifloor(const T a, const S b){return a/b-(a%b&&(a^b)<0);}
+template<typename T, typename S> constexpr T iceil(const T a, const S b){return ifloor(a+b-1,b);}
+template<typename T> T isqrt(const T &x){T y=sqrt(x+2); while(y*y>x) y--; return y;}
+template<typename T>
+void sort_unique(vector<T> &vec){
+    sort(vec.begin(),vec.end());
+    vec.resize(unique(vec.begin(),vec.end())-vec.begin());
+}
 
 #ifdef MISAKA
 struct _debug {
@@ -36,6 +44,21 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    vector<int> lst(n, -1);
+    ll ans = 0;
+    for(int i = 0; i < n; i++) {
+        vi[i]--;
+        ans+=(ll)(i-lst[vi[i]]) * (lst[vi[i]] + 1);
+        debug(ans);
+        lst[vi[i]] = i;
+    }
+    for(int i = 0; i < n; i++) {
+        ans+=(ll)(n-lst[i]) * (lst[i]+1);
+    }
+    cout << ans << nl;
 }
 
 int main() {    

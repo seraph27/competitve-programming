@@ -1,8 +1,8 @@
-// Problem: E - Modulo MST
-// Contest: トヨタ自動車プログラミングコンテスト2023#7(AtCoder Beginner Contest 328)
-// URL: https://atcoder.jp/contests/abc328/tasks/abc328_e
-// Time Limit: 2000
-// Start: 2024/09/26 13:40:02
+// Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -15,14 +15,6 @@ using namespace std;
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
-template<typename T, typename S> constexpr T ifloor(const T a, const S b){return a/b-(a%b&&(a^b)<0);}
-template<typename T, typename S> constexpr T iceil(const T a, const S b){return ifloor(a+b-1,b);}
-template<typename T> T isqrt(const T &x){T y=sqrt(x+2); while(y*y>x) y--; return y;}
-template<typename T>
-void sort_unique(vector<T> &vec){
-    sort(vec.begin(),vec.end());
-    vec.resize(unique(vec.begin(),vec.end())-vec.begin());
-}
 
 #ifdef MISAKA
 struct _debug {
@@ -44,13 +36,33 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    ll n, k; cin >> n >> k;
+    if(k==1 || k > n) {
+        cout << n << nl;
+        return;
+    } else {
+        ll temp = k;
+        ll op = 0;
+        while(n!=0) {
+            ll temp = 1;
+            while(n-temp*k>=0){
+                temp*=k;
+            }
+            debug(temp);
+            op+=n/temp;
+            n-=temp*(n/temp);
+        }
+        cout << op << nl;
+        return;
+    }
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
+
 
