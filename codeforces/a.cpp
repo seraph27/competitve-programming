@@ -12,7 +12,6 @@
 #define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
@@ -54,4 +53,5 @@ int main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+
 

@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: D2. Reverse Card (Hard Version)
+// Contest: Codeforces Round 942 (Div. 2)
+// URL: https://codeforces.com/contest/1972/problem/D2
+// Time Limit: 2000
+// Start: Sun Sep 29 18:22:16 2024
 
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -51,7 +51,6 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
-

@@ -1,6 +1,6 @@
 -- .competitest.lua content
 return {
-    template_file = "$(HOME)/OneDrive/Documents/competitve-programming/lib/codeforces.cpp",
+    template_file = "/home/seraph/competitve-programming/lib/codeforces.cpp",
 
     -- received_contests_directory = "$(CONTEST)",
     -- received_contests_problems_path = function(task, file_extension)
