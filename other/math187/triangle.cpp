@@ -44,8 +44,27 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
-void shiina_mashiro() {
+bool solve(auto &A) {
+    vector<pair<int, int>> edges;
+    for(int i = 0; i < n; i++) for(int j = i+1; j < n; j++) {
+        if(A[i][j]) edges.pb({i, j});
+    }
+    for(auto &[u, v] : edges) {
+        for(int i = 0; i < n; i++) if(A[u][i]) {
+            if(A[v][i]) return true; 
+        }
+    }
+    return false;
+}
 
+void shiina_mashiro() {
+    int n, m; cin >> n >> m;
+    vector<vector<int>> A(n, vector<int>(n));
+    for(int i = 0; i < m; i++) {
+        int u, v; cin >> u >> v;
+        A[u][v] = 1;
+        A[v][u] = 1;
+    }
 }
 
 int main() {    
