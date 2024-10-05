@@ -1,0 +1,2 @@
+g++ -Wall -Wextra -Wshadow -O2 -o a -static-libstdc++ -std=c++20 -DMISAKA a.cpp
+ulimit -s unlimited (for stack)
