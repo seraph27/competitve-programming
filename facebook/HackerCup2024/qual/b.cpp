@@ -2,8 +2,8 @@
 // Contest: Meta Hacker Cup 2024 Practice Round
 // URL: https://www.facebook.com/codingcompetitions/hacker-cup/2024/practice-round/problems/B
 // Time Limit: 360000
-// Start: Fri Oct  4 20:42:57 2024
-
+// Start: Fri Oct  4 20:57:16 2024
+// codeforces
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
 #define ll long long

@@ -3,7 +3,7 @@
 // URL: $(URL)
 // Time Limit: $(TIMELIM)
 // Start: $(DATE)
-
+// mintemplate
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
 #define ll long long
