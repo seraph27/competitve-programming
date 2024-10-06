@@ -40,6 +40,9 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    long double n, p; cin >> n >> p;
+    long double ans = powl(p/100, (n-1)/n);
+    cout << fixed << setprecision(20) << ans*100-p << nl;
 }
 
 int main() {    
