@@ -58,14 +58,42 @@ void shiina_mashiro() {
         for(auto &[dy, dx] : dirs) {
             int ny = dy + i, nx = dx + j;
             if(ny < 0 || nx < 0 || ny >= n || nx >= n) continue;
-            debug(grid[ny][nx]);
             if(grid[ny][nx] == '?') cnt++; 
         }
-        debug(cnt);
-        debug(grid[i][j]-'0');
         if(cnt != grid[i][j]-'0') ok = 0;
     }
-    cout << ok << nl;
+
+    bool ok2 = 1;
+    vector<vector<int>> vis(n, vector<int>(n));
+    for(int i = 0; i < n; i++) for(int j = 0; j < n; j++) {
+        if(grid[i][j] == '?') {
+            int ty = i, tx = j;
+            while(++ty < n && (grid[ty][j] == '.' || grid[ty][j] == '?')) {
+                if(grid[ty][j] == '?') ok2 = 0;
+                vis[ty][j] = 1;
+            }
+            ty = i;
+            while(--ty >= 0 && (grid[ty][j] == '.' || grid[ty][j] == '?')) {
+                if(grid[ty][j] == '?') ok2 = 0;
+                vis[ty][j] = 1;
+            }
+            while(++tx < n && (grid[i][tx] == '.' || grid[i][tx] == '?')) {
+                if(grid[i][tx] == '?') ok2 = 0;
+                vis[i][tx] = 1;
+            }
+            tx = j;
+            while(--tx >= 0 && (grid[i][tx] == '.' || grid[i][tx] == '?')) {
+                if(grid[i][tx] == '?') ok2 = 0;
+                vis[i][tx] = 1;
+            }
+        }
+    }
+    bool ok3 = 1;
+    for(int i = 0; i < n; i++) for(int j = 0; j < n; j++) {
+        if(grid[i][j] == '.' && !vis[i][j]) ok3 = 0;
+    }
+    debug(ok, ok2, ok3);
+    cout << (ok&&ok2&&ok3) << nl;
 }
 
 int main() {    
