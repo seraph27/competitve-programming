@@ -45,12 +45,56 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    ll n, m, k; cin >> n >> m >> k;
+    vector<ll> vi(n);
+    for(auto&a : vi) cin >> a;
+    
+    vector<ll> ans(n);
+    vector<int> idxs(n);
+    iota(all(idxs), 0);
+    sort(all(idxs), [&](int a, int b){return vi[a] < vi[b];});
+    sort(all(vi));
+    vector<ll> pref(n+1);
+    for(int i = 0; i < n; i++) {
+        pref[i+1] = pref[i] + vi[i];
+    }
+    ll sum = reduce(all(vi));
+    auto ok = [&](ll addvote, ll now) -> bool {
+        ll need = vi[now] + addvote + 1;
+        auto dist = n - (lower_bound(all(pref), need) - pref.begin()) + 1;
+        ll l = 1, r = dist-1, ans3 = l;
+        while(l<=r) {
+            ll mid2 = l + (r-l)/2;
+            if(need * (r-mid2+1) - (pref[r] - pref[mid2-1] - (mid2 <= now ? vi[now] : 0) >= k-sum-addvote)) {
+                r = mid2 - 1, ans3 = mid2;
+            } else l = mid2 + 1;
+        }
+        ll cnt;
+        if(ans3 <= now) cnt = ans3-1;
+        else cnt = ans3;
+        return cnt < m;
+    }; //if i get mid votes, then i have a_i + mid votes. want to see if there can be M people more than a_i+mid+1 votes.
+    for(int i = 0; i < n; i++) {
+        ll l = 0, r = k-sum, ans2 = l;
+        while(l<=r) {
+            ll mid = l + (r-l)/2;
+            if(ok(mid, i)) { //if there is such a X we want to find a better one
+                r = mid - 1, ans2 = mid;
+            } else {
+                l = mid + 1;
+            }
+        }
+        if(ok(ans2, i)) ans[idxs[i]] = ans2;
+        else ans[idxs[i]] = -1;
+    }
+    for(auto &x : ans) cout << x << " ";
+    cout << nl;
+
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
     while (t--) shiina_mashiro();
 }
