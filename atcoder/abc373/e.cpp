@@ -58,31 +58,42 @@ void shiina_mashiro() {
     for(int i = 0; i < n; i++) {
         pref[i+1] = pref[i] + vi[i];
     }
+    if(n==m) {
+        for(int i = 0; i < n; i++) {
+            cout << 0 << " ";
+        }
+        return;
+    }
     ll sum = reduce(all(vi));
     auto ok = [&](ll addvote, ll now) -> bool {
         ll need = vi[now] + addvote + 1;
-        auto dist = n - (lower_bound(all(pref), need) - pref.begin()) + 1;
-        ll l = 1, r = dist-1, ans3 = l;
-        while(l<=r) {
-            ll mid2 = l + (r-l)/2;
-            if(need * (r-mid2+1) - (pref[r] - pref[mid2-1] - (mid2 <= now ? vi[now] : 0) >= k-sum-addvote)) {
-                r = mid2 - 1, ans3 = mid2;
-            } else l = mid2 + 1;
+        ll rb = lower_bound(all(vi), need) - vi.begin();
+        ll lb = n-m-(now>=n-m ? 1 : 0);
+        debug(rb, lb);
+        if(rb <= lb) return 0;
+
+        ll cnt = 0; //votes needed for othe people to win
+        ll votes_left = k - sum - addvote; //how much votes left
+            debug(rb-lb, pref[rb]-pref[lb]);
+        if(now >= lb && now < rb) {
+            cnt = (rb - lb) * need - (pref[rb] - pref[lb]) - (need - vi[now]);
+        } else {
+            cnt = (rb - lb) * need - (pref[rb] - pref[lb]);
         }
-        ll cnt;
-        if(ans3 <= now) cnt = ans3-1;
-        else cnt = ans3;
-        return cnt < m;
+        debug(votes_left, cnt);
+        return votes_left < cnt;
     }; //if i get mid votes, then i have a_i + mid votes. want to see if there can be M people more than a_i+mid+1 votes.
     for(int i = 0; i < n; i++) {
+        debug(i, "ASASD");
         ll l = 0, r = k-sum, ans2 = l;
         while(l<=r) {
             ll mid = l + (r-l)/2;
-            if(ok(mid, i)) { //if there is such a X we want to find a better one
+            if(ok(mid, i)) { //if we can win we want to find a better one
                 r = mid - 1, ans2 = mid;
             } else {
                 l = mid + 1;
             }
+            debug(mid);
         }
         if(ok(ans2, i)) ans[idxs[i]] = ans2;
         else ans[idxs[i]] = -1;
