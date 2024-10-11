@@ -16,3 +16,4 @@ vector<T> dijkstra(int s, vector<vector<pair<int,T>>> adj){
     }
     return dis;
 }
+

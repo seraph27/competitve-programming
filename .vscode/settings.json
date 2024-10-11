@@ -1,19 +1,26 @@
 {
-  "files.associations": {
-    "iostream": "cpp",
-    "chrono": "cpp",
-    "array": "cpp",
-    "deque": "cpp",
-    "forward_list": "cpp",
-    "list": "cpp",
-    "string": "cpp",
-    "unordered_map": "cpp",
-    "unordered_set": "cpp",
-    "vector": "cpp",
-    "string_view": "cpp",
-    "initializer_list": "cpp",
-    "regex": "cpp",
-    "valarray": "cpp",
-    "modint": "cpp"
-  }
+    "files.associations": {
+        "iostream": "cpp",
+        "chrono": "cpp",
+        "array": "cpp",
+        "deque": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "vector": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "regex": "cpp",
+        "valarray": "cpp",
+        "modint": "cpp"
+    },
+    "cpu.compileArgs.common": {
+        "c++": "-Wall -Wextra -Wshadow -std=c++20 -o "
+    },
+    "cpu.compileArgs.debug": {
+        "c++": "-O0 -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -DMISAKA",
+        "rust": "-g -C debug-assertions=on"
+    }
 }
