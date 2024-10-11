@@ -1,9 +1,9 @@
-// Problem: E - How to Win the Election
-// Contest: AtCoder Beginner Contest 373
-// URL: https://atcoder.jp/contests/abc373/tasks/abc373_e
-// Time Limit: 2500
-// Start: Sun Oct  6 14:49:16 2024
-// codeforces
+// Problem: Light Up
+// Contest: unknown_contest
+// URL: https://open.kattis.com/problems/lightup
+// Time Limit: 1000
+// Start: 2024/10/09 11:59:44
+// mintemplate
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
 #define ll long long
@@ -45,67 +45,62 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
-    ll n, m, k; cin >> n >> m >> k;
-    vector<ll> vi(n);
-    for(auto&a : vi) cin >> a;
-    
-    vector<ll> ans(n);
-    vector<int> idxs(n);
-    iota(all(idxs), 0);
-    sort(all(idxs), [&](int a, int b){return vi[a] < vi[b];});
-    sort(all(vi));
-    vector<ll> pref(n+1);
+    int n; cin >> n;
+    vector<string> grid(n);
     for(int i = 0; i < n; i++) {
-        pref[i+1] = pref[i] + vi[i];
+        cin >> grid[i];
     }
-    if(n==m) {
-        for(int i = 0; i < n; i++) {
-            cout << 0 << " ";
+    const pii dirs[4] = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+    bool ok = 1;
+    for(int i = 0; i < n; i++) for(int j = 0; j < n; j++) {
+        if(grid[i][j] == '?' || grid[i][j] == '.' || grid[i][j] == 'X') continue;
+        int cnt = 0;
+        for(auto &[dy, dx] : dirs) {
+            int ny = dy + i, nx = dx + j;
+            if(ny < 0 || nx < 0 || ny >= n || nx >= n) continue;
+            if(grid[ny][nx] == '?') cnt++; 
         }
-        return;
+        if(cnt != grid[i][j]-'0') ok = 0;
     }
-    ll sum = reduce(all(vi));
-    auto ok = [&](ll addvote, ll now) -> bool {
-        ll need = vi[now] + addvote + 1;
-        ll rb = lower_bound(all(vi), need) - vi.begin();
-        ll lb = n-m-(now>=n-m ? 1 : 0);
-        debug(rb, lb);
-        if(rb <= lb) return 0;
 
-        ll cnt = 0; //votes needed for othe people to win
-        ll votes_left = k - sum - addvote; //how much votes left
-            debug(rb-lb, pref[rb]-pref[lb]);
-        if(now >= lb && now < rb) {
-            cnt = (rb - lb) * need - (pref[rb] - pref[lb]) - (need - vi[now]);
-        } else {
-            cnt = (rb - lb) * need - (pref[rb] - pref[lb]);
-        }
-        debug(votes_left, cnt);
-        return votes_left < cnt;
-    }; //if i get mid votes, then i have a_i + mid votes. want to see if there can be M people more than a_i+mid+1 votes.
-    for(int i = 0; i < n; i++) {
-        debug(i, "ASASD");
-        ll l = 0, r = k-sum, ans2 = l;
-        while(l<=r) {
-            ll mid = l + (r-l)/2;
-            if(ok(mid, i)) { //if we can win we want to find a better one
-                r = mid - 1, ans2 = mid;
-            } else {
-                l = mid + 1;
+    bool ok2 = 1;
+    vector<vector<int>> vis(n, vector<int>(n));
+    for(int i = 0; i < n; i++) for(int j = 0; j < n; j++) {
+        if(grid[i][j] == '?') {
+            int ty = i, tx = j;
+            while(++ty < n && (grid[ty][j] == '.' || grid[ty][j] == '?')) {
+                if(grid[ty][j] == '?') ok2 = 0;
+                vis[ty][j] = 1;
             }
-            debug(mid);
+            ty = i;
+            while(--ty >= 0 && (grid[ty][j] == '.' || grid[ty][j] == '?')) {
+                if(grid[ty][j] == '?') ok2 = 0;
+                vis[ty][j] = 1;
+            }
+            while(++tx < n && (grid[i][tx] == '.' || grid[i][tx] == '?')) {
+                if(grid[i][tx] == '?') ok2 = 0;
+                vis[i][tx] = 1;
+            }
+            tx = j;
+            while(--tx >= 0 && (grid[i][tx] == '.' || grid[i][tx] == '?')) {
+                if(grid[i][tx] == '?') ok2 = 0;
+                vis[i][tx] = 1;
+            }
         }
-        if(ok(ans2, i)) ans[idxs[i]] = ans2;
-        else ans[idxs[i]] = -1;
     }
-    for(auto &x : ans) cout << x << " ";
-    cout << nl;
-
+    bool ok3 = 1;
+    for(int i = 0; i < n; i++) for(int j = 0; j < n; j++) {
+        if(grid[i][j] == '.' && !vis[i][j]) ok3 = 0;
+    }
+    debug(ok, ok2, ok3);
+    cout << (ok&&ok2&&ok3) << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+
