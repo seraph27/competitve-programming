@@ -91,7 +91,7 @@ void test() {
         auto val2 = rng()%n;
         auto val3 = rng()%n;
         while(val2==val1) val2 = rng()%n;    
-        while(val3==val2) val3 = rng()%n;
+        while(val3==val2) val3 = =rng()%n;
         s.insert(slope(vi[val1], vi[val2]));
     }
     debug(s.size());
