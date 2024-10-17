@@ -3,7 +3,7 @@
 // URL: $(URL)
 // Time Limit: $(TIMELIM)
 // Start: $(DATE)
-
+// mintemplate
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
 #define ll long long
@@ -44,27 +44,52 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
-bool solve(auto &A) {
-    vector<pair<int, int>> edges;
-    for(int i = 0; i < n; i++) for(int j = i+1; j < n; j++) {
-        if(A[i][j]) edges.pb({i, j});
-    }
-    for(auto &[u, v] : edges) {
-        for(int i = 0; i < n; i++) if(A[u][i]) {
-            if(A[v][i]) return true; 
+int LIS(const vector<int>&v) {
+    vector<int> dp;
+    for(int i = 0; i < sz(v); i++) {
+        if(!sz(dp) || v[i] >= dp.back()) {
+            dp.pb(v[i]);
         }
+        else {
+            auto it = upper_bound(all(dp), v[i]);
+            if(it != dp.end()) *it = v[i];
+        }
+        debug(dp);
     }
-    return false;
+    return sz(dp);
 }
 
+bool op(pair<int, int> a, pair<int, int> b) {
+    if(a.first != b.first) return a.first > b.first;
+    else return a.second < b.second;
+}
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
-    vector<vector<int>> A(n, vector<int>(n));
-    for(int i = 0; i < m; i++) {
-        int u, v; cin >> u >> v;
-        A[u][v] = 1;
-        A[v][u] = 1;
+    int n; cin >> n;
+    int x1, y1, x2, y2; cin >> x1 >> y1 >> x2 >> y2;
+    int flag = (double)(y2-y1)/(double)(x2-x1) < 0; 
+    if(x1 > x2) {
+        swap(x1, x2);
     }
+    if(y1 > y2) {
+        swap(y1, y2);
+    }
+    vector<pair<int, int>> vi;
+    for(int i = 0; i < n; i++) {
+        int x, y; cin >> x >> y;
+        if(x < x1 || x > x2) continue;
+        if(y < y1 || y > y2) continue;
+        vi.pb({x, y});
+    }
+    sort(all(vi));
+    if(flag) {
+        sort(all(vi), op);
+    }
+    debug(vi);
+    debug(flag);
+    vector<int> lis;
+    for(auto&[f, s] : vi) lis.pb(s);
+    debug(lis);
+    cout << LIS(lis) << nl;
 }
 
 int main() {    
