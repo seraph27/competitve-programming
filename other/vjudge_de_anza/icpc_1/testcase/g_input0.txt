@@ -1,0 +1,9 @@
+4 4
+first
+second
+third
+lol
+first second
+third first
+second third
+lol first
