@@ -1,0 +1,10 @@
+4
+You hit a wumpus!
+2
+You hit a wumpus!
+8
+1
+You hit a wumpus!
+5
+You hit a wumpus!
+Your score is 6 moves.
