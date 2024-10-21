@@ -1,0 +1,6 @@
+5
+pig 10
+horse 15
+pig 15
+cow 15
+sheep 10
