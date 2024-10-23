@@ -57,14 +57,14 @@ void shiina_mashiro() {
 
     vector<int> vtx(n+1, INF);
     vtx[1] = t0;
-    priority_queue<ar<int, 3>, vector<ar<int, 3>>, greater<ar<int, 3>>> pq;
-    pq.push({t0, 1, 0}); //node, weight, dist;
+    priority_queue<ar<int, 2>, vector<ar<int, 2>>, greater<ar<int, 2>>> pq;
+    pq.push({t0, 1}); //weight, node;
     while(!pq.empty()) {
-        auto [val, node, dist] = pq.top(); pq.pop();
+        auto [val, node] = pq.top(); pq.pop();
         if(val != vtx[node]) continue;
         for(auto &[e, w] : adj[node]) {
-            if(w >= val && dist < thresh && ckmin(vtx[e], w)) {
-                pq.push({vtx[e], e, dist + 1});
+            if(w >= val && ckmin(vtx[e], w)) {
+                pq.push({vtx[e], e});
             }
         }
     }

@@ -29,29 +29,30 @@ void solve(){
     set<pair<int, int>> womp;
     while(sz(womp) < 4) {
         n = n + n/13 + 15;
-        debug(n);
         int b = n%10;
         int b2 = n/10%10;
         womp.insert({b2, b});
     }
     debug(womp);
     int wum = 0, cnt = 0;
-    int lasttp = -1, lastbt = 0;
     while(wum < 4) {
         string s; cin >> s;
         int tp = s[0]-'0', bt = s[1]-'0';
-        if(lasttp!=-1) {
-            cnt++;
-            cout << abs(tp-lasttp) + abs(bt-lastbt) << nl;
-        }
+        cnt++;
         if(womp.count({tp, bt})) {
             cout << "You hit a wumpus!" << nl;
             womp.erase({tp, bt});
             wum++;
         }
-        lasttp = tp, lastbt = bt;
+        if(wum == 4) break; 
+        int mn = 1e9;
+        for(auto [x, y] : womp) {
+            debug(x, y);
+            mn = min(mn, abs(x-tp) + abs(y-bt));
+        }
+        cout << mn << nl;
     }
-    cout << "Your score is " << cnt+1 << " moves." << nl;
+    cout << "Your score is " << cnt << " moves." << nl;
 }
 
 int main() {

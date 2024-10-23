@@ -68,7 +68,7 @@ void solve(){
     for(int i = 0; i < n; i++) {
         a[i] = vi[i].first;
         b[i] = vi[i].second;
-        mp[a[i]] = b[i];
+        mp[b[i]] = a[i];
     } 
     ll inv_a = cnt_inv(a), inv_b = cnt_inv(b);
     if((inv_a&1) != (inv_b&1)) {
@@ -77,30 +77,68 @@ void solve(){
     }
     debug(inv_a, inv_b);
     cout << "Yes" << nl;
-    if(inv_a < inv_b) swap(inv_a, inv_b);
-    ll need = inv_a - inv_b;
+    ll need = inv_b-inv_a;
+    if(inv_a==inv_b) {
+        for(int i = 0; i < n; i++) {
+            cout << a[i]+1 << " ";
+        }
+        cout << nl;
+        for(int i = 0; i < n; i++) {
+            cout << b[i]+1 << " ";
+        }
+        cout << nl;
+        return;
+    }
     need/=2;
-    vector<ll> ans;
-    vector<ll> used(n);
-    for(int i = n-1; i >= 1; i--) {
-        if(need-i>=0) {
-            ans.pb(i);
-            need-=i;
-            used[i] = 1;
+    debug(a, b);
+    ll ans2 = 0;
+    map<ll, ll> each;
+    fenwick<ll> bit2(sz(b));
+    for(int i = 0; i < sz(b); i++) {
+        auto now = bit2.query(b[i], sz(b)-1);
+        each[b[i]] = now;
+        ans2+=now;
+        bit2.update(b[i], 1);
+    }
+    vector<ll> front, tmp;
+    vector<bool> used(n);
+    ll idx = 0;
+    debug(need, each);
+    while(need>0) {
+        if(need-each[idx]>=0) {
+            front.pb(idx);
+            used[idx] = true;
+            need-=each[idx];
+            idx++;
+        } else {
+            for(auto &x : b) {
+                if(!used[x]) tmp.pb(x);
+            }
+            for(ll i = each[idx]; i > 0; i--) {
+                swap(tmp[i], tmp[i-1]);
+                need--;
+                if(need==0) break;
+            }
+            debug(tmp);
         }
     }
-    for(int i = 0; i < n; i++) {
-        if(!used[i]) ans.pb(i);
+    if(!sz(tmp)) {
+        for(auto&x : b) {
+            if(!used[x]) tmp.pb(x);
+        }
     }
-    vector<int> temp1, temp2;
-    for(int i = 0; i < n; i++) {temp1.pb(ans[i]); cout << ans[i]+1 << " ";}
+    vector<ll> merged(front);
+    merged.insert(merged.end(), all(tmp));
+    debug(merged);
+    for(int i = 0; i < n; i++) {
+        cout << mp[merged[i]]+1 << " ";
+    }
     cout << nl;
-    for(int i = 0; i < n; i++) {temp2.pb(mp[ans[i]]); cout << mp[ans[i]]+1 << " ";}
+    for(int i = 0; i < n; i++) {
+        cout << merged[i]+1 << " ";
+    }
     cout << nl;
-    debug(cnt_inv(temp1), cnt_inv(temp2));
-    debug(vi);
-    debug(ans);
-}
+  }
 
 int main() {
     cin.tie(0)->sync_with_stdio(0);

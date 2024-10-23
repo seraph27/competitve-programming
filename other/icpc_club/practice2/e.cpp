@@ -23,8 +23,8 @@ void test() {
     mp["seven"] = 5;
     mp["eight"] = 5;
     mp["nine"] = 4;
-
-    //"twone" *2 "threeight" *2
+    //dp[i]
+    //"twone" *2 "threeight" *2 i
     int mul = 0;
     int len = sz(s);
     for(int i = 0; i < sz(s); i++) {

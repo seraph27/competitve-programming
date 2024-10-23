@@ -18,7 +18,6 @@ void test() {
         pq.push(x);
     }
 
-
     while(pq.size() >= k && pq.size() >= 2) {
         vector<ll> get;
         for(int i = 0; i < k; i++) {

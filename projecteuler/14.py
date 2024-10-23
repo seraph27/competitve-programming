@@ -1,19 +1,25 @@
-
 ans = [0]*1000010
 def colatz(n):
-    cnt = 1
-    while n>1:
-        if n%2:
-            n=3*n+1
-        else:
-            n//=2
-        if not ans[n]:
-            ans[n] = -1
+    if n < len(ans) and ans[n]!=0:
+        return ans[n]
+    if n==1:
+        return 1
+    if n%2==0:
+        next = n//2
+    else:
+        next = n*3+1
+
+    cnt = 1 + colatz(next)
+    if n < len(ans):
+        ans[n] = cnt
+    return cnt
 
 
 def main():
     for i in range(1000000, 0, -1):
-        ans[i] = 
+        colatz(i)
+    print(ans.index(max(ans)))
+
 
 
 

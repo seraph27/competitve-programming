@@ -45,13 +45,43 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n, k; cin >> n >> k;
+    vector<pii> vi(n);
+    for (int i = 0; i < n; i++) {
+        cin >> vi[i].first;
+    }
+    for (int i = 0; i < n; i++) {
+        cin >> vi[i].second;
+    }
+    sort(all(vi));
+    debug(vi);
+    ll ans = 4e18;
+    multiset<ll> s;
+    ll sum = 0;
+    for(int i = 0; i < k-1; i++) {
+        s.insert(vi[i].second);
+        sum += vi[i].second;
+    }
+    for(int i = k-1; i < n; i++) {
+        ckmin(ans, vi[i].first * (vi[i].second + sum));
+        if(s.empty() || vi[i].second >= *s.rbegin()) continue;
+        else {
+            debug(s);
+            assert(s.size() == k-1);
+            sum -= *s.rbegin();
+            s.erase(s.find(*s.rbegin()));
+            sum += vi[i].second;
+            s.insert(vi[i].second);
+        }
+    }
+    cout << ans << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

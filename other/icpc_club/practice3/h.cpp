@@ -1,9 +1,30 @@
+// Problem: H - Item Selection
+// Contest: UCSD Team Selection Contest 2024
+// URL: https://vjudge.net/contest/665193#problem/H
+// Time Limit: 1000
+// Start: Sat Oct 19 18:18:56 2024
+// mintemplate
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
 #define ll long long
-#define pb push_back
+#define ar array
 #define all(x) x.begin(), x.end()
+#define pii pair<ll, ll>
+#define pb push_back
 using namespace std;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+#define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
+template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
+template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
+template<typename T, typename S> constexpr T ifloor(const T a, const S b){return a/b-(a%b&&(a^b)<0);}
+template<typename T, typename S> constexpr T iceil(const T a, const S b){return ifloor(a+b-1,b);}
+template<typename T> T isqrt(const T &x){T y=sqrt(x+2); while(y*y>x) y--; return y;}
+template<typename T>
+void sort_unique(vector<T> &vec){
+    sort(vec.begin(),vec.end());
+    vec.resize(unique(vec.begin(),vec.end())-vec.begin());
+}
+
 #ifdef MISAKA
 struct _debug {
 template<typename T> static void __print(const T &x) {
@@ -11,62 +32,60 @@ template<typename T> static void __print(const T &x) {
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
 }
 template<typename T, typename V>
-static void __print(const pair<T, V> &x) { cerr << '(', __print(x.first), cerr << ',', 
-        __print(x.second), cerr << ')'; }
+static void __print(const pair<T, V> &x) { cerr << '(', __print(x.first), cerr << ',', __print(x.second), cerr << ')'; }
 template<typename T, typename... V>
-static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof...(v)) cerr << ", ",
-        _print(v...); else cerr << "]\n"; }
+static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof...(v)) cerr << ", ", _print(v...); else cerr << "]\n"; }
 };
 #define debug(x...) cerr << "[" << #x << "] = [", _debug::_print(x)
 #else
 #define debug(x...)
 #endif
-const char nl = '\n';
 
-void solve(){
+const char nl = '\n';
+const int INF = 0x3f3f3f3f;
+
+void shiina_mashiro() {
     int n, m, s, p, q; cin >> n >> m >> s >> p >> q;
-    int ans = 0;
-    map<int, set<pair<int, int>>> mp; //map page to items on that page
-    int mnpage = 1e9, mxpage = 0; 
+    int val[n+1][2];
+    memset(val, 0, sizeof(val));
     for(int i = 0; i < p; i++) {
         int x; cin >> x;
-        int xpage = (x+m-1)/m;
-        mnpage = min(mnpage, xpage);
-        mxpage = max(mxpage, xpage);
-        mp[xpage].insert({x, 0});
+        val[x][0] = 1;
     }
-
     for(int i = 0; i < q; i++) {
         int x; cin >> x;
-        int xpage = (x+m-1)/m;
-        mnpage = min(mnpage, xpage);
-        mxpage = max(mxpage, xpage);
-        if(mp[xpage].count({x, 0})) mp[xpage].erase({x, 0});
-        else mp[xpage].insert({x, 1});
+        val[x][1] = 1;
     }
-    if(mp.empty()) {
+    int pages = (n+m-1)/m;
+    int sum = 0;
+    int mn = 1e9, mx = 0;
+    for(int i = 0; i < pages; i++) {
+        int lo = m*i+1, hi = min(m*(i+1), n);
+        int one = 0, two = 1, three = 1;
+        for(int j = lo; j <= hi; j++) {
+            if(val[j][0] ^ val[j][1]) one++;
+            if(!val[j][1]) two++; 
+            if(val[j][1]) three++;
+        }
+        int g = min({one, two, three});
+        if(g>0) {
+            ckmin(mn, i+1);
+            ckmax(mx, i+1);
+        }
+        sum += min({one, two, three});
+    }
+    if(sum==0) {
         cout << 0 << nl;
         return;
     }
-    int movepage = abs(mnpage-mxpage) + min(abs(s-mnpage), abs(s-mxpage));
-    int xx = 0;
-    for(auto [k, v] : mp) {
-        int need = 0, dontneed = 0;
-        for(auto &x : v) {
-            if(x.second) need++;
-            else dontneed++;
-        }
-        if(!sz(v)) continue;
-        int selectall = 1 + (m-need), deselectall = 1 + need;
-        int mn = min({need+dontneed, selectall, deselectall});
-        xx+=mn;
-    }
-    cout << movepage + xx << nl;
+    cout << sum + mx-mn + min(abs(s-mx), abs(s-mn)) << nl;
 }
 
-int main() {
+int main() {    
     cin.tie(0)->sync_with_stdio(0);
+    //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
     //cin >> t;
-    while(t--) solve();
+    while (t--) shiina_mashiro();
 }
+

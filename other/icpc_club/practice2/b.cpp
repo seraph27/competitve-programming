@@ -15,8 +15,6 @@ using pt = complex<double>;
 #define x() real()
 #define y() imag()
 
-
-
 #ifdef MISAKA
 struct _debug {
 template<typename T> static void __print(const T &x) {
@@ -32,43 +30,6 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #else
 #define debug(x...)
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void test() {
     int n; cin >> n;
@@ -91,7 +52,7 @@ void test() {
         auto val2 = rng()%n;
         auto val3 = rng()%n;
         while(val2==val1) val2 = rng()%n;    
-        while(val3==val2) val3 = =rng()%n;
+        while(val3==val2) val3 = rng()%n;
         s.insert(slope(vi[val1], vi[val2]));
     }
     debug(s.size());
