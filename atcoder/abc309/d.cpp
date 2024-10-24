@@ -1,15 +1,13 @@
-// Problem: E - Sightseeing Tour
-// Contest: AtCoder Beginner Contest 369
-// URL: https://atcoder.jp/contests/abc369/tasks/abc369_e
-// Time Limit: 4000
-// Start: Mon Oct 21 01:29:45 2024
+// Problem: D - Add One Edge
+// Contest: デンソークリエイトプログラミングコンテスト2023（AtCoder Beginner Contest 309）
+// URL: https://atcoder.jp/contests/abc309/tasks/abc309_d
+// Time Limit: 2000
+// Start: 2024/10/23 18:01:08
 // mintemplate
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
 #define ll long long
 #define ar array
-#define fi first
-#define se second
 #define all(x) x.begin(), x.end()
 #define pii pair<ll, ll>
 #define pb push_back
@@ -45,46 +43,38 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
+    
+template<typename T>
+vector<T> dijkstra(int start, vector<vector<pair<int,T>>> &adj){
+    int n=sz(adj);
+    vector<T> dist(n,4e18); //change if needed
+    priority_queue<pair<T,int>,vector<pair<T,int>>,greater<pair<T,int>>> pq;
+    dist[start]=0, pq.push({0,start});
+    while(!pq.empty()){
+        auto [d,u] = pq.top(); pq.pop();
+        if(d != dist[u]) continue;
+        for(auto &[v,w]: adj[u]) if(ckmin(dist[v],d+w)){
+            pq.push({dist[v],v});
+        }
+    }
+    return dist;
+}
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
-    ll dist[n+5][n+5];
-    vector<ll> u(m+1), v(m+1), t(m+1);
-    for(int i = 1; i <= n; i++) for(int j = 1; j <= n; j++) {
-        if(i==j) dist[i][j] = 0;
-        else dist[i][j] = 1e12;
+    int n1, n2, m; cin >> n1 >> n2 >> m;
+    vector<vector<pair<int, ll>>> adj(n1+n2);
+    for(int i = 0; i < m; i++) {
+        int u, v; cin >> u >> v;
+        --u; --v;
+        adj[u].pb({v, 1});
+        adj[v].pb({u, 1});
     }
-    for(int i = 1; i <= m; i++) {
-        cin >> u[i] >> v[i] >> t[i];
-        ckmin(dist[u[i]][v[i]], t[i]);
-        ckmin(dist[u[i]][v[i]], t[i]);
-    }
-    for(int k = 1; k <= n; k++) for(int i = 1; i <= n; i++) for(int j = 1; j <= n; j++) {
-        ckmin(dist[i][j], dist[i][k] + dist[k][j]);
-    }
-    int q; cin >> q;
-    while(q--) {
-        int k; cin >> k;
-        vector<int> b(k);
-        for(auto &x: b) cin >> x;
-        vector<int> p(k);
-        iota(all(p), 0);
-        ll ans = 1e17;
-        ll dp[5][2]; //end at u or v
-        do {
-            dp[0][0] = dist[1][v[b[p[0]]]] + t[b[p[0]]];
-            dp[0][1] = dist[1][u[b[p[0]]]] + t[b[p[0]]];
-            for(int i = 0; i < k-1; i++) {
-                dp[i+1][0] = min(dp[i][0] + dist[u[b[p[i]]]][v[b[p[i+1]]]], dp[i][1] + dist[v[b[p[i]]]][v[b[p[i+1]]]]) + t[b[p[i+1]]];
-                dp[i+1][1] = min(dp[i][0] + dist[u[b[p[i]]]][u[b[p[i+1]]]], dp[i][1] + dist[v[b[p[i]]]][u[b[p[i+1]]]]) + t[b[p[i+1]]];
-            }
-            assert(dp[k-1][0]>=0 && dp[k-1][1]>=0);
-            ckmin(ans, dp[k-1][0] + dist[u[b[p[k-1]]]][n]);
-            ckmin(ans, dp[k-1][1] + dist[v[b[p[k-1]]]][n]);
-        } while(next_permutation(all(p)));
+    auto dis1 = dijkstra<ll>(0, adj), dis2 = dijkstra<ll>(n1+n2-1, adj);
+    ll mx1 = 0, mx2 = 0;
+    for(auto &x : dis1) if(x < 2e18) ckmax(mx1, x);
+    for(auto &x : dis2) if(x < 2e18) ckmax(mx2, x);
+    cout << mx1 + mx2 + 1 << nl;
 
-        cout << ans << nl;
-    }
 
 }
 
