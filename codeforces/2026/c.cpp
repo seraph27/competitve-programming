@@ -1,15 +1,13 @@
-// Problem: E - Sightseeing Tour
-// Contest: AtCoder Beginner Contest 369
-// URL: https://atcoder.jp/contests/abc369/tasks/abc369_e
-// Time Limit: 4000
-// Start: Mon Oct 21 01:29:45 2024
+// Problem: C. Action Figures
+// Contest: Educational Codeforces Round 171 (Rated for Div. 2)
+// URL: https://codeforces.com/contest/2026/problem/C
+// Time Limit: 2500
+// Start: Mon Oct 28 07:36:01 2024
 // mintemplate
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
 #define ll long long
 #define ar array
-#define fi first
-#define se second
 #define all(x) x.begin(), x.end()
 #define pii pair<ll, ll>
 #define pb push_back
@@ -47,53 +45,51 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
-    ll dist[n+5][n+5];
-    vector<ll> u(m+1), v(m+1), t(m+1);
-    for(int i = 1; i <= n; i++) for(int j = 1; j <= n; j++) {
-        if(i==j) dist[i][j] = 0;
-        else dist[i][j] = 5e17;
+    int n; cin >> n;
+    string s; cin >> s;
+    vector<int> vis(n), white; //black pos
+    set<int> black;
+    ll cost = 0;
+    for(int i = 0; i < n; i++) {
+        if(s[i]=='1') {
+            black.insert(i);
+        }
+        else {
+            white.pb(i);
+            cost += i+1; //white need to add anyways;
+        }
     }
-    for(int i = 1; i <= m; i++) {
-        cin >> u[i] >> v[i] >> t[i];
-        ckmin(dist[u[i]][v[i]], t[i]);
-        ckmin(dist[v[i]][u[i]], t[i]);
+    for(auto &x : white | views::reverse) {
+        debug(black);
+        auto it = black.end();
+        if(it != black.begin() && x < *prev(it)) {
+            vis[*prev(it)] = 1;
+            black.erase(prev(it));
+        } else continue;
     }
-    for(int k = 1; k <= n; k++) for(int i = 1; i <= n; i++) for(int j = 1; j <= n; j++) {
-        ckmin(dist[i][j], dist[i][k] + dist[k][j]);
+    debug(vis);
+    ll cnt = 0;
+    for(int i = 0; i < n; i++) {
+        if(!vis[i] && s[i]=='1') cnt++;
     }
-    int q; cin >> q;
-    while(q--) {
-        int k; cin >> k;
-        vector<int> b(k);
-        for(auto &x: b) cin >> x;
-        vector<int> p(k);
-        iota(all(p), 0);
-        ll ans = 1e18;
-        ll dp[5][2]; //end at u or v
-        do {
-            dp[0][0] = dist[1][v[b[p[0]]]] + t[b[p[0]]];
-            dp[0][1] = dist[1][u[b[p[0]]]] + t[b[p[0]]];
-            for(int i = 0; i < k-1; i++) {
-                dp[i+1][0] = min(dp[i][0] + dist[u[b[p[i]]]][v[b[p[i+1]]]], dp[i][1] + dist[v[b[p[i]]]][v[b[p[i+1]]]]) + t[b[p[i+1]]];
-                dp[i+1][1] = min(dp[i][0] + dist[u[b[p[i]]]][u[b[p[i+1]]]], dp[i][1] + dist[v[b[p[i]]]][u[b[p[i+1]]]]) + t[b[p[i+1]]];
-                debug(i, dp[i+1][0], dp[i+1][1]);
-            }
-            assert(dp[k-1][0]>=0 && dp[k-1][1]>=0);
-            ckmin(ans, dp[k-1][0] + dist[u[b[p[k-1]]]][n]);
-            ckmin(ans, dp[k-1][1] + dist[v[b[p[k-1]]]][n]);
-        } while(next_permutation(all(p)));
-
-        cout << ans << nl;
+    debug(cost);
+    cnt = (cnt+1)/2;
+    debug(cnt);
+    for(int i = 0; i < n; i++) {
+        if(s[i]=='1') {
+            cost += i+1;
+            cnt--;
+        }
+        if(cnt<=0) break;
     }
-
+    cout << cost << nl;
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

@@ -1,15 +1,13 @@
-// Problem: E - Sightseeing Tour
-// Contest: AtCoder Beginner Contest 369
-// URL: https://atcoder.jp/contests/abc369/tasks/abc369_e
+// Problem: D - Square Permutation
+// Contest: 日本レジストリサービス（JPRS）プログラミングコンテスト2023（AtCoder Beginner Contest 324）
+// URL: https://atcoder.jp/contests/abc324/tasks/abc324_d
 // Time Limit: 4000
-// Start: Mon Oct 21 01:29:45 2024
+// Start: Mon Oct 28 20:46:27 2024
 // mintemplate
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
 #define ll long long
 #define ar array
-#define fi first
-#define se second
 #define all(x) x.begin(), x.end()
 #define pii pair<ll, ll>
 #define pb push_back
@@ -47,46 +45,35 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
-    ll dist[n+5][n+5];
-    vector<ll> u(m+1), v(m+1), t(m+1);
-    for(int i = 1; i <= n; i++) for(int j = 1; j <= n; j++) {
-        if(i==j) dist[i][j] = 0;
-        else dist[i][j] = 5e17;
+    int n; cin >> n;
+    string s; cin >> s;
+    int cnt[10]{};
+    for(char c: s) cnt[c-'0']++;
+    int ans = 0;
+    ll pow[14]{1};
+    for(int i = 1; i < 14; i++) {
+        pow[i] = pow[i-1]*10;
     }
-    for(int i = 1; i <= m; i++) {
-        cin >> u[i] >> v[i] >> t[i];
-        ckmin(dist[u[i]][v[i]], t[i]);
-        ckmin(dist[v[i]][u[i]], t[i]);
-    }
-    for(int k = 1; k <= n; k++) for(int i = 1; i <= n; i++) for(int j = 1; j <= n; j++) {
-        ckmin(dist[i][j], dist[i][k] + dist[k][j]);
-    }
-    int q; cin >> q;
-    while(q--) {
-        int k; cin >> k;
-        vector<int> b(k);
-        for(auto &x: b) cin >> x;
-        vector<int> p(k);
-        iota(all(p), 0);
-        ll ans = 1e18;
-        ll dp[5][2]; //end at u or v
-        do {
-            dp[0][0] = dist[1][v[b[p[0]]]] + t[b[p[0]]];
-            dp[0][1] = dist[1][u[b[p[0]]]] + t[b[p[0]]];
-            for(int i = 0; i < k-1; i++) {
-                dp[i+1][0] = min(dp[i][0] + dist[u[b[p[i]]]][v[b[p[i+1]]]], dp[i][1] + dist[v[b[p[i]]]][v[b[p[i+1]]]]) + t[b[p[i+1]]];
-                dp[i+1][1] = min(dp[i][0] + dist[u[b[p[i]]]][u[b[p[i+1]]]], dp[i][1] + dist[v[b[p[i]]]][u[b[p[i+1]]]]) + t[b[p[i+1]]];
-                debug(i, dp[i+1][0], dp[i+1][1]);
+    const ll mx = pow[n];
+    for(ll i = 0; i*i <= mx; i++) {
+        string now = to_string(i*i);
+        int cnt2[10]{};
+        for(char c : now) {
+            cnt2[c-'0']++;
+        } 
+        bool ok = 1;
+        for(int j = 1; j < 10; j++) {
+            if(cnt[j] != cnt2[j]) {
+                ok = 0;
+                break;
             }
-            assert(dp[k-1][0]>=0 && dp[k-1][1]>=0);
-            ckmin(ans, dp[k-1][0] + dist[u[b[p[k-1]]]][n]);
-            ckmin(ans, dp[k-1][1] + dist[v[b[p[k-1]]]][n]);
-        } while(next_permutation(all(p)));
-
-        cout << ans << nl;
+        }
+        if(cnt[0] < cnt2[0]) ok = 0;
+        if(ok) {
+            ans++;
+        }
     }
-
+    cout << ans << nl;
 }
 
 int main() {    

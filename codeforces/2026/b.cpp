@@ -1,15 +1,13 @@
-// Problem: E - Sightseeing Tour
-// Contest: AtCoder Beginner Contest 369
-// URL: https://atcoder.jp/contests/abc369/tasks/abc369_e
-// Time Limit: 4000
-// Start: Mon Oct 21 01:29:45 2024
+// Problem: B. Black Cells
+// Contest: Educational Codeforces Round 171 (Rated for Div. 2)
+// URL: https://codeforces.com/contest/2026/problem/B
+// Time Limit: 2000
+// Start: Mon Oct 28 07:36:01 2024
 // mintemplate
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
 #define ll long long
 #define ar array
-#define fi first
-#define se second
 #define all(x) x.begin(), x.end()
 #define pii pair<ll, ll>
 #define pb push_back
@@ -47,53 +45,47 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
-    ll dist[n+5][n+5];
-    vector<ll> u(m+1), v(m+1), t(m+1);
-    for(int i = 1; i <= n; i++) for(int j = 1; j <= n; j++) {
-        if(i==j) dist[i][j] = 0;
-        else dist[i][j] = 5e17;
+    int n; cin >> n;
+    vector<ll> vi(n);
+    for(int i = 0; i < n; i++) {
+        ll x; cin >> x;
+        vi[i] = x;
     }
-    for(int i = 1; i <= m; i++) {
-        cin >> u[i] >> v[i] >> t[i];
-        ckmin(dist[u[i]][v[i]], t[i]);
-        ckmin(dist[v[i]][u[i]], t[i]);
-    }
-    for(int k = 1; k <= n; k++) for(int i = 1; i <= n; i++) for(int j = 1; j <= n; j++) {
-        ckmin(dist[i][j], dist[i][k] + dist[k][j]);
-    }
-    int q; cin >> q;
-    while(q--) {
-        int k; cin >> k;
-        vector<int> b(k);
-        for(auto &x: b) cin >> x;
-        vector<int> p(k);
-        iota(all(p), 0);
-        ll ans = 1e18;
-        ll dp[5][2]; //end at u or v
-        do {
-            dp[0][0] = dist[1][v[b[p[0]]]] + t[b[p[0]]];
-            dp[0][1] = dist[1][u[b[p[0]]]] + t[b[p[0]]];
-            for(int i = 0; i < k-1; i++) {
-                dp[i+1][0] = min(dp[i][0] + dist[u[b[p[i]]]][v[b[p[i+1]]]], dp[i][1] + dist[v[b[p[i]]]][v[b[p[i+1]]]]) + t[b[p[i+1]]];
-                dp[i+1][1] = min(dp[i][0] + dist[u[b[p[i]]]][u[b[p[i+1]]]], dp[i][1] + dist[v[b[p[i]]]][u[b[p[i+1]]]]) + t[b[p[i+1]]];
-                debug(i, dp[i+1][0], dp[i+1][1]);
-            }
-            assert(dp[k-1][0]>=0 && dp[k-1][1]>=0);
-            ckmin(ans, dp[k-1][0] + dist[u[b[p[k-1]]]][n]);
-            ckmin(ans, dp[k-1][1] + dist[v[b[p[k-1]]]][n]);
-        } while(next_permutation(all(p)));
 
+    sort(all(vi));
+    debug(vi);
+    if(n==1) {
+        cout << 1 << nl;
+        return;
+    }
+    if(n%2==0) {
+        ll ans = 1;
+        for(int i = 0; i < n-1; i+=2) {
+            ckmax(ans, vi[i+1]-vi[i]);
+        }
+        cout << ans << nl;
+        return;
+    } else {
+        ll ans = 4e18;
+        for(int fix = 0; fix < n; fix+=2) {
+            ll big = 1;
+            for(int i = 0; i < fix-1; i+=2) {
+                ckmax(big, vi[i+1]-vi[i]);
+            }
+            for(int i = fix+1; i < n-1; i+=2) {
+                ckmax(big, vi[i+1]-vi[i]);
+            }
+            ckmin(ans, big);
+        }
         cout << ans << nl;
     }
-
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 
