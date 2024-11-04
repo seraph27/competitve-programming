@@ -1,11 +1,10 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// atcoder
+// Problem: D - Set Menu
+// Contest: サントリープログラミングコンテスト2023（AtCoder Beginner Contest 321）
+// URL: https://atcoder.jp/contests/abc321/tasks/abc321_d
+// Time Limit: 2000
+// Start: Sun Nov  3 16:28:12 2024
+// mintemplate
 #include <bits/stdc++.h>
-#include <atcoder/modint>
 #define int long long
 #define sz(x) (int)x.size()
 #define ar array
@@ -13,7 +12,6 @@
 #define pii pair<int, int>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -43,10 +41,28 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const char nl = '\n';
 
 void shiina_mashiro() {
+    int n, m; cin >> n >> m;
+    int p; cin >> p;
+    vector<int> a(n), b(m);
+    for(auto&x: a) cin >> x;
+    for(auto&x: b) cin >> x;
+    sort(all(a));
+    sort(all(b));
+    vector<int> pref_b(m+1);
+    for(int i = 0; i < m; i++) {
+        pref_b[i+1] += pref_b[i] + b[i];
+    }
+    int ans = 0;
+    for(int i = 0; i < n; i++) {
+        auto pos = lower_bound(all(b), p - a[i]) - b.begin();
+        auto left = m - pos;
+        ans += pref_b[pos] + a[i] * pos;
+        ans += p * left;
+    }
+    cout << ans << nl;
 }
 
 signed main() {    
@@ -56,3 +72,4 @@ signed main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+

@@ -1,8 +1,8 @@
-// Problem: H - Branch Manager
-// Contest: Southern California Regional 2024 - Practice Contest 1
-// URL: https://vjudge.net/contest/669057#problem/H
+// Problem: E - Product Development
+// Contest: AtCoder Beginner Contest 322
+// URL: https://atcoder.jp/contests/abc322/tasks/abc322_e
 // Time Limit: 4000
-// Start: 2024/11/02 15:55:33
+// Start: Fri Nov  1 18:25:04 2024
 // mintemplate
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -45,73 +45,55 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
-    vector<vector<int>> adj(n+1);
-    for(int i =0; i < n-1; i++) {
-        int u, v; cin >>u >> v;
-        adj[u].pb(v);
-    }
-    for(int i = 0; i <= n; i++) sort(all(adj[i]), greater<int>());
-    vector<int> dest(m);
-    for(int i = 0; i < m; i++) {
-        cin >> dest[i];
-    }
-
-    vector<int> parent(n+1), vis(n+1);
-    auto dfs = [&](auto&&s, int u, int p) -> void{
-        parent[u] = p;
-        for (auto&e : adj[u]) {
-            if(e != p) {
-                s(s, e, u);
-            }
+    int n, k, p; cin >> n >> k >> p;
+    vector<int> cost(n);
+    vector<vector<int>> add(n, vector<int>(k));
+    for(int i = 0; i < n; i++) {
+        int c; cin >> c;
+        cost[i] = c;
+        for(int j = 0; j < k; j++) {
+            int a; cin >> a;
+            add[i][j] = a;
         }
-    };
-    dfs(dfs, 1, -1);
-    int k = 1;
-    for(; adj[k].size(); k = adj[k].back()) vis[k] = 1;
-    vis[k] = 1;
-    vector<int> bad(n+1);
-    int ans = 0;
-    auto dfs2 = [&](auto&&s, int u, int p) -> void {
-        bad[u] = 1;
-        vis[u] = 0;
-        parent[u] = -1;
-        for(auto&e : adj[u]) if(e != p) {
-            s(s, e, u);
-            adj[e].clear();
-        }
-    };
-    for(int i = 0; i < m; i++) {
-        if(vis[dest[i]]) ans++;
-        else {
-            if(bad[dest[i]]) {
-                cout << ans << nl;
-                return;
-            }
-            int now = dest[i]; 
-            int par = parent[now];
-            while(!vis[now] && now!=1) {
-                int cnt = 0;
-                if(bad[par]) {
-                    cout << ans << nl;
-                    return;
+    }
+    map<ar<int, 5>, ll> dp;
+    dp[{0, 0, 0, 0, 0}] = 0;
+    for(int i = 0; i < n; i++) {
+        auto dp2 = dp;
+        for(auto &[val, c] : dp) {
+            auto new_val = val;
+            for(int j = 0; j < k; j++) {
+                new_val[j] += add[i][j];
+                if(new_val[j] > p) {
+                    new_val[j] = p;
                 }
-                for(auto &e : adj[par]) {
-                    if(e < now) { 
-                        cnt++;
-                        dfs2(dfs2, e, par);
-                    }
-                }
-                for(int j = 0; j < cnt; j++) adj[par].pop_back();
-                vis[now] = 1;
-                now = par;
-                par = parent[now];
             }
-            ans++;
-            debug(vis);
+            if(!dp2.count(new_val)) {
+                dp2[new_val] = 4e18;
+            }
+            ckmin(dp2[new_val], c + cost[i]);
+        }
+        dp = dp2;
+    }
+    debug(dp);
+    ll ans = 4e18;
+    for(auto [val, c] : dp) {
+        int ok = 1;
+        for(int i = 0; i < k; i++) {
+            if(val[i] < p) {
+                ok = 0;
+                break;
+            }
+        }
+        if(ok) {
+            ckmin(ans, (ll)c);
         }
     }
-    cout << ans << endl;
+    if(ans == 4e18) {
+        cout << -1 << nl;
+        return;
+    }
+    cout << ans << nl;
 }
 
 int main() {    

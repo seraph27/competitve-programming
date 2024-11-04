@@ -1,9 +1,9 @@
-// Problem: H - Branch Manager
-// Contest: Southern California Regional 2024 - Practice Contest 1
-// URL: https://vjudge.net/contest/669057#problem/H
-// Time Limit: 4000
-// Start: 2024/11/02 15:55:33
-// mintemplate
+// Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
+// codeforces
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
 #define ll long long
@@ -46,79 +46,50 @@ const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
     int n, m; cin >> n >> m;
-    vector<vector<int>> adj(n+1);
-    for(int i =0; i < n-1; i++) {
-        int u, v; cin >>u >> v;
-        adj[u].pb(v);
+    vector<string> grid(n);
+    for (int i = 0; i < n; i++) cin >> grid[i];
+    const int maxlayer = min(n, m)/2;
+    debug(maxlayer);
+    vector<vector<char>> layer(maxlayer+1);
+    int cs = 0, rs = 0, ce = n-1, re = m-1;
+    for(int i = 0; i < maxlayer; i++) {
+        for(int j = rs; j <= re; j++) {
+            layer[i].pb(grid[rs][j]);
+        }
+        for(int j = cs+1; j <= ce; j++) {
+            layer[i].pb(grid[j][re]);
+        }
+        for(int j = re-1; j >= rs; j--) {
+            layer[i].pb(grid[ce][j]);
+        }
+        for(int j = ce-1; j >= cs; j--) {
+            layer[i].pb(grid[j][cs]);
+        }
+        rs++, cs++, re--, ce--;
     }
-    for(int i = 0; i <= n; i++) sort(all(adj[i]), greater<int>());
-    vector<int> dest(m);
-    for(int i = 0; i < m; i++) {
-        cin >> dest[i];
-    }
-
-    vector<int> parent(n+1), vis(n+1);
-    auto dfs = [&](auto&&s, int u, int p) -> void{
-        parent[u] = p;
-        for (auto&e : adj[u]) {
-            if(e != p) {
-                s(s, e, u);
+    ll ans = 0;
+    for(int i = 0; i < maxlayer; i++) {
+        layer[i].pop_back();
+        for(int j = 0; j < 3; j++) {
+            layer[i].pb(layer[i][j]);
+        }
+        for(int j = 0; j < sz(layer[i])-3; j++) {
+            debug(j);
+            if(layer[i][j] == '1' && layer[i][j+1] == '5' && layer[i][j+2] == '4' && layer[i][j+3] == '3') {
+                ans++;
             }
         }
-    };
-    dfs(dfs, 1, -1);
-    int k = 1;
-    for(; adj[k].size(); k = adj[k].back()) vis[k] = 1;
-    vis[k] = 1;
-    vector<int> bad(n+1);
-    int ans = 0;
-    auto dfs2 = [&](auto&&s, int u, int p) -> void {
-        bad[u] = 1;
-        vis[u] = 0;
-        parent[u] = -1;
-        for(auto&e : adj[u]) if(e != p) {
-            s(s, e, u);
-            adj[e].clear();
-        }
-    };
-    for(int i = 0; i < m; i++) {
-        if(vis[dest[i]]) ans++;
-        else {
-            if(bad[dest[i]]) {
-                cout << ans << nl;
-                return;
-            }
-            int now = dest[i]; 
-            int par = parent[now];
-            while(!vis[now] && now!=1) {
-                int cnt = 0;
-                if(bad[par]) {
-                    cout << ans << nl;
-                    return;
-                }
-                for(auto &e : adj[par]) {
-                    if(e < now) { 
-                        cnt++;
-                        dfs2(dfs2, e, par);
-                    }
-                }
-                for(int j = 0; j < cnt; j++) adj[par].pop_back();
-                vis[now] = 1;
-                now = par;
-                par = parent[now];
-            }
-            ans++;
-            debug(vis);
-        }
     }
-    cout << ans << endl;
+    cout << ans << nl;
+    debug(layer);
+  
 }
 
 int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

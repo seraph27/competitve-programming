@@ -45,6 +45,35 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    string t; cin >> t;
+    vector<string> vi(n);
+    for (int i = 0; i < n; i++) cin >> vi[i];
+
+    vector<int> suf(n), pre(n);
+
+    for(int i = 0; i < n; i++) {
+        int pt = 0;
+        for(char c : vi[i]) {
+            if(pt < sz(t) && t[pt] == c) pt++;
+        }
+        pre[i] = pt;
+
+        pt = sz(t)-1;
+        for(char c : vi[i] | views::reverse) {
+            if(pt >= 0 && t[pt] == c) pt--;
+        }
+        suf[i] = pt;
+    }
+
+    ll ans = 0;
+    debug(suf);
+    sort(all(suf));
+    for(int i = 0; i < n; i++) {
+        auto it = lower_bound(all(suf), pre[i]);
+        ans += it - suf.begin();
+    }
+    cout << ans << nl;
 }
 
 int main() {    

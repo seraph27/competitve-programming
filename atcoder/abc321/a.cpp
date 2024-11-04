@@ -1,11 +1,10 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// atcoder
+// Problem: A - 321-like Checker
+// Contest: サントリープログラミングコンテスト2023（AtCoder Beginner Contest 321）
+// URL: https://atcoder.jp/contests/abc321/tasks/abc321_a
+// Time Limit: 2000
+// Start: Mon Nov  4 02:38:28 2024
+// mintemplate
 #include <bits/stdc++.h>
-#include <atcoder/modint>
 #define int long long
 #define sz(x) (int)x.size()
 #define ar array
@@ -13,7 +12,6 @@
 #define pii pair<int, int>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -43,7 +41,6 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const char nl = '\n';
 
 void shiina_mashiro() {
@@ -56,3 +53,4 @@ signed main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+

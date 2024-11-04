@@ -1,8 +1,8 @@
-// Problem: H - Branch Manager
-// Contest: Southern California Regional 2024 - Practice Contest 1
-// URL: https://vjudge.net/contest/669057#problem/H
-// Time Limit: 4000
-// Start: 2024/11/02 15:55:33
+// Problem: E. Reverse the Rivers
+// Contest: Codeforces Round 984 (Div. 3)
+// URL: https://codeforces.com/contest/2036/problem/E
+// Time Limit: 2000
+// Start: Sat Nov  2 08:51:57 2024
 // mintemplate
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -45,73 +45,45 @@ const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
-    vector<vector<int>> adj(n+1);
-    for(int i =0; i < n-1; i++) {
-        int u, v; cin >>u >> v;
-        adj[u].pb(v);
-    }
-    for(int i = 0; i <= n; i++) sort(all(adj[i]), greater<int>());
-    vector<int> dest(m);
-    for(int i = 0; i < m; i++) {
-        cin >> dest[i];
-    }
+    int n, k, q; cin >> n >> k >> q;
+    vector<vector<int>> g(k);
+    for(int i = 0; i < n; i++) for(int j = 0; j < k; j++) {
+        int x; cin >> x;
+        g[j].pb(x | (g[j].size() ? g[j].back() : 0));
+    } //row is region col is country 
 
-    vector<int> parent(n+1), vis(n+1);
-    auto dfs = [&](auto&&s, int u, int p) -> void{
-        parent[u] = p;
-        for (auto&e : adj[u]) {
-            if(e != p) {
-                s(s, e, u);
-            }
+    auto bin_search = [&](int region, int value, int type) -> int{
+        if(type==0) { // < 
+            auto it = lower_bound(g[region].begin(), g[region].end(), value);
+            if(it != g[region].begin()) it--;
+            return *it < value ? it - g[region].begin() : -1;
+        } else { // > 
+            auto it = upper_bound(g[region].begin(), g[region].end(), value);
+            return (it != g[region].end() && *it > value) ? it - g[region].begin() : n;
         }
     };
-    dfs(dfs, 1, -1);
-    int k = 1;
-    for(; adj[k].size(); k = adj[k].back()) vis[k] = 1;
-    vis[k] = 1;
-    vector<int> bad(n+1);
-    int ans = 0;
-    auto dfs2 = [&](auto&&s, int u, int p) -> void {
-        bad[u] = 1;
-        vis[u] = 0;
-        parent[u] = -1;
-        for(auto&e : adj[u]) if(e != p) {
-            s(s, e, u);
-            adj[e].clear();
-        }
-    };
-    for(int i = 0; i < m; i++) {
-        if(vis[dest[i]]) ans++;
-        else {
-            if(bad[dest[i]]) {
-                cout << ans << nl;
-                return;
+    debug(g);
+    for(;q--;) {
+        int m; cin >> m;
+        int l = 0, r = n-1;
+        for(int i = 0; i < m; i++) {
+            int reg, val;
+            char sign;
+            cin >> reg >> sign >> val;
+            reg--;
+            if(sign == '<') {
+                int pos = bin_search(reg, val, 0);
+                if(pos != -1) ckmin(r, pos);
+                else r = -1;
+            } else {
+                int pos = bin_search(reg, val, 1);
+                if(pos != n) ckmax(l, pos);
+                else l = n;
             }
-            int now = dest[i]; 
-            int par = parent[now];
-            while(!vis[now] && now!=1) {
-                int cnt = 0;
-                if(bad[par]) {
-                    cout << ans << nl;
-                    return;
-                }
-                for(auto &e : adj[par]) {
-                    if(e < now) { 
-                        cnt++;
-                        dfs2(dfs2, e, par);
-                    }
-                }
-                for(int j = 0; j < cnt; j++) adj[par].pop_back();
-                vis[now] = 1;
-                now = par;
-                par = parent[now];
-            }
-            ans++;
-            debug(vis);
         }
+        if(l <= r) cout << l+1 << nl;
+        else cout << -1 << nl;
     }
-    cout << ans << endl;
 }
 
 int main() {    

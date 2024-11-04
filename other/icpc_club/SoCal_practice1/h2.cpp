@@ -2,7 +2,7 @@
 // Contest: Southern California Regional 2024 - Practice Contest 1
 // URL: https://vjudge.net/contest/669057#problem/H
 // Time Limit: 4000
-// Start: 2024/11/02 15:55:33
+// Start: Sat Nov  2 21:12:46 2024
 // mintemplate
 #include <bits/stdc++.h>
 #define sz(x) (int)x.size()
@@ -46,72 +46,37 @@ const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
     int n, m; cin >> n >> m;
-    vector<vector<int>> adj(n+1);
-    for(int i =0; i < n-1; i++) {
-        int u, v; cin >>u >> v;
+    vector<vector<int>> adj(n);
+    for(int i = 0; i < n-1; i++) {
+        int u, v; cin >> u >> v;
+        --u;--v;
         adj[u].pb(v);
     }
-    for(int i = 0; i <= n; i++) sort(all(adj[i]), greater<int>());
-    vector<int> dest(m);
-    for(int i = 0; i < m; i++) {
-        cin >> dest[i];
+
+    for(int i = 0; i < n; i++) {
+        sort(all(adj[i]));
     }
 
-    vector<int> parent(n+1), vis(n+1);
-    auto dfs = [&](auto&&s, int u, int p) -> void{
-        parent[u] = p;
-        for (auto&e : adj[u]) {
-            if(e != p) {
-                s(s, e, u);
-            }
+    vector<int> tin(n), tout(n);
+    int time = 0;
+    auto dfs = [&](auto&&s, int u) -> void {
+        tin[u] = time++;
+        for(auto &v : adj[u]) {
+            s(s, v);
         }
+        tout[u] = time++;
     };
-    dfs(dfs, 1, -1);
-    int k = 1;
-    for(; adj[k].size(); k = adj[k].back()) vis[k] = 1;
-    vis[k] = 1;
-    vector<int> bad(n+1);
-    int ans = 0;
-    auto dfs2 = [&](auto&&s, int u, int p) -> void {
-        bad[u] = 1;
-        vis[u] = 0;
-        parent[u] = -1;
-        for(auto&e : adj[u]) if(e != p) {
-            s(s, e, u);
-            adj[e].clear();
-        }
-    };
+    dfs(dfs, 0);
+    debug(tin, tout);
+    int ans = 0, cur = 0;
     for(int i = 0; i < m; i++) {
-        if(vis[dest[i]]) ans++;
-        else {
-            if(bad[dest[i]]) {
-                cout << ans << nl;
-                return;
-            }
-            int now = dest[i]; 
-            int par = parent[now];
-            while(!vis[now] && now!=1) {
-                int cnt = 0;
-                if(bad[par]) {
-                    cout << ans << nl;
-                    return;
-                }
-                for(auto &e : adj[par]) {
-                    if(e < now) { 
-                        cnt++;
-                        dfs2(dfs2, e, par);
-                    }
-                }
-                for(int j = 0; j < cnt; j++) adj[par].pop_back();
-                vis[now] = 1;
-                now = par;
-                par = parent[now];
-            }
-            ans++;
-            debug(vis);
-        }
+        int q; cin >> q;
+        --q;
+        if(tout[q] < cur) break;
+        ckmax(cur, tin[q]);
+        ans++;
     }
-    cout << ans << endl;
+    cout << ans << nl;
 }
 
 int main() {    

@@ -5,11 +5,11 @@
 // Start: $(DATE)
 // mintemplate
 #include <bits/stdc++.h>
+#define int long long
 #define sz(x) (int)x.size()
-#define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
-#define pii pair<ll, ll>
+#define pii pair<int, int>
 #define pb push_back
 using namespace std;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
@@ -42,12 +42,11 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #endif
 
 const char nl = '\n';
-const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
 }
 
-int main() {    
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;

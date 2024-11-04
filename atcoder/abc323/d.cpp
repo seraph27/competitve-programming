@@ -1,19 +1,17 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// atcoder
+// Problem: D - Merge Slimes
+// Contest: ユニークビジョンプログラミングコンテスト2023 秋 (AtCoder Beginner Contest 323)
+// URL: https://atcoder.jp/contests/abc323/tasks/abc323_d
+// Time Limit: 3000
+// Start: Fri Nov  1 02:05:03 2024
+// mintemplate
 #include <bits/stdc++.h>
-#include <atcoder/modint>
-#define int long long
 #define sz(x) (int)x.size()
+#define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
-#define pii pair<int, int>
+#define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
-using namespace atcoder;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -43,16 +41,32 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const char nl = '\n';
+const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    map<ll, ll> mp;
+    for(int i = 0; i < n; i++) {
+        int s, c; cin >> s >> c;
+        mp[s] += c;
+    }
+    for(auto &[k, v] : mp) {
+        mp[k*2] += v/2;
+        v %= 2;
+    }
+    ll ans = 0;
+    for(auto &[k, v] : mp) {
+        ans += v;
+    }
+    cout << ans << nl;
 }
 
-signed main() {    
+int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+
