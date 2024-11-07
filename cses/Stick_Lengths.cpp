@@ -1,15 +1,31 @@
+// Problem: Stick Lengths
+// Contest: CSES Problem Set
+// URL: https://cses.fi/problemset/task/1074
+// Time Limit: 1000
+// Start: Mon Nov  4 05:26:46 2024
+// mintemplate
 #include <bits/stdc++.h>
-#define ll long long
+#define int long long
+#define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
-#define pii pair<ll, ll>
+#define pii pair<int, int>
+#define pb push_back
 using namespace std;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
+template<typename T, typename S> constexpr T ifloor(const T a, const S b){return a/b-(a%b&&(a^b)<0);}
+template<typename T, typename S> constexpr T iceil(const T a, const S b){return ifloor(a+b-1,b);}
+template<typename T> T isqrt(const T &x){T y=sqrt(x+2); while(y*y>x) y--; return y;}
+template<typename T>
+void sort_unique(vector<T> &vec){
+    sort(vec.begin(),vec.end());
+    vec.resize(unique(vec.begin(),vec.end())-vec.begin());
+}
 
-#ifdef SERAPH
+#ifdef MISAKA
 struct _debug {
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
@@ -25,29 +41,27 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-const int mod = 1e9+7;
 const char nl = '\n';
-const int INF = 0x3f3f3f3f;
 
-void seraph() {
+void shiina_mashiro() {
     int n; cin >> n;
-    vector<int> vi(n);
-    for(auto&a: vi) cin >> a;
+    vector<int>vi(n);
+    for(auto&x: vi) cin >> x;
     sort(all(vi));
-    int median = (n%2) ? vi[n/2] : vi[n/2-1];
-    ll ans = 0;
-    debug(median);
-    for(int i = 0; i < n; i++){
-        ans += abs(vi[i] - median);
+    int med = n/2, med2 = (n+1)/2;
+    int cnt = 0, cnt2 = 0;
+    for(int i = 0; i < n; i++) {
+        cnt+=abs(vi[med]-vi[i]);
+        cnt2+=abs(vi[med2]-vi[i]);
     }
-
-    cout << ans << nl;
+    cout << min(cnt, cnt2) << nl;
 }
 
-int main() {    
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
     //cin >> t;
-    while (t--) seraph();
+    while (t--) shiina_mashiro();
 }
+

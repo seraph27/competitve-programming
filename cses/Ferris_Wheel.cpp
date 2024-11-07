@@ -1,15 +1,31 @@
+// Problem: Ferris Wheel
+// Contest: CSES Problem Set
+// URL: https://cses.fi/problemset/task/1090
+// Time Limit: 1000
+// Start: Mon Nov  4 05:11:13 2024
+// mintemplate
 #include <bits/stdc++.h>
-#define ll long long
+#define int long long
+#define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
-#define pii pair<ll, ll>
+#define pii pair<int, int>
+#define pb push_back
 using namespace std;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
+template<typename T, typename S> constexpr T ifloor(const T a, const S b){return a/b-(a%b&&(a^b)<0);}
+template<typename T, typename S> constexpr T iceil(const T a, const S b){return ifloor(a+b-1,b);}
+template<typename T> T isqrt(const T &x){T y=sqrt(x+2); while(y*y>x) y--; return y;}
+template<typename T>
+void sort_unique(vector<T> &vec){
+    sort(vec.begin(),vec.end());
+    vec.resize(unique(vec.begin(),vec.end())-vec.begin());
+}
 
-#ifdef SERAPH
+#ifdef MISAKA
 struct _debug {
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
@@ -25,37 +41,33 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-const int mod = 1e9+7;
 const char nl = '\n';
-const int INF = 1001001001;
 
-void seraph() {
+void shiina_mashiro() {
     int n, x; cin >> n >> x;
-    vector<int> wi(n);
-    for(auto&a: wi){
-        cin >> a;
-    }
-    sort(all(wi));
-
-    int j = n-1, i = 0;
+    vector<int> a(n);
+    for(auto&o : a) cin >> o;
+    sort(all(a), greater<int>());
+    multiset<int> s;
     int ans = 0;
-    while(i <= j){
-        if(wi[i] + wi[j] <= x){
+    for(int i = 0; i < n; i++) {
+        auto it = s.lower_bound(a[i]);
+        if(it==s.end()) {
             ans++;
-            i++;
-            j--;
-        } else{
-            ans++;
-            j--;
+            s.insert(x-a[i]);
+            continue;
+         } else {
+            s.erase(it);
         }
     }
     cout << ans << nl;
 }
 
-int main() {    
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
     //cin >> t;
-    while (t--) seraph();
+    while (t--) shiina_mashiro();
 }
+

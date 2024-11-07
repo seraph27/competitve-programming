@@ -2,7 +2,7 @@
 // Contest: サントリープログラミングコンテスト2023（AtCoder Beginner Contest 321）
 // URL: https://atcoder.jp/contests/abc321/tasks/abc321_a
 // Time Limit: 2000
-// Start: Mon Nov  4 02:38:28 2024
+// Start: Mon Nov  4 03:01:21 2024
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -44,6 +44,13 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
+    string s; cin >> s;
+    for (int i = 0; i < sz(s)-1; i++) {
+        if(s[i] > s[i+1]) continue;
+        cout<<"No"<<nl;
+        return;
+    }
+    cout<<"Yes"<<nl;
 }
 
 signed main() {    

@@ -1,15 +1,31 @@
+// Problem: Apartments
+// Contest: CSES Problem Set
+// URL: https://cses.fi/problemset/task/1084
+// Time Limit: 1000
+// Start: Mon Nov  4 04:52:03 2024
+// mintemplate
 #include <bits/stdc++.h>
-#define ll long long
+#define int long long
+#define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
-#define pii pair<ll, ll>
+#define pii pair<int, int>
+#define pb push_back
 using namespace std;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
+template<typename T, typename S> constexpr T ifloor(const T a, const S b){return a/b-(a%b&&(a^b)<0);}
+template<typename T, typename S> constexpr T iceil(const T a, const S b){return ifloor(a+b-1,b);}
+template<typename T> T isqrt(const T &x){T y=sqrt(x+2); while(y*y>x) y--; return y;}
+template<typename T>
+void sort_unique(vector<T> &vec){
+    sort(vec.begin(),vec.end());
+    vec.resize(unique(vec.begin(),vec.end())-vec.begin());
+}
 
-#ifdef SERAPH
+#ifdef MISAKA
 struct _debug {
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
@@ -25,39 +41,37 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-const int mod = 1e9+7;
 const char nl = '\n';
-const int INF = 0x3f3f3f3f;
 
-void seraph() {
-    int n, m, k; cin >> n >> m >> k;
-    vector<ll> apply(n), apart(m);
-    for(auto&a: apply) cin >> a;
-    for(auto&a: apart) cin >> a;
-    sort(all(apply));
-    sort(all(apart));
-    int i = 0, j = 0;
+void shiina_mashiro() {
+    int n, m; cin >> n >> m;
+    int k; cin >> k;
+    vector<int> a(n), b(m);
+    for(auto&x: a) cin >> x;
+    for(auto&x: b) cin >> x;
+    sort(all(a));
+    sort(all(b));
     int ans = 0;
-    while(i < n && j < m) {
-        debug(apply[i], apart[j]);
-        if(apply[i] + k < apart[j]){
-            i++;
-        } else if(apply[i] - k > apart[j]){
-            j++;
-        } else{
-            i++;
-            j++;
+    int l = 0, r = 0;
+    for(; r < m && l < n; ) {
+        if(a[l]+k>=b[r] && a[l]-k<=b[r]) {
             ans++;
+            l++;
+            r++;
+        } else if(b[r]<a[l]-k) {
+            r++;
+        } else if(b[r]>a[l]+k) {
+            l++;
         }
-        //debug(i, j, ans);
     }
     cout << ans << nl;
 }
 
-int main() {    
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
     //cin >> t;
-    while (t--) seraph();
+    while (t--) shiina_mashiro();
 }
+
