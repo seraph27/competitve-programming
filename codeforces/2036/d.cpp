@@ -1,15 +1,15 @@
-// Problem: D. Genokraken
-// Contest: Codeforces Round 983 (Div. 2)
-// URL: https://codeforces.com/contest/2032/problem/D
-// Time Limit: 2000
-// Start: 2024/11/10 12:33:15
-// mintemplate
+// Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
+// codeforces
 #include <bits/stdc++.h>
-#define int long long
 #define sz(x) (int)x.size()
+#define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
-#define pii pair<int, int>
+#define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
@@ -42,15 +42,54 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #endif
 
 const char nl = '\n';
+const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n, m; cin >> n >> m;
+    vector<string> grid(n);
+    for (int i = 0; i < n; i++) cin >> grid[i];
+    const int maxlayer = min(n, m)/2;
+    debug(maxlayer);
+    vector<vector<char>> layer(maxlayer+1);
+    int cs = 0, rs = 0, ce = n-1, re = m-1;
+    for(int i = 0; i < maxlayer; i++) {
+        for(int j = rs; j <= re; j++) {
+            layer[i].pb(grid[rs][j]);
+        }
+        for(int j = cs+1; j <= ce; j++) {
+            layer[i].pb(grid[j][re]);
+        }
+        for(int j = re-1; j >= rs; j--) {
+            layer[i].pb(grid[ce][j]);
+        }
+        for(int j = ce-1; j >= cs; j--) {
+            layer[i].pb(grid[j][cs]);
+        }
+        rs++, cs++, re--, ce--;
+    }
+    ll ans = 0;
+    for(int i = 0; i < maxlayer; i++) {
+        layer[i].pop_back();
+        for(int j = 0; j < 3; j++) {
+            layer[i].pb(layer[i][j]);
+        }
+        for(int j = 0; j < sz(layer[i])-3; j++) {
+            debug(j);
+            if(layer[i][j] == '1' && layer[i][j+1] == '5' && layer[i][j+2] == '4' && layer[i][j+3] == '3') {
+                ans++;
+            }
+        }
+    }
+    cout << ans << nl;
+    debug(layer);
+  
 }
 
-signed main() {    
+int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

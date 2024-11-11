@@ -9,7 +9,7 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 
-#ifdef SERAPH
+#ifdef MISAKA
 struct _debug {
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
@@ -41,22 +41,39 @@ void seraph() {
     for(int i = 0; i < n-1; i++){
         if(vi[i] > vi[i+1]) ans++;
     }
-    auto check = [&](int val) {
-        return (val-1>=0 ? vi[val-1] > vi[val] : 0) + (val+1<n ? vi[val+1] < vi[val] : 0);
+
+    auto chk = [&](int a, int b) -> int {
+        int ret = 0;
+        if(a==b) {
+            if(a-1>=0 && vi[a] > vi[a-1]) ret++;
+            if(b+1<n && vi[b+1] > vi[b]) ret++;
+        } else if(b-a==1) {
+            if(a-1>=0 && vi[a] > vi[a-1]) ret++;
+            if(b+1<n && vi[b+1] > vi[b]) ret++;
+            if(vi[b] > vi[a]) ret++;
+        } else if(b-a>1) {
+            if(a-1>=0 && vi[a] > vi[a-1]) ret++;
+            if(b+1<n && vi[b+1] > vi[b]) ret++;
+            if(vi[b] > vi[b-1]) ret++;
+            if(vi[a+1] > vi[a]) ret++;
+        }
+        debug(ret);
+        return ret;
     };
-    while(m--){
-        int x, y; cin >> x >> y;
-        --x; --y;
-        int change = 0;
-        if(nums[x] > nums[y]) swap(x, y);
-        change-= check(nums[x]) + check(nums[y]) - (nums[x] + 1 == nums[y] && x > y);
-        swap(nums[x], nums[y]);
-        swap(vi[nums[x]], vi[nums[y]]);
-        if(nums[x] > nums[y]) swap(x, y);
-        change += check(nums[x]) + check(nums[y]) - (nums[x] + 1 == nums[y] && x > y);
-        ans+=change;
+    for(int i = 0; i < m; i++) {
+        int a, b; cin >> a >> b;
+        --a; --b;
+        debug(nums[a], nums[b], vi[nums[a]], vi[nums[b]]);
+        if(a > b) swap(a, b);
+        auto bef = chk(a, b);
+        swap(vi[nums[a]], vi[nums[b]]);
+        swap(nums[a], nums[b]);
+        auto aft = chk(a, b);
+        debug(bef, aft);
+        ans += bef-aft;
         cout << ans << nl;
     }
+
    
 }
 

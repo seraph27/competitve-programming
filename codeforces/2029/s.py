@@ -1,55 +1,49 @@
-import subprocess
+import subprocess as sp
 import os
 
-a_exec = "./a"
-b_exec = "./b"
-iter = 100
+a = "./a"
+b = "./b"
+it = 100
 
-for i in range(1, iter + 1):
+for i in range(1, it + 1):
     print(f"Iteration {i}")
-    # Run the Ruby script and redirect output to 'in' file
-    with open("in", "w") as infile:
-        subprocess.run(["ruby", "a.rb"], stdout=infile)
     
-    # Execute a_exec and b_exec and capture their outputs
-    with open("in", "r") as infile, open("out1", "w") as outfile1:
-        subprocess.run(a_exec, stdin=infile, stdout=outfile1)
-    
-    with open("in", "r") as infile, open("out2", "w") as outfile2:
-        subprocess.run(b_exec, stdin=infile, stdout=outfile2)
-    
-    # Compare outputs using diff-like behavior in Python
-    with open("out1", "r") as file1, open("out2", "r") as file2:
-        out1_content = file1.read().strip()
-        out2_content = file2.read().strip()
+    with open("in", "w") as f:
+        sp.run(["ruby", "a.rb"], stdout=f)
 
-        if out1_content != out2_content:
-            print(f"Mismatch found at iteration {i}. Input:")
-            with open("in", "r") as infile:
-                print(infile.read())
+    with open("in", "r") as f, open("out1", "w") as o1:
+        sp.run(a, stdin=f, stdout=o1)
+    
+    with open("in", "r") as f, open("out2", "w") as o2:
+        sp.run(b, stdin=f, stdout=o2)
+    
+    with open("out1", "r") as o1, open("out2", "r") as o2:
+        o1_content = o1.read().strip()
+        o2_content = o2.read().strip()
 
-            # Print the difference between the correct output (out1) and the wrong output (out2)
+        if o1_content != o2_content:
+            print(f"Mismatch at iteration {i}. Input:")
+            with open("in", "r") as f:
+                print(f.read())
+
             print("\n--- Correct Output (out1): ---")
-            print(out1_content)
+            print(o1_content)
             print("\n--- Wrong Output (out2): ---")
-            print(out2_content)
+            print(o2_content)
 
-            # Display a detailed difference line by line
             print("\n--- Detailed Differences: ---")
-            out1_lines = out1_content.splitlines()
-            out2_lines = out2_content.splitlines()
+            o1_lines = o1_content.splitlines()
+            o2_lines = o2_content.splitlines()
 
-            for line in range(max(len(out1_lines), len(out2_lines))):
-                correct_line = out1_lines[line] if line < len(out1_lines) else "<No line>"
-                wrong_line = out2_lines[line] if line < len(out2_lines) else "<No line>"
+            for ln in range(max(len(o1_lines), len(o2_lines))):
+                cl = o1_lines[ln] if ln < len(o1_lines) else "<No line>"
+                wl = o2_lines[ln] if ln < len(o2_lines) else "<No line>"
 
-                if correct_line != wrong_line:
-                    print(f"Line {line + 1}:")
-                    print(f"  Correct: {correct_line}")
-                    print(f"  Wrong:   {wrong_line}")
-            
+                if cl != wl:
+                    print(f"Line {ln + 1}:")
+                    print(f"  Correct: {cl}")
+                    print(f"  Wrong:   {wl}")
             break
 
-# Clean up the files
 os.remove("out1")
 os.remove("out2")

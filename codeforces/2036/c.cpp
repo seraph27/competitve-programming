@@ -1,15 +1,15 @@
-// Problem: C. Trinity
-// Contest: Codeforces Round 983 (Div. 2)
-// URL: https://codeforces.com/contest/2032/problem/C
-// Time Limit: 2000
-// Start: 2024/11/10 12:33:15
-// mintemplate
+// Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
+// codeforces
 #include <bits/stdc++.h>
-#define int long long
 #define sz(x) (int)x.size()
+#define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
-#define pii pair<int, int>
+#define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
@@ -42,30 +42,41 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #endif
 
 const char nl = '\n';
-
+const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
-    int n; cin >> n;
-    vector<int> vi(n);
-    for(auto&x: vi) {
-        cin >> x;
+    string s; cin >> s;
+    set<int> st;
+    for(int i =0; i < sz(s)-3; i++) {
+        if(s.substr(i, 4) == "1100") {
+            st.insert(i);
+        }
     }
-    auto temp = vi;
-    sort_unique(vi);
-    int ans = 4e18;
-    sort(all(temp));
-    for(auto val : vi) {
-        auto fi = upper_bound(all(temp), val);
-        int mx = (val+2)/2; //5/2 = 2
-        auto se = lower_bound(all(temp), mx);
-        ckmin(ans, n-(fi-se));
+    int q; cin >> q;
+    for(;q--;) {
+        int pos;
+        char x;
+        cin >> pos >> x;
+        pos--;
+        s[pos] = x;
+        debug(s);
+        for(int p = max(0, pos-3); p <= min(sz(s)-4, pos); p++) {
+            debug(p);
+            if(s.substr(p, 4) == "1100") {
+                st.insert(p);
+            } else {
+                st.erase(p);
+            }
+        }
+        if(!st.empty()) {
+            cout << "Yes" << nl;
+        } else {
+            cout << "No" << nl;
+        }
     }
-
-    cout << ans << nl;
-
 }
 
-signed main() {    
+int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;

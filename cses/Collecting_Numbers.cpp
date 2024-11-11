@@ -9,7 +9,7 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 
-#ifdef SERAPH
+#ifdef MISAKA
 struct _debug {
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
@@ -31,14 +31,16 @@ const int INF = 0x3f3f3f3f;
 
 void seraph() {
     int n; cin >> n;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++){
-        int a; cin >> a;
-        vi[--a] = i;
+    int ans = 0, last = -1;
+    vector<int> a(n);
+    for(int i = 0; i < n; i++) {
+        int x; cin >> x;
+        --x;
+        a[x] = i;
     }
-    int ans = 0;
-    for(int i = 0; i < n-1; i++){
-        if(vi[i] > vi[i+1]) ans++;
+    for(int i = 0; i < n; i++) {
+        if(last > a[i]) ans++;
+        last = a[i];
     }
     cout << ans+1 << nl;
 }

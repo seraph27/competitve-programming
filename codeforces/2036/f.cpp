@@ -1,8 +1,8 @@
-// Problem: F. Peanuts
-// Contest: Codeforces Round 983 (Div. 2)
-// URL: https://codeforces.com/contest/2032/problem/F
-// Time Limit: 4000
-// Start: 2024/11/10 12:33:15
+// Problem: F. XORificator 3000
+// Contest: Codeforces Round 984 (Div. 3)
+// URL: https://codeforces.com/contest/2036/problem/F
+// Time Limit: 1000
+// Start: Sun Nov 10 17:33:14 2024
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long

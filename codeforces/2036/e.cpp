@@ -1,15 +1,15 @@
-// Problem: E. Balanced
-// Contest: Codeforces Round 983 (Div. 2)
-// URL: https://codeforces.com/contest/2032/problem/E
+// Problem: E. Reverse the Rivers
+// Contest: Codeforces Round 984 (Div. 3)
+// URL: https://codeforces.com/contest/2036/problem/E
 // Time Limit: 2000
-// Start: 2024/11/10 12:33:15
+// Start: Sat Nov  2 08:51:57 2024
 // mintemplate
 #include <bits/stdc++.h>
-#define int long long
 #define sz(x) (int)x.size()
+#define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
-#define pii pair<int, int>
+#define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
@@ -42,11 +42,51 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #endif
 
 const char nl = '\n';
+const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
+    int n, k, q; cin >> n >> k >> q;
+    vector<vector<int>> g(k);
+    for(int i = 0; i < n; i++) for(int j = 0; j < k; j++) {
+        int x; cin >> x;
+        g[j].pb(x | (g[j].size() ? g[j].back() : 0));
+    } //row is region col is country 
+
+    auto bin_search = [&](int region, int value, int type) -> int{
+        if(type==0) { // < 
+            auto it = lower_bound(g[region].begin(), g[region].end(), value);
+            if(it != g[region].begin()) it--;
+            return *it < value ? it - g[region].begin() : -1;
+        } else { // > 
+            auto it = upper_bound(g[region].begin(), g[region].end(), value);
+            return (it != g[region].end() && *it > value) ? it - g[region].begin() : n;
+        }
+    };
+    debug(g);
+    for(;q--;) {
+        int m; cin >> m;
+        int l = 0, r = n-1;
+        for(int i = 0; i < m; i++) {
+            int reg, val;
+            char sign;
+            cin >> reg >> sign >> val;
+            reg--;
+            if(sign == '<') {
+                int pos = bin_search(reg, val, 0);
+                if(pos != -1) ckmin(r, pos);
+                else r = -1;
+            } else {
+                int pos = bin_search(reg, val, 1);
+                if(pos != n) ckmax(l, pos);
+                else l = n;
+            }
+        }
+        if(l <= r) cout << l+1 << nl;
+        else cout << -1 << nl;
+    }
 }
 
-signed main() {    
+int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;

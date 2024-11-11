@@ -1,15 +1,15 @@
-// Problem: A. Circuit
-// Contest: Codeforces Round 983 (Div. 2)
-// URL: https://codeforces.com/contest/2032/problem/A
-// Time Limit: 1000
-// Start: 2024/11/10 12:33:15
-// mintemplate
+// Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
+// codeforces
 #include <bits/stdc++.h>
-#define int long long
 #define sz(x) (int)x.size()
+#define ll long long
 #define ar array
 #define all(x) x.begin(), x.end()
-#define pii pair<int, int>
+#define pii pair<ll, ll>
 #define pb push_back
 using namespace std;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
@@ -42,22 +42,24 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #endif
 
 const char nl = '\n';
+const int INF = 0x3f3f3f3f;
 
 void shiina_mashiro() {
     int n; cin >> n;
-    int one = 0, zero = 0;
-    for(int i = 0; i < 2*n; i++) {
-        int x; cin >> x;
-        if(x) one++;
-        else zero++;
+    vector<int> vi(n);
+    for(auto &x:vi) cin >> x;
+    debug(vi);
+    for(int i = 0; i < n-1; i++) {
+        auto diff = abs(vi[i]-vi[i+1]);
+        if(!(diff == 5 || diff == 7)) {
+            cout << "NO" << nl;
+            return;
+        }
     }
-    cout << (one%2==0 ? 0 : 1) << " ";
-    debug(one);
-    if(one > n) one = n - (one-n);
-    cout << one << " " << nl;
+    cout << "YES" << nl;
 }
 
-signed main() {    
+int main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
