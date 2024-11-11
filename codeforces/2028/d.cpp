@@ -44,74 +44,52 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n;
-    cin >> n;
-    vector<int> q(n), k(n), j(n);
-    vector<vector<int>> pos(3, vector<int>(n + 1));
-    for (int i = 0; i < n; ++i) {
-        cin >> q[i];
-        pos[0][q[i]] = i;
+    int n; cin >> n;
+    string s = "qkj";
+    vector<vector<int>> vi(3, vector<int>(n, 0));
+    for(int j = 0; j < 3; j++) for (int i = 0; i < n; ++i) {
+        cin >> vi[j][i];
     }
-    for (int i = 0; i < n; ++i) {
-        cin >> k[i];
-        pos[1][k[i]] = i;
-    }
-    for (int i = 0; i < n; ++i) {
-        cin >> j[i];
-        pos[2][j[i]] = i;
-    }
-
-    vector<vector<int>> adj(n + 1);
-    for (int x = 1; x <= n; ++x) {
-        for (int p = 0; p < 3; ++p) {
-            for (int y = 1; y <= n; ++y) {
-                if (pos[p][x] > pos[p][y]) {
-                    adj[x].pb(y);
-                }
+    
+    vector<pair<char, int>> ans(n, {' ', -1});
+    ar<int, 3> reach = {n-1, n-1, n-1};
+    for(int j = n-2; j>=0; j--) {
+        int idx = -1;
+        for(int o = 0; o < 3; o++) {
+            if(vi[o][reach[o]] < vi[o][j]) {
+                idx = o;
+                break;
             }
         }
-    }
-
-    vector<int> dist(n + 1, -1);
-    queue<int> qd;
-    dist[1] = 0;
-    qd.push(1);
-    while (!qd.empty()) {
-        int u = qd.front();
-        qd.pop();
-        for (int v : adj[u]) {
-            if (dist[v] == -1) {
-                dist[v] = dist[u] + 1;
-                qd.push(v);
+        if(idx == -1) continue;
+        ans[j] = {s[idx], reach[idx]};
+        for(int o = 0; o < 3; o++) {
+            if(vi[o][reach[o]] > vi[o][j]) {
+                reach[o] = j;
             }
         }
+    }   
+    if(ans[0].second == -1) {
+        cout << "NO" << nl;
+        return;
     }
+    cout << "YES" << nl;
+    vector<pair<char, int>> ans2({ans[0]});
+    while(ans2.back().second != -1) {
+        ans2.push_back(ans[ans2.back().second]);
+    }
+    ans2.pop_back();
+    debug(ans2);
+    cout << sz(ans2) << nl;
+    for(auto [c, i] : ans2) cout << c << " " << i+1 << nl;
 
-    if (dist[n] == -1) {
-        cout << -1 << nl;
-    } else {
-        vector<int> path;
-        for (int x = n; x != 1; ) {
-            path.pb(x);
-            for (int v : adj[x]) {
-                if (dist[v] == dist[x] - 1) {
-                    x = v;
-                    break;
-                }
-            }
-        }
-        path.pb(1);
-        reverse(all(path));
-        for (int x : path) cout << x << ' ';
-        cout << nl;
-    }
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

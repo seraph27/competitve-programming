@@ -1,45 +1,14 @@
-// Problem: E. Alice's Adventures in the Rabbit Hole
-// Contest: Codeforces Round 986 (Div. 2)
-// URL: https://codeforces.com/contest/2028/problem/E
-// Time Limit: 2000
-// Start: Sun Nov 10 07:35:46 2024
-// mintemplate
 #include <bits/stdc++.h>
 #define ll long long
-#define sz(x) (ll)x.size()
 #define ar array
+#define db double
 #define all(x) x.begin(), x.end()
-#define pii pair<int, int>
-#define pb push_back
+#define sz(x) (int)x.size()
 using namespace std;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
-template<typename T, typename S> constexpr T ifloor(const T a, const S b){return a/b-(a%b&&(a^b)<0);}
-template<typename T, typename S> constexpr T iceil(const T a, const S b){return ifloor(a+b-1,b);}
-template<typename T> T isqrt(const T &x){T y=sqrt(x+2); while(y*y>x) y--; return y;}
-template<typename T>
-void sort_unique(vector<T> &vec){
-    sort(vec.begin(),vec.end());
-    vec.resize(unique(vec.begin(),vec.end())-vec.begin());
-}
-
-#ifdef MISAKA
-struct _debug {
-template<typename T> static void __print(const T &x) {
-    if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
-    else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
-}
-template<typename T, typename V>
-static void __print(const pair<T, V> &x) { cerr << '(', __print(x.first), cerr << ',', __print(x.second), cerr << ')'; }
-template<typename T, typename... V>
-static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof...(v)) cerr << ", ", _print(v...); else cerr << "]\n"; }
-};
-#define debug(x...) cerr << "[" << #x << "] = [", _debug::_print(x)
-#else
-#define debug(x...)
-#endif
 template <int MOD_> struct modnum {
     static constexpr int MOD = MOD_;
 
@@ -122,60 +91,71 @@ template <int MOD_> struct modnum {
 
 const int mod = 998244353;
 using mint = modnum<mod>;
-const char nl = '\n';
 
-void shiina_mashiro() {
-    int n; cin >> n;
-    vector<vector<int>> adj(n);
-    vector<int> leafs;
-    for(int i = 0; i < n-1; i++) {
-        int u, v; cin >> u >> v;
-        --u, --v;
-        adj[u].pb(v);
-        adj[v].pb(u);
-    }
-    for(int i = 0; i < n; i++) if(sz(adj[i]) == 1 && i != 0) leafs.pb(i);
-    
-    vector<mint> dp(n, 1);
-    vector<int> par(n, -1), depth(n, 0), vis(n, 0);
-    vis[0] = 1;
-    auto dfs = [&](auto&&s, int u, int p, int dep) -> void {
-        depth[u] = dep;
-        for(auto&e : adj[u]) if(e != p) {
-            par[e] = u;
-            s(s, e, u, dep+1);
-        }
-    };
-    dfs(dfs, 0, -1, 0);
-    sort(all(leafs), [&](int a, int b) { return depth[a] < depth[b]; });
-    debug(leafs);
-    for(auto leaf : leafs) {
-        auto temp = leaf;
-        while(!vis[temp]){
-            temp = par[temp];
-        }
-        int dept = depth[leaf] - depth[temp];
-        mint mul = dp[temp];
-        dp[leaf] = 0;
-        int cnt = 0;
-        int u = leaf;
-        while(!vis[u]) {
-            debug(u, temp);
-            dp[u] *= (mint)cnt * inv((mint)dept) * mul;
-            vis[u] = 1;
-            cnt++;
-            u = par[u];
-        }
-    }
-    for(int i = 0; i < n; i++) cout << dp[i] << " ";
-    cout << nl;
+vector<mint> facs, invfacs;
+
+mint choose(int _a, int _b) {
+    if (_b > _a || _a < 0 || _b < 0) return 0;
+    return facs[_a] * invfacs[_b] * invfacs[_a-_b];
 }
 
-signed main() {    
+void finit(const int nx) {
+    facs.resize(nx+1);
+    invfacs.resize(nx+1);
+    facs[0] = facs[1] = invfacs[0] = invfacs[1] = 1;
+    for (int i = 2; i <= nx; i++) {
+        facs[i] = facs[i-1] * mint(i);
+    }
+    invfacs[nx] = inv(facs[nx]);
+    for (int i = nx-1; i > 1; i--) {
+        invfacs[i] = invfacs[i+1] * mint(i+1);
+    }
+}
+
+
+void test_case() {
+	int n; cin >> n;
+	vector<vector<int>> adj(n+1);
+	for (int i = 0; i < n-1; i++) {
+		int x, y;
+		cin >> x >> y;
+		adj[x].emplace_back(y);
+		adj[y].emplace_back(x);
+	}
+	vector<int> p(n+1), d(n+1), leaves;
+	auto dfs = [&](auto&& s, int v) -> void {
+		for (int u : adj[v]) if (u != p[v]) {
+			d[u] = d[v] + 1;
+			p[u] = v;
+			s(s, u);
+		}
+	};
+	dfs(dfs, 1);
+	for (int i = 2; i <= n; i++) if (sz(adj[i]) == 1) leaves.emplace_back(i);
+	vector<mint> dp(n+1);
+	sort(all(leaves), [&](int x, int y) { return d[x] < d[y]; });
+	vector<bool> vis(n+1);
+	dp[1] = 1, vis[1] = 1;
+	for (int v : leaves) {
+		int tmp = v, len = 0;
+		while (!vis[tmp]) tmp = p[tmp], len++;
+		mint there = dp[tmp] * inv(mint(len));
+		tmp = v;
+		int dist = 0;
+		while (!vis[tmp]) {
+			vis[tmp] = 1, dp[tmp] = there * dist++, tmp = p[tmp];
+		}
+	}
+	for (int i = 1; i <= n; i++) {
+		cout << dp[i] << " \n"[i==n];
+	}
+
+
+}
+int main() {
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
     cin >> t;
-    while (t--) shiina_mashiro();
+    while (t--) test_case();
 }
 

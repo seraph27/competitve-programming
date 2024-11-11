@@ -1,9 +1,9 @@
-// Problem: C. Trinity
-// Contest: Codeforces Round 983 (Div. 2)
-// URL: https://codeforces.com/contest/2032/problem/C
-// Time Limit: 2000
-// Start: 2024/11/10 12:33:15
-// mintemplate
+// Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
+// codeforces
 #include <bits/stdc++.h>
 #define int long long
 #define sz(x) (int)x.size()
@@ -43,30 +43,17 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-
 void shiina_mashiro() {
-    int n; cin >> n;
-    vector<int> vi(n);
-    for(auto&x: vi) {
-        cin >> x;
-    }
-    sort(all(vi));
-    int ans = 4e18;
-    for(int L = 0, R = 2; R < n; R++) {
-        while(vi[L] + vi[L+1] <= vi[R]) {
-            L++;
-        }
-        ckmin(ans, n - (R-L+1));
-    }
-    cout << ans << nl;
-
+    int n = rint(2, 5);
+    cout << 1 << nl;
+    cout << n << nl;
+    for (int i= 2; i <= n; i++) cout << rint(1, i-1) << " " << i << '\n';
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
     while (t--) shiina_mashiro();
 }
 
