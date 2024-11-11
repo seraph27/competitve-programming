@@ -1,8 +1,8 @@
-// Problem: A. Circuit
-// Contest: Codeforces Round 983 (Div. 2)
-// URL: https://codeforces.com/contest/2032/problem/A
-// Time Limit: 1000
-// Start: 2024/11/10 12:33:15
+// Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -45,16 +45,33 @@ const char nl = '\n';
 
 void shiina_mashiro() {
     int n; cin >> n;
-    int one = 0, zero = 0;
-    for(int i = 0; i < 2*n; i++) {
-        int x; cin >> x;
-        if(x) one++;
-        else zero++;
+    vector<int> vi(n);
+    for(int i = 0; i < n; i++) {
+        cin >> vi[i];
     }
-    cout << (one%2==0 ? 0 : 1) << " ";
-    debug(one);
-    if(one > n) one = n - (one-n);
-    cout << one << " " << nl;
+
+    int mx = 9999;
+    for(int i = 0; i < (1 << n); i++) {
+        vector<int> temp;
+        for(int j = 0; j < n; j++) {
+            if((i>>j) & 1) {
+                temp.pb(vi[j]);
+            }
+        }
+        if(sz(temp) < 3) continue;
+        bool ok = 1;
+        for(int q = 0; q < sz(temp); q++) for(int r = 0; r < sz(temp); r++) for(int s = 0; s < sz(temp); s++) {
+            if(q==r || q==s || s==r) continue;
+            if(temp[q] + temp[r] > temp[s] && temp[q] + temp[s] > temp[r] && temp[s]+temp[r] > temp[q]) continue;
+            else {
+                ok = 0;
+                break;
+            }
+        }
+        if(ok) ckmin(mx, n-sz(temp));
+    }
+    if(n==3 && mx == 9999) mx = 1;
+    cout << mx << nl;
 }
 
 signed main() {    
@@ -64,4 +81,5 @@ signed main() {
     cin >> t;
     while (t--) shiina_mashiro();
 }
+
 

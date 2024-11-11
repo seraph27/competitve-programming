@@ -1,7 +1,7 @@
-// Problem: A. Circuit
+// Problem: F. Peanuts
 // Contest: Codeforces Round 983 (Div. 2)
-// URL: https://codeforces.com/contest/2032/problem/A
-// Time Limit: 1000
+// URL: https://codeforces.com/contest/2032/problem/F
+// Time Limit: 4000
 // Start: 2024/11/10 12:33:15
 // mintemplate
 #include <bits/stdc++.h>
@@ -44,24 +44,13 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n; cin >> n;
-    int one = 0, zero = 0;
-    for(int i = 0; i < 2*n; i++) {
-        int x; cin >> x;
-        if(x) one++;
-        else zero++;
-    }
-    cout << (one%2==0 ? 0 : 1) << " ";
-    debug(one);
-    if(one > n) one = n - (one-n);
-    cout << one << " " << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
 

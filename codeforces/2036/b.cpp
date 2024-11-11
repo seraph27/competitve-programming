@@ -1,9 +1,9 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: B. Medians
+// Contest: Codeforces Round 983 (Div. 2)
+// URL: https://codeforces.com/contest/2032/problem/B
+// Time Limit: 1000
+// Start: 2024/11/10 12:33:15
+// mintemplate
 #include <bits/stdc++.h>
 #define int long long
 #define sz(x) (int)x.size()
@@ -45,18 +45,33 @@ const char nl = '\n';
 
 void shiina_mashiro() {
     int n, k; cin >> n >> k;
-    vector<int> cnt(k);
-    for(int i = 0; i < k; i++) {
-        int a, b; cin >> a >> b;
-        --a;
-        cnt[a]+=b;
+    if(n==1) {
+        cout << 1 << nl;
+        cout << 1 << nl;
+        return;
     }
-    int ans = 0;
-    ranges::sort(cnt, greater());
-    for(auto x : cnt | views::take(min(n, k))) {
-        ans+=x;
+    if(k==n || k==1) {
+        cout << -1 << nl;
+        return;
     }
-    cout<<ans<<nl;
+    int med = (n+1)/2;
+    int shift = k-med;
+    debug(shift, med);
+    vector<int> ans;
+    if(shift>0) {
+        ans.pb(1);
+        for(int i = 2+2*shift; i <= n; i++) ans.pb(i);
+    } else if(shift < 0) {
+        for(int i = 1; i <= n+2*shift; i++) {
+            ans.pb(i);
+        }
+    } else {
+        ans.pb(1);
+    }
+    debug(ans);
+    cout << sz(ans) << nl;
+    for(auto&x: ans) cout << x << " ";
+    cout << nl;
 }
 
 signed main() {    
