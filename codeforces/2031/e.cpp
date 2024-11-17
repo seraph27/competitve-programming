@@ -1,8 +1,8 @@
-// Problem: D. Genokraken
-// Contest: Codeforces Round 983 (Div. 2)
-// URL: https://codeforces.com/contest/2032/problem/D
-// Time Limit: 2000
-// Start: 2024/11/10 12:33:15
+// Problem: E. Penchick and Chloe's Trees
+// Contest: Codeforces Round 987 (Div. 2)
+// URL: https://codeforces.com/contest/2031/problem/E
+// Time Limit: 3500
+// Start: Sat Nov 16 23:10:39 2024
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -45,65 +45,32 @@ const char nl = '\n';
 
 void shiina_mashiro() {
     int n; cin >> n;
-
-    auto ask = [&](int x, int y) -> int {
-        cout << "? " << x <<  " " << y << endl;
-        int res; cin >> res;
-        return res;
-    };
-
-    vector<vector<int>> vi(n+1);
-    set<pair<int, int>> st;
-    vi[0].pb(1);
-    int mxpar = 0;
-    int L = -1;
-    for(int i = 2; i < n; i++) {
-        int res = ask(1, i);
-        if(!res) {
-            vi[0].pb(i);
-            st.insert({i, 0});
-            mxpar = 1;
-            L = i;
-            break;
-        } 
-    }
-    int chain = 1;
-    for(int i = 2; i < L; i++) {
-        vi[chain].pb(i);
-        st.insert({i, chain});
-        chain++;
-    }
-    for(int i = L+1; i < n; i++) {
-        debug(i, st, mxpar);
-        for(auto [x, y] : st) {
-            int res = ask(x, i);
-            if(!res) {
-                st.erase({x, y});
-                st.insert({i, y});
-                vi[y].pb(i);
-                ckmax(mxpar, x);
-                break;
-            }
-        }
-        while(sz(st) && st.begin()->first < mxpar) {
-            st.erase(st.begin());
-        }
-    }
-    
-    vector<int> par(n+1);
-    for(int i = 0; i < sz(vi); i++) {
-        if(!sz(vi[i])) break;
-        par[vi[i][0]] = 0;
-        for(int j = 1; j < sz(vi[i]); j++) {
-            par[vi[i][j]] = vi[i][j-1];
-        }
-    }
-    
-    cout << "!" << " ";
+    vector<vector<int>> adj(n);
     for(int i = 1; i < n; i++) {
-        cout << par[i] << " ";
+        int p; cin >> p;
+        --p;
+        adj[p].pb(i);
+        adj[i].pb(p);
     }
-    cout << endl;
+
+    debug(adj);
+    vector<int> dp(n);
+    auto dfs = [&](auto &&self, int u, int p) -> void {
+        int add = 0;
+        sort(all(adj[u]), [&](int a, int b) { return dp[a] < dp[b]; });
+        int mx = 0;
+        for(int v : adj[u]) {
+            if(v == p) continue;
+            ckmax(mx, max())
+            dp[u] = (int)ceil(log2(sz(adj[u])-1));
+            debug(u, v, dp[u]);
+            self(self, v, u);
+            ckmax(mx, dp[v]);
+        }
+        ckmax(dp[u], mx + (int)ceil(log2(sz(adj[u]))));
+    };
+    dfs(dfs, 0, -1);
+    debug(dp);
 }
 
 signed main() {    

@@ -31,46 +31,34 @@ const int INF = 0x3f3f3f3f;
 
 void seraph() {
     int n, m; cin >> n >> m;
-    vector<int> vi(n), nums(n); //vi is index, nums is position
-    for(int i = 0; i < n; i++){
+    vector<int> vi(n+1), nums(n+1); 
+    for(int i = 1; i <= n; i++){
         int a; cin >> a;
-        nums[i] = a-1;
-        vi[--a] = i;
+        nums[i] = a;
+        vi[a] = i;
     }
     int ans = 1;
-    for(int i = 0; i < n-1; i++){
-        if(vi[i] > vi[i+1]) ans++;
+    for(int i = 1; i < n; i++){
+        if(vi[i] > vi[i+1]) ans++; 
     }
-
-    auto chk = [&](int a, int b) -> int {
-        int ret = 0;
-        if(a==b) {
-            if(a-1>=0 && vi[a] > vi[a-1]) ret++;
-            if(b+1<n && vi[b+1] > vi[b]) ret++;
-        } else if(b-a==1) {
-            if(a-1>=0 && vi[a] > vi[a-1]) ret++;
-            if(b+1<n && vi[b+1] > vi[b]) ret++;
-            if(vi[b] > vi[a]) ret++;
-        } else if(b-a>1) {
-            if(a-1>=0 && vi[a] > vi[a-1]) ret++;
-            if(b+1<n && vi[b+1] > vi[b]) ret++;
-            if(vi[b] > vi[b-1]) ret++;
-            if(vi[a+1] > vi[a]) ret++;
-        }
-        debug(ret);
-        return ret;
+    auto chk = [&](int val) -> int {
+        return val-1>0 ? vi[val-1] > vi[val] : 0 + val+1<=n ? vi[val] > vi[val+1] : 0;
     };
     for(int i = 0; i < m; i++) {
         int a, b; cin >> a >> b;
-        --a; --b;
-        debug(nums[a], nums[b], vi[nums[a]], vi[nums[b]]);
-        if(a > b) swap(a, b);
-        auto bef = chk(a, b);
-        swap(vi[nums[a]], vi[nums[b]]);
+        if(nums[a] > nums[b]) { 
+            swap(a, b);
+        }
+        int c = 0;
+        c -= chk(nums[a]) + chk(nums[b]) - (nums[a]+1 == nums[b] && a > b);
+        debug(a, b, nums[a], nums[b], chk(nums[a]), chk(nums[b]), vi);
         swap(nums[a], nums[b]);
-        auto aft = chk(a, b);
-        debug(bef, aft);
-        ans += bef-aft;
+        swap(vi[nums[a]], vi[nums[b]]);
+        if(nums[a] > nums[b]) { 
+            swap(a, b);
+        }
+        c += chk(nums[a]) + chk(nums[b]) - (nums[a]+1 == nums[b] && a > b);
+        ans+=c;
         cout << ans << nl;
     }
 

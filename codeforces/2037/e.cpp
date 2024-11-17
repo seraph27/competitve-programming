@@ -1,8 +1,8 @@
-// Problem: D. Genokraken
-// Contest: Codeforces Round 983 (Div. 2)
-// URL: https://codeforces.com/contest/2032/problem/D
+// Problem: E. Kachina's Favorite Binary String
+// Contest: Codeforces Round 988 (Div. 3)
+// URL: https://codeforces.com/contest/2037/problem/E
 // Time Limit: 2000
-// Start: 2024/11/10 12:33:15
+// Start: Sun Nov 17 08:06:11 2024
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -45,64 +45,48 @@ const char nl = '\n';
 
 void shiina_mashiro() {
     int n; cin >> n;
-
-    auto ask = [&](int x, int y) -> int {
-        cout << "? " << x <<  " " << y << endl;
-        int res; cin >> res;
-        return res;
+    int L = 0, R = 1;
+    auto ask = [&](int l, int r) {
+        cout << "? " << l+1 << " " << r+1 << endl;
+        int x; cin >> x;
+        return x;
     };
-
-    vector<vector<int>> vi(n+1);
-    set<pair<int, int>> st;
-    vi[0].pb(1);
-    int mxpar = 0;
-    int L = -1;
-    for(int i = 2; i < n; i++) {
-        int res = ask(1, i);
-        if(!res) {
-            vi[0].pb(i);
-            st.insert({i, 0});
-            mxpar = 1;
-            L = i;
-            break;
-        } 
+    if(n==1) {
+        cout << "! IMPOSSIBLE" << endl;
+        return;
     }
-    int chain = 1;
-    for(int i = 2; i < L; i++) {
-        vi[chain].pb(i);
-        st.insert({i, chain});
-        chain++;
-    }
-    for(int i = L+1; i < n; i++) {
-        debug(i, st, mxpar);
-        for(auto [x, y] : st) {
-            int res = ask(x, i);
-            if(!res) {
-                st.erase({x, y});
-                st.insert({i, y});
-                vi[y].pb(i);
-                ckmax(mxpar, x);
-                break;
+    vector<int> ans(n, 1);
+    auto last = 0;
+    int zero = 0, one = 0;
+    int lastzero = -1;
+    while(R<n) {
+        auto get = ask(L, R);
+        if(R == n-1 && get == 0) {
+            cout << "! IMPOSSIBLE" << endl;
+            return;
+        }
+        if(get > last) {
+            //3 - 1*1 = 2; 
+            auto bef = (get-last)-(zero*one);
+            zero+=bef;
+            one++;
+            debug(bef);
+            for(int i = R-bef; i<R; i++) ans[i] = 0;
+            ckmax(lastzero, R-1);
+        } else {
+            ckmax(lastzero, R-1);
+            if(R==n-1) {
+                auto get = ask(lastzero, n-1);
+                if(get != n-1-lastzero) {
+                    ans[n-1] = 0;
+                } 
             }
         }
-        while(sz(st) && st.begin()->first < mxpar) {
-            st.erase(st.begin());
-        }
+        last = get;
+        R++;
     }
-    
-    vector<int> par(n+1);
-    for(int i = 0; i < sz(vi); i++) {
-        if(!sz(vi[i])) break;
-        par[vi[i][0]] = 0;
-        for(int j = 1; j < sz(vi[i]); j++) {
-            par[vi[i][j]] = vi[i][j-1];
-        }
-    }
-    
-    cout << "!" << " ";
-    for(int i = 1; i < n; i++) {
-        cout << par[i] << " ";
-    }
+    cout << "! ";
+    for(int i=0; i<n; i++) cout << ans[i];
     cout << endl;
 }
 

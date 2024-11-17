@@ -1,8 +1,8 @@
-// Problem: D. Genokraken
-// Contest: Codeforces Round 983 (Div. 2)
-// URL: https://codeforces.com/contest/2032/problem/D
-// Time Limit: 2000
-// Start: 2024/11/10 12:33:15
+// Problem: Nested Ranges Check
+// Contest: CSES Problem Set
+// URL: https://cses.fi/problemset/task/2168
+// Time Limit: 1000
+// Start: Tue Nov 12 23:32:32 2024
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -45,72 +45,47 @@ const char nl = '\n';
 
 void shiina_mashiro() {
     int n; cin >> n;
+    vector<ar<int, 3>> vi(n);
+    for(int i = 0; i < n; i++) {
+        int a, b; cin >> a >> b;
+        vi[i] = {a, b, i};
+    }
+    sort(all(vi), [&](ar<int, 3> a, ar<int, 3> b) {
+        if(a[0] == b[0]) return a[1] > b[1];
+        return a[0] < b[0];
+    });
 
-    auto ask = [&](int x, int y) -> int {
-        cout << "? " << x <<  " " << y << endl;
-        int res; cin >> res;
-        return res;
-    };
-
-    vector<vector<int>> vi(n+1);
-    set<pair<int, int>> st;
-    vi[0].pb(1);
-    int mxpar = 0;
-    int L = -1;
-    for(int i = 2; i < n; i++) {
-        int res = ask(1, i);
-        if(!res) {
-            vi[0].pb(i);
-            st.insert({i, 0});
-            mxpar = 1;
-            L = i;
-            break;
-        } 
-    }
-    int chain = 1;
-    for(int i = 2; i < L; i++) {
-        vi[chain].pb(i);
-        st.insert({i, chain});
-        chain++;
-    }
-    for(int i = L+1; i < n; i++) {
-        debug(i, st, mxpar);
-        for(auto [x, y] : st) {
-            int res = ask(x, i);
-            if(!res) {
-                st.erase({x, y});
-                st.insert({i, y});
-                vi[y].pb(i);
-                ckmax(mxpar, x);
-                break;
-            }
-        }
-        while(sz(st) && st.begin()->first < mxpar) {
-            st.erase(st.begin());
-        }
-    }
-    
-    vector<int> par(n+1);
-    for(int i = 0; i < sz(vi); i++) {
-        if(!sz(vi[i])) break;
-        par[vi[i][0]] = 0;
-        for(int j = 1; j < sz(vi[i]); j++) {
-            par[vi[i][j]] = vi[i][j-1];
-        }
-    }
-    
-    cout << "!" << " ";
+    vector<int> ans1(n), ans2(n); //contains, is contained by
+    int mx = vi[0][1];
     for(int i = 1; i < n; i++) {
-        cout << par[i] << " ";
+        if(vi[i][1] <= mx) {
+            ans2[vi[i][2]] = 1;
+        }
+        ckmax(mx, vi[i][1]);
     }
-    cout << endl;
+    sort(all(vi), [&](ar<int, 3> a, ar<int, 3> b) {
+        if(a[0] == b[0]) return a[1] < b[1];
+        return a[0] > b[0];
+    });
+    int mn = vi[0][1];
+    for(int i = 1; i < n; i++) {
+        if(vi[i][1] >= mn) {
+            ans1[vi[i][2]] = 1;
+        }
+        ckmin(mn, vi[i][1]);
+    }
+    for(auto i : ans1) cout << i << ' ';
+    cout << nl;
+    for(auto i : ans2) cout << i << ' ';
+    cout << nl;
+
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
 

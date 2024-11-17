@@ -1,8 +1,8 @@
-// Problem: D. Genokraken
-// Contest: Codeforces Round 983 (Div. 2)
-// URL: https://codeforces.com/contest/2032/problem/D
-// Time Limit: 2000
-// Start: 2024/11/10 12:33:15
+// Problem: Reading Books
+// Contest: CSES Problem Set
+// URL: https://cses.fi/problemset/task/1631
+// Time Limit: 1000
+// Start: Wed Nov 13 22:21:25 2024
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -45,72 +45,25 @@ const char nl = '\n';
 
 void shiina_mashiro() {
     int n; cin >> n;
-
-    auto ask = [&](int x, int y) -> int {
-        cout << "? " << x <<  " " << y << endl;
-        int res; cin >> res;
-        return res;
-    };
-
-    vector<vector<int>> vi(n+1);
-    set<pair<int, int>> st;
-    vi[0].pb(1);
-    int mxpar = 0;
-    int L = -1;
-    for(int i = 2; i < n; i++) {
-        int res = ask(1, i);
-        if(!res) {
-            vi[0].pb(i);
-            st.insert({i, 0});
-            mxpar = 1;
-            L = i;
-            break;
-        } 
+    vector<int> vi(n);
+    for (int &x : vi) cin >> x;
+    sort(all(vi));
+    int ans = 0;
+    auto sum = accumulate(vi.begin(), vi.end()-1, 0LL);
+    if(sum < vi.back()) {
+        cout << vi.back() * 2 << nl;
+        return;
+    } else {
+        cout << sum + vi.back() << nl;
+        return;
     }
-    int chain = 1;
-    for(int i = 2; i < L; i++) {
-        vi[chain].pb(i);
-        st.insert({i, chain});
-        chain++;
-    }
-    for(int i = L+1; i < n; i++) {
-        debug(i, st, mxpar);
-        for(auto [x, y] : st) {
-            int res = ask(x, i);
-            if(!res) {
-                st.erase({x, y});
-                st.insert({i, y});
-                vi[y].pb(i);
-                ckmax(mxpar, x);
-                break;
-            }
-        }
-        while(sz(st) && st.begin()->first < mxpar) {
-            st.erase(st.begin());
-        }
-    }
-    
-    vector<int> par(n+1);
-    for(int i = 0; i < sz(vi); i++) {
-        if(!sz(vi[i])) break;
-        par[vi[i][0]] = 0;
-        for(int j = 1; j < sz(vi[i]); j++) {
-            par[vi[i][j]] = vi[i][j-1];
-        }
-    }
-    
-    cout << "!" << " ";
-    for(int i = 1; i < n; i++) {
-        cout << par[i] << " ";
-    }
-    cout << endl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
 

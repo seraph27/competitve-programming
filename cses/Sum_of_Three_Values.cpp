@@ -1,8 +1,8 @@
-// Problem: D. Genokraken
-// Contest: Codeforces Round 983 (Div. 2)
-// URL: https://codeforces.com/contest/2032/problem/D
-// Time Limit: 2000
-// Start: 2024/11/10 12:33:15
+// Problem: Sum of Three Values
+// Contest: CSES Problem Set
+// URL: https://cses.fi/problemset/task/1641
+// Time Limit: 1000
+// Start: Wed Nov 13 22:59:58 2024
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -44,73 +44,38 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n; cin >> n;
-
-    auto ask = [&](int x, int y) -> int {
-        cout << "? " << x <<  " " << y << endl;
-        int res; cin >> res;
-        return res;
-    };
-
-    vector<vector<int>> vi(n+1);
-    set<pair<int, int>> st;
-    vi[0].pb(1);
-    int mxpar = 0;
-    int L = -1;
-    for(int i = 2; i < n; i++) {
-        int res = ask(1, i);
-        if(!res) {
-            vi[0].pb(i);
-            st.insert({i, 0});
-            mxpar = 1;
-            L = i;
-            break;
-        } 
+    int n, x; cin >> n >> x;
+    vector<int> vi(n);
+    for(auto&o: vi) cin >> o;
+    vector<int> idxs(n);
+    iota(all(idxs), 0);
+    sort(all(idxs), [&](int a, int b){
+        return vi[a] < vi[b];
+    });
+    sort(all(vi));
+    if(n < 3){
+        cout << "IMPOSSIBLE" << nl;
+        return;
     }
-    int chain = 1;
-    for(int i = 2; i < L; i++) {
-        vi[chain].pb(i);
-        st.insert({i, chain});
-        chain++;
-    }
-    for(int i = L+1; i < n; i++) {
-        debug(i, st, mxpar);
-        for(auto [x, y] : st) {
-            int res = ask(x, i);
-            if(!res) {
-                st.erase({x, y});
-                st.insert({i, y});
-                vi[y].pb(i);
-                ckmax(mxpar, x);
-                break;
+    int r = n-1;
+    for(int l = 0; l < n-2; l++) {
+        for(int m = l+1; m < n-1; m++) {
+            if(r < n-1) r++;
+            while(r-1 > m && vi[l]+vi[m]+vi[r] > x) r--;
+            if(vi[l]+vi[m]+vi[r] == x){
+                cout << idxs[l]+1 << ' ' << idxs[m]+1 << ' ' << idxs[r]+1 << nl;
+                return;
             }
         }
-        while(sz(st) && st.begin()->first < mxpar) {
-            st.erase(st.begin());
-        }
     }
-    
-    vector<int> par(n+1);
-    for(int i = 0; i < sz(vi); i++) {
-        if(!sz(vi[i])) break;
-        par[vi[i][0]] = 0;
-        for(int j = 1; j < sz(vi[i]); j++) {
-            par[vi[i][j]] = vi[i][j-1];
-        }
-    }
-    
-    cout << "!" << " ";
-    for(int i = 1; i < n; i++) {
-        cout << par[i] << " ";
-    }
-    cout << endl;
+    cout << "IMPOSSIBLE" << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
 

@@ -1,8 +1,8 @@
-// Problem: D. Genokraken
-// Contest: Codeforces Round 983 (Div. 2)
-// URL: https://codeforces.com/contest/2032/problem/D
-// Time Limit: 2000
-// Start: 2024/11/10 12:33:15
+// Problem: D. Penchick and Desert Rabbit
+// Contest: Codeforces Round 987 (Div. 2)
+// URL: https://codeforces.com/contest/2031/problem/D
+// Time Limit: 3000
+// Start: Fri Nov 15 06:13:09 2024
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -45,67 +45,39 @@ const char nl = '\n';
 
 void shiina_mashiro() {
     int n; cin >> n;
-
-    auto ask = [&](int x, int y) -> int {
-        cout << "? " << x <<  " " << y << endl;
-        int res; cin >> res;
-        return res;
-    };
-
-    vector<vector<int>> vi(n+1);
-    set<pair<int, int>> st;
-    vi[0].pb(1);
-    int mxpar = 0;
-    int L = -1;
-    for(int i = 2; i < n; i++) {
-        int res = ask(1, i);
-        if(!res) {
-            vi[0].pb(i);
-            st.insert({i, 0});
-            mxpar = 1;
-            L = i;
-            break;
-        } 
+    vector<int> vi(n);
+    for(auto &x:vi) {
+        cin >> x;
+        --x;
     }
-    int chain = 1;
-    for(int i = 2; i < L; i++) {
-        vi[chain].pb(i);
-        st.insert({i, chain});
-        chain++;
+    vector<int> minafter(n+1, 4e18), maxbefore(n);
+    int mn = 4e18, mx = -1;
+    for(int i = n-1; i >= 0; --i) {
+        ckmin(mn, vi[i]);
+        minafter[i] = mn;
     }
-    for(int i = L+1; i < n; i++) {
-        debug(i, st, mxpar);
-        for(auto [x, y] : st) {
-            int res = ask(x, i);
-            if(!res) {
-                st.erase({x, y});
-                st.insert({i, y});
-                vi[y].pb(i);
-                ckmax(mxpar, x);
-                break;
+    for(int i = 0; i < n; ++i) {
+        ckmax(mx, vi[i]);
+        maxbefore[i] = mx;
+    }
+    debug(maxbefore, minafter);
+    vector<int> ans(n, -1);
+    int last = -1;
+    for(int i = 0; i < n; i++) {
+        if(maxbefore[i] <= minafter[i+1]) {
+            debug(i, maxbefore[i], minafter[i+1]);
+            debug(last);
+            for(int j = last+1; j <= i; j++) {
+                ans[j] = maxbefore[i];
             }
-        }
-        while(sz(st) && st.begin()->first < mxpar) {
-            st.erase(st.begin());
+            last = i;
         }
     }
-    
-    vector<int> par(n+1);
-    for(int i = 0; i < sz(vi); i++) {
-        if(!sz(vi[i])) break;
-        par[vi[i][0]] = 0;
-        for(int j = 1; j < sz(vi[i]); j++) {
-            par[vi[i][j]] = vi[i][j-1];
-        }
+    for(int i = 0; i < n; i++) {
+        cout << ans[i]+1 << " \n"[i==n-1];
     }
-    
-    cout << "!" << " ";
-    for(int i = 1; i < n; i++) {
-        cout << par[i] << " ";
-    }
-    cout << endl;
-}
 
+}
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);

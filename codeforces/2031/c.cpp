@@ -1,8 +1,8 @@
-// Problem: D. Genokraken
-// Contest: Codeforces Round 983 (Div. 2)
-// URL: https://codeforces.com/contest/2032/problem/D
+// Problem: C. Penchick and BBQ Buns
+// Contest: Codeforces Round 987 (Div. 2)
+// URL: https://codeforces.com/contest/2031/problem/C
 // Time Limit: 2000
-// Start: 2024/11/10 12:33:15
+// Start: Fri Nov 15 04:52:19 2024
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -43,68 +43,38 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+bool chksqrt(int x) {
+    return isqrt(x)*isqrt(x)==x;
+}
 void shiina_mashiro() {
     int n; cin >> n;
+    if(n%2==0) {
+        int cnt = 1;
+        for(int i = 0; i < n; i+=2) {
+            cout << cnt << " " << cnt <<  " ";
+            cnt++;
+        }
+        cout << nl;
+        return;
+    }
+    vector<int> assign(n+1);
+    if(n < 27) {
+        cout << -1 << nl;
+        return;
+    } 
+    vector<int> v = {1, 2, 2, 3, 3, 4, 4, 5, 5, 1, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 13, 12, 12, 1, 13};
+    for(auto &vv : v) {
+        cout << vv << " ";
+    }
+    int cnt = 14;
+    for(int i = v.size()+1; i <= n; i+=2) {
+        cout << cnt << " ";
+        cout << cnt << " ";
+        cnt++;
+    }
+    cout << nl;
+} 
 
-    auto ask = [&](int x, int y) -> int {
-        cout << "? " << x <<  " " << y << endl;
-        int res; cin >> res;
-        return res;
-    };
-
-    vector<vector<int>> vi(n+1);
-    set<pair<int, int>> st;
-    vi[0].pb(1);
-    int mxpar = 0;
-    int L = -1;
-    for(int i = 2; i < n; i++) {
-        int res = ask(1, i);
-        if(!res) {
-            vi[0].pb(i);
-            st.insert({i, 0});
-            mxpar = 1;
-            L = i;
-            break;
-        } 
-    }
-    int chain = 1;
-    for(int i = 2; i < L; i++) {
-        vi[chain].pb(i);
-        st.insert({i, chain});
-        chain++;
-    }
-    for(int i = L+1; i < n; i++) {
-        debug(i, st, mxpar);
-        for(auto [x, y] : st) {
-            int res = ask(x, i);
-            if(!res) {
-                st.erase({x, y});
-                st.insert({i, y});
-                vi[y].pb(i);
-                ckmax(mxpar, x);
-                break;
-            }
-        }
-        while(sz(st) && st.begin()->first < mxpar) {
-            st.erase(st.begin());
-        }
-    }
-    
-    vector<int> par(n+1);
-    for(int i = 0; i < sz(vi); i++) {
-        if(!sz(vi[i])) break;
-        par[vi[i][0]] = 0;
-        for(int j = 1; j < sz(vi[i]); j++) {
-            par[vi[i][j]] = vi[i][j-1];
-        }
-    }
-    
-    cout << "!" << " ";
-    for(int i = 1; i < n; i++) {
-        cout << par[i] << " ";
-    }
-    cout << endl;
-}
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);

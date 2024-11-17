@@ -1,8 +1,8 @@
-// Problem: D. Genokraken
-// Contest: Codeforces Round 983 (Div. 2)
-// URL: https://codeforces.com/contest/2032/problem/D
-// Time Limit: 2000
-// Start: 2024/11/10 12:33:15
+// Problem: B. Penchick and Satay Sticks
+// Contest: Codeforces Round 987 (Div. 2)
+// URL: https://codeforces.com/contest/2031/problem/B
+// Time Limit: 1500
+// Start: Fri Nov 15 04:42:37 2024
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -45,65 +45,18 @@ const char nl = '\n';
 
 void shiina_mashiro() {
     int n; cin >> n;
-
-    auto ask = [&](int x, int y) -> int {
-        cout << "? " << x <<  " " << y << endl;
-        int res; cin >> res;
-        return res;
-    };
-
-    vector<vector<int>> vi(n+1);
-    set<pair<int, int>> st;
-    vi[0].pb(1);
-    int mxpar = 0;
-    int L = -1;
-    for(int i = 2; i < n; i++) {
-        int res = ask(1, i);
-        if(!res) {
-            vi[0].pb(i);
-            st.insert({i, 0});
-            mxpar = 1;
-            L = i;
-            break;
-        } 
-    }
-    int chain = 1;
-    for(int i = 2; i < L; i++) {
-        vi[chain].pb(i);
-        st.insert({i, chain});
-        chain++;
-    }
-    for(int i = L+1; i < n; i++) {
-        debug(i, st, mxpar);
-        for(auto [x, y] : st) {
-            int res = ask(x, i);
-            if(!res) {
-                st.erase({x, y});
-                st.insert({i, y});
-                vi[y].pb(i);
-                ckmax(mxpar, x);
-                break;
-            }
+    vector<int> vi(n+1);
+    for(int i = 1; i <= n; i++) cin >> vi[i];
+    bool ok = 1;
+    for(int i = 1; i <= n-1; i++) {
+        if(vi[i] == i) continue;
+        if(vi[i] == i+1 && vi[i+1] == i) {
+            i++;
+            continue;
         }
-        while(sz(st) && st.begin()->first < mxpar) {
-            st.erase(st.begin());
-        }
+        ok = 0;
     }
-    
-    vector<int> par(n+1);
-    for(int i = 0; i < sz(vi); i++) {
-        if(!sz(vi[i])) break;
-        par[vi[i][0]] = 0;
-        for(int j = 1; j < sz(vi[i]); j++) {
-            par[vi[i][j]] = vi[i][j-1];
-        }
-    }
-    
-    cout << "!" << " ";
-    for(int i = 1; i < n; i++) {
-        cout << par[i] << " ";
-    }
-    cout << endl;
+    cout << (ok ? "YES" : "NO") << nl;
 }
 
 signed main() {    
