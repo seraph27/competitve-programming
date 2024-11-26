@@ -1,3 +1,4 @@
+template <class T>
 struct segtree {
     const int N; vector<T> tree;
     segtree(int n) : N(1<<(__lg(n)+1)), tree(2*N) {}
