@@ -44,6 +44,40 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
+    int n, q; cin >> n >> q;
+    string s; cin >> s;
+
+    vector<int> pref1(n+1), pref2(n+1);
+    for(int i = 1; i <= n; i++) {
+        pref1[i] = pref1[i-1] + (s[i-1] == '1');
+        pref2[i] = pref2[i-1] + (s[i-1] == '2');
+    }
+    vector<int> slash;
+    for(int i = 0; i < n; i++) {
+        if(s[i] == '/') slash.push_back(i);
+    }
+
+    for(;q--;) {
+        int l, r; cin >> l >> r;
+        l--, r--;
+
+        auto L = lower_bound(all(slash), l) - slash.begin();
+        auto R = upper_bound(all(slash), r) - slash.begin();
+        --R;
+        int ans = 0;
+        while(L <= R) {
+            int mid = (L+R)/2; 
+            int ones = pref1[slash[mid]+1] - pref1[l];
+            int twos = pref2[r+1] - pref2[slash[mid]+1];
+            ckmax(ans, 2*min(ones, twos) + 1);
+            if(ones <= twos) {
+                L = mid+1;
+            } else {
+                R = mid-1;
+            }
+        }
+        cout << ans << nl;
+    }
 }
 
 signed main() {    
