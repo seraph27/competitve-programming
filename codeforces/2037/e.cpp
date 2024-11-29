@@ -55,39 +55,43 @@ void shiina_mashiro() {
         cout << "! IMPOSSIBLE" << endl;
         return;
     }
-    vector<int> ans(n, 1);
-    auto last = 0;
-    int zero = 0, one = 0;
-    int lastzero = -1;
+
+    string build = "";
+    vector<ar<int, 2>> save;
+    save.pb({0, 0});
     while(R<n) {
         auto get = ask(L, R);
-        if(R == n-1 && get == 0) {
-            cout << "! IMPOSSIBLE" << endl;
-            return;
-        }
-        if(get > last) {
-            //3 - 1*1 = 2; 
-            auto bef = (get-last)-(zero*one);
-            zero+=bef;
-            one++;
-            debug(bef);
-            for(int i = R-bef; i<R; i++) ans[i] = 0;
-            ckmax(lastzero, R-1);
-        } else {
-            ckmax(lastzero, R-1);
-            if(R==n-1) {
-                auto get = ask(lastzero, n-1);
-                if(get != n-1-lastzero) {
-                    ans[n-1] = 0;
-                } 
-            }
-        }
-        last = get;
+        if(get != save.back()[0]) save.pb({get, R});
         R++;
     }
+    if(save.back()[0]==0) {
+        cout << "! IMPOSSIBLE" << endl;
+        return;
+    }
+    vector<int> diff(1, 0);
+    for(int i = 0; i < sz(save)-1; i++) {
+        diff.pb(save[i+1][0] - save[i][0]);
+    }
+    vector<int> diff2;
+    for(int i = 0; i < sz(diff)-1; i++) {
+        diff2.pb(diff[i+1] - diff[i]);
+    }
+    debug(diff2, diff, save);
+    vector<int> ans(n, 1);
+    for(int i = 0; i < sz(diff2); i++) {
+        for(int j = save[i+1][1]-1; j > save[i+1][1]-1-diff2[i]; j--) {
+            debug(j, save[i+1][i]);
+            ans[j] = 0;
+        } 
+    }
+    for(int i = save.back()[1]+1; i < n; i++) ans[i] = 0;
     cout << "! ";
-    for(int i=0; i<n; i++) cout << ans[i];
+    for(auto&x: ans) cout << x;
     cout << endl;
+
+
+
+
 }
 
 signed main() {    

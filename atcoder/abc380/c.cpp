@@ -1,8 +1,8 @@
-// Problem: F - 1122 Subsequence
-// Contest: AtCoder Beginner Contest 381
-// URL: https://atcoder.jp/contests/abc381/tasks/abc381_f
-// Time Limit: 3000
-// Start: Fri Nov 22 12:30:30 2024
+// Problem: C - Move Segment
+// Contest: AtCoder Beginner Contest 380
+// URL: https://atcoder.jp/contests/abc380/tasks/abc380_c
+// Time Limit: 2000
+// Start: 2024/11/29 0:02:06
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -44,36 +44,25 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n; cin >> n;
-    vector<int> vi(n+1);
-    for(int i = 1; i <= n; i++) cin >> vi[i];
-    int mx = *max_element(all(vi));
-    vector<int> dp(1<<mx, 1e9);
-    dp[0] = 0;
-    vector<vector<int>> nxt(n+1, vector<int>(mx+1, 1e9));
-    for(int i = n; i>0; i--) {
-        for(int k = 1; k <= mx; k++) {
-            nxt[i-1][k] = nxt[i][k];        
-        }
-        nxt[i-1][vi[i]] = i;
-    }
-    int ans = 0;
-    for(int i = 1; i < (1 << mx); i++) {
-        for(int j = 0; j < mx; j++) {
-            if((i>>j) & 1) {
-                auto msk = ~(1 << j);
-                auto nw = i & msk;
-                if(dp[nw] == 1e9) continue;
-                auto nxt1 = nxt[dp[nw]][j+1];
-                if(nxt1 == 1e9) continue;
-                auto nxt2 = nxt[nxt1][j+1];
-                if(nxt2 == 1e9) continue;
-                ckmin(dp[i], nxt2);
+    int n, k; cin >> n >> k;
+    --k;
+    string s; cin >> s;
+    vector<pair<int, int>> idx;
+    
+    for(int i = 0; i < n ; i++) {
+        if(s[i]-'0') {
+            idx.pb({i, 1});
+            while(i+1 < n and s[i+1]-'0') {
+                i++;
+                idx.back().second++;
             }
         }
-        if(dp[i]!=1e9) ckmax(ans, (int)__builtin_popcount(i) * 2);
     }
-    cout << ans << nl;
+    for(int i = idx[k].first; i < idx[k].first + idx[k].second; i++) s[i] = '0';
+    int st = idx[k-1].first + idx[k-1].second;
+    for(int i = st; i < st + idx[k].second; i++) s[i] = '1';
+    debug(idx);
+    cout << s << nl;
 }
 
 signed main() {    

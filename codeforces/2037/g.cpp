@@ -45,8 +45,19 @@ const char nl = '\n';
 
 void shiina_mashiro() {
     int n; cin >> n;
-    vector<int> vi(n);
-    for (auto&x : vi) cin >> x;
+    vector<int> vi(n+1);
+    for(int i = 1; i <= n; i++) cin >> vi[i];
+    
+    vector<int> dp(n+1);
+    dp[1] = 1;
+    for(int i = 1; i <= n; i++) {
+        for(int j = i+1; j <= n; j++) {
+            if(gcd(vi[i], vi[j]) != 1) {
+                dp[j] += dp[i];
+            }
+        }
+    }
+    cout << dp[n] << nl;
 }
 
 signed main() {    

@@ -1,8 +1,8 @@
-// Problem: F - 1122 Subsequence
-// Contest: AtCoder Beginner Contest 381
-// URL: https://atcoder.jp/contests/abc381/tasks/abc381_f
-// Time Limit: 3000
-// Start: Fri Nov 22 12:30:30 2024
+// Problem: A - 123233
+// Contest: AtCoder Beginner Contest 380
+// URL: https://atcoder.jp/contests/abc380/tasks/abc380_a
+// Time Limit: 2000
+// Start: 2024/11/28 23:55:32
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -44,36 +44,18 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n; cin >> n;
-    vector<int> vi(n+1);
-    for(int i = 1; i <= n; i++) cin >> vi[i];
-    int mx = *max_element(all(vi));
-    vector<int> dp(1<<mx, 1e9);
-    dp[0] = 0;
-    vector<vector<int>> nxt(n+1, vector<int>(mx+1, 1e9));
-    for(int i = n; i>0; i--) {
-        for(int k = 1; k <= mx; k++) {
-            nxt[i-1][k] = nxt[i][k];        
-        }
-        nxt[i-1][vi[i]] = i;
+    string s; cin >> s;
+    int a = 0, b = 0, c = 0;
+    for(int i = 0; i < sz(s); i++) {
+        if(s[i] == '1') a++;
+        else if(s[i] == '2') b++;
+        else if(s[i] == '3') c++;
     }
-    int ans = 0;
-    for(int i = 1; i < (1 << mx); i++) {
-        for(int j = 0; j < mx; j++) {
-            if((i>>j) & 1) {
-                auto msk = ~(1 << j);
-                auto nw = i & msk;
-                if(dp[nw] == 1e9) continue;
-                auto nxt1 = nxt[dp[nw]][j+1];
-                if(nxt1 == 1e9) continue;
-                auto nxt2 = nxt[nxt1][j+1];
-                if(nxt2 == 1e9) continue;
-                ckmin(dp[i], nxt2);
-            }
-        }
-        if(dp[i]!=1e9) ckmax(ans, (int)__builtin_popcount(i) * 2);
+    if(a==1 and b==2 and c==3) {
+        cout << "Yes" << nl;
+        return;
     }
-    cout << ans << nl;
+    cout << "No" << nl;
 }
 
 signed main() {    
