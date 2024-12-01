@@ -1,8 +1,8 @@
-// Problem: C - Sowing Stones  
-// Contest: トヨタ自動車プログラミングコンテスト2024#11(AtCoder Beginner Contest 379)
-// URL: https://atcoder.jp/contests/abc379/tasks/abc379_c
-// Time Limit: 2000 
-// Start: 2024/11/29 14:25:25
+// Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -44,52 +44,44 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
-    vector<int> x(m), a(m);
-    for(int i = 0; i < m; i++) {
-        cin >> x[i];
-    }
-    for(int i = 0; i < m; i++) {
-        cin >> a[i];
-    }
-    vector<int> idx(m);
-    iota(all(idx), 0);
-    sort(all(idx), [&](auto p, auto q) {return x[p] < x[q];});
-    vector<int> nx(m), na(m);
-    for(int i = 0; i < m; i++) {
-        nx[i] = x[idx[i]];
-        na[i] = a[idx[i]];
-    }
-    x = nx;
-    a = na;
-    int ans = 0;
-    int back = n;
-    for(int i = m-1; ~i; i--) {
-        int diff = back - x[i];
-        if(diff >= a[i]) {
-            back-=a[i];
-            ans+=(diff + (diff-a[i]+1)) * a[i]/2;
-        } else {
-            if(a[i]-diff>1) {
-                cout << -1 << nl;
-                return;
+    int n, k; cin >> n >> k;
+    vector<int> vi = {1, 2, 3, 4, 5};
+    vector<vector<int>> perm;
+    do {
+        perm.push_back(vi);
+    } while (next_permutation(all(vi)));
+
+    auto chk = [&](auto &v) {
+        int first = -1;
+        for(int i = 0; i < sz(v[0]); i++) {
+            int add = 0;
+            for(int j = 0; j < sz(v); j++) {
+                add += v[j][i];
             }
-            back = x[i]-1;
-            ans+=(diff+1) * diff/2;
+            if(first == -1) {
+                first = add;
+            } else if(first != add) {
+                return false;
+            }
+        }
+        return true;
+    };
+    for(int i = 0; i < (1 << sz(perm)); i++) {
+        vector<vector<int>> cur;
+        for(int j = 0; j < sz(perm); j++) {
+            if((i>>j)&1) {
+                cur.push_back(perm[j]);
+            }
         }
     }
-    if(back>0) {
-        cout << -1 << nl;
-        return;
-    } 
-    cout << ans << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
+
 

@@ -1,8 +1,8 @@
-// Problem: C - Sowing Stones  
-// Contest: トヨタ自動車プログラミングコンテスト2024#11(AtCoder Beginner Contest 379)
-// URL: https://atcoder.jp/contests/abc379/tasks/abc379_c
-// Time Limit: 2000 
-// Start: 2024/11/29 14:25:25
+// Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -44,52 +44,64 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
-    vector<int> x(m), a(m);
-    for(int i = 0; i < m; i++) {
-        cin >> x[i];
+    int n, k; cin >> n >> k;
+    if(n==1 && k > 1) {
+        cout << "No" << nl;
+        return;
     }
-    for(int i = 0; i < m; i++) {
-        cin >> a[i];
+    if(k==2) {
+        cout << "Yes" << nl;
+        for(int i = 1; i <= n; i++) {
+            cout << i << " ";
+        }
+        cout << nl;
+        for(int i = n; i >= 1; i--) {
+            cout << i << " ";
+        }
+        cout << nl;
+        return;
     }
-    vector<int> idx(m);
-    iota(all(idx), 0);
-    sort(all(idx), [&](auto p, auto q) {return x[p] < x[q];});
-    vector<int> nx(m), na(m);
-    for(int i = 0; i < m; i++) {
-        nx[i] = x[idx[i]];
-        na[i] = a[idx[i]];
-    }
-    x = nx;
-    a = na;
-    int ans = 0;
-    int back = n;
-    for(int i = m-1; ~i; i--) {
-        int diff = back - x[i];
-        if(diff >= a[i]) {
-            back-=a[i];
-            ans+=(diff + (diff-a[i]+1)) * a[i]/2;
-        } else {
-            if(a[i]-diff>1) {
-                cout << -1 << nl;
+    if(k%n==0){
+        int cnt2 = 0;
+        for(int i = n-1; i > 0; i--) {
+            cnt2*=i;
+            if(cnt2 > k/n) {
+                cout << "No" << nl;
                 return;
             }
-            back = x[i]-1;
-            ans+=(diff+1) * diff/2;
         }
-    }
-    if(back>0) {
-        cout << -1 << nl;
+        cout << "Yes" << nl;
+        vector<int> vi(n);
+        iota(all(vi), 1);
+        vector<vector<int>> start;
+        int cnt = 0;
+        do {
+            if(cnt==k/n) break;
+            start.pb(vi);
+            cnt++;
+        } while(next_permutation(all(vi)));
+        debug(start);
+        for(auto &vv: start) {
+            for(int i = 0; i < n; i++) {
+                rotate(vv.begin(), vv.begin()+1, vv.end());
+                for(int j = 0; j < n; j++) {
+                    cout << vv[j] << " ";
+                }
+                cout << nl;
+            }
+        }
         return;
-    } 
-    cout << ans << nl;
+    }
+    cout << "No" << nl;
+    return;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
+
 

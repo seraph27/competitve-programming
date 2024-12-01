@@ -1,8 +1,8 @@
-// Problem: C - Sowing Stones  
-// Contest: トヨタ自動車プログラミングコンテスト2024#11(AtCoder Beginner Contest 379)
-// URL: https://atcoder.jp/contests/abc379/tasks/abc379_c
-// Time Limit: 2000 
-// Start: 2024/11/29 14:25:25
+// Problem: A. King Keykhosrow's Mystery
+// Contest: Rayan Programming Contest 2024 - Selection (Codeforces Round 989, Div. 1 + Div. 2)
+// URL: https://codeforces.com/contest/2034/problem/0
+// Time Limit: 1000
+// Start: 2024/11/30 6:35:48
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -44,52 +44,15 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
-    vector<int> x(m), a(m);
-    for(int i = 0; i < m; i++) {
-        cin >> x[i];
-    }
-    for(int i = 0; i < m; i++) {
-        cin >> a[i];
-    }
-    vector<int> idx(m);
-    iota(all(idx), 0);
-    sort(all(idx), [&](auto p, auto q) {return x[p] < x[q];});
-    vector<int> nx(m), na(m);
-    for(int i = 0; i < m; i++) {
-        nx[i] = x[idx[i]];
-        na[i] = a[idx[i]];
-    }
-    x = nx;
-    a = na;
-    int ans = 0;
-    int back = n;
-    for(int i = m-1; ~i; i--) {
-        int diff = back - x[i];
-        if(diff >= a[i]) {
-            back-=a[i];
-            ans+=(diff + (diff-a[i]+1)) * a[i]/2;
-        } else {
-            if(a[i]-diff>1) {
-                cout << -1 << nl;
-                return;
-            }
-            back = x[i]-1;
-            ans+=(diff+1) * diff/2;
-        }
-    }
-    if(back>0) {
-        cout << -1 << nl;
-        return;
-    } 
-    cout << ans << nl;
+    int a, b; cin >> a >> b;
+    cout << lcm(a, b) << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 
