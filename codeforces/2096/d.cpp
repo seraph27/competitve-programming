@@ -1,8 +1,8 @@
-// Problem: F - Rotated Inversions
-// Contest: AtCoder Beginner Contest 396
-// URL: https://atcoder.jp/contests/abc396/tasks/abc396_f
+// Problem: D. Wonderful Lightbulbs
+// Contest: Neowise Labs Contest 1 (Codeforces Round 1018, Div. 1 + Div. 2)
+// URL: https://codeforces.com/contest/2096/problem/D
 // Time Limit: 2000
-// Start: 2025/04/08 19:51:53
+// Start: 2025/04/19 9:04:36
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -43,67 +43,31 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-
-struct fenwick{
-    int siz; vector<int> b;
-    fenwick(int n) : siz(n), b(n+1){};
-
-    void add(int p, int x) {
-        p++;
-        for(; p <= siz; b[p]+=x, p += p & -p);
-    }
-
-    int sum(int p) {
-        int s = 0;
-        for(;p; s+=b[p], p -= p & -p);
-        return s;
-    }
-
-    int query(int l, int r) {
-        return sum(r+1) - sum(l);
-    }
-};
 void shiina_mashiro() {
-    //53501 7
-    //04012 3
-    //15134 3
-    //20245 1
-    //
-    //if its at a 5 then everything on its right we must minus, when reset to 0, we add everything on the left
-    //maintain each element and how many rotations until it meet the next mod
-    //then go through each of them 
-    
-    int n, m; cin >> n >> m;
-    vector<int> vi(n);
-    for(auto&a: vi) cin >> a;
-
-    map<int, vector<int>> mp;
-
-    for(int i = 0; i < n; i++) {
-        mp[m-vi[i]-1].push_back(i);
+    int n; cin >> n;
+    map<int, int> c, diag;
+    for(int i =0; i < n; i++) {
+        int x, y; cin >> x >> y;
+        c[x] ^= 1;
+        diag[x+y] ^= 1;
     }
-
-    int inv = 0;
-    fenwick bit(m);
-    for(int i = 0; i < n; i++) {
-        inv += i - bit.query(0, vi[i]);
-        bit.add(vi[i], 1);
+    int ansx = 0, ansy = 0;
+    for(auto [fi, se] : c) if(se) {
+        ansx = fi;
+        break;
+    } 
+    for(auto [fi, se] : diag) if(se) {
+        ansy = fi;
+        break;
     }
-    cout << inv << nl;
-    for(int i = 0; i < m-1; i++) {
-        for(auto &x : mp[i]) {
-            inv -= n-x-1;
-            inv += x;
-        }
-        cout << inv << nl;
-    }
+    cout << ansx << " " << ansy-ansx << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

@@ -1,8 +1,8 @@
-// Problem: F - Rotated Inversions
-// Contest: AtCoder Beginner Contest 396
-// URL: https://atcoder.jp/contests/abc396/tasks/abc396_f
+// Problem: G. Chimpanzini Bananini
+// Contest: Codeforces Round 1017 (Div. 4)
+// URL: https://codeforces.com/contest/2094/problem/G
 // Time Limit: 2000
-// Start: 2025/04/08 19:51:53
+// Start: 2025/04/13 10:52:21
 // mintemplate
 #include <bits/stdc++.h>
 #define int long long
@@ -43,59 +43,52 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-
-struct fenwick{
-    int siz; vector<int> b;
-    fenwick(int n) : siz(n), b(n+1){};
-
-    void add(int p, int x) {
-        p++;
-        for(; p <= siz; b[p]+=x, p += p & -p);
-    }
-
-    int sum(int p) {
-        int s = 0;
-        for(;p; s+=b[p], p -= p & -p);
-        return s;
-    }
-
-    int query(int l, int r) {
-        return sum(r+1) - sum(l);
-    }
-};
 void shiina_mashiro() {
-    //53501 7
-    //04012 3
-    //15134 3
-    //20245 1
-    //
-    //if its at a 5 then everything on its right we must minus, when reset to 0, we add everything on the left
-    //maintain each element and how many rotations until it meet the next mod
-    //then go through each of them 
-    
-    int n, m; cin >> n >> m;
-    vector<int> vi(n);
-    for(auto&a: vi) cin >> a;
+    int q; cin >> q;
 
-    map<int, vector<int>> mp;
-
-    for(int i = 0; i < n; i++) {
-        mp[m-vi[i]-1].push_back(i);
-    }
-
-    int inv = 0;
-    fenwick bit(m);
-    for(int i = 0; i < n; i++) {
-        inv += i - bit.query(0, vi[i]);
-        bit.add(vi[i], 1);
-    }
-    cout << inv << nl;
-    for(int i = 0; i < m-1; i++) {
-        for(auto &x : mp[i]) {
-            inv -= n-x-1;
-            inv += x;
+    deque<int> b;
+    int sum = 0;
+    int ans = 0;
+    int ans2 = 0;
+    bool is_rev = 0;
+    while(q--) {
+        int x; cin >> x;
+        debug(b);
+        if(x == 1) {
+            int bk = b.back();
+            int ft = b.front();
+            if(is_rev) {
+                b.pop_front();
+                b.push_back(ft);
+                ans-=sum;
+                ans+=ft*sz(b);
+                ans2+=sum;
+                ans2-=ft*sz(b);
+            } else {
+                b.pop_back();
+                b.push_front(bk);
+                ans+=sum;
+                ans-=bk*sz(b);
+                ans2-=sum;
+                ans2+=bk*sz(b);
+            }
+        } else if(x == 2) {
+            is_rev^=1;
+        } else {
+            int k; cin >> k;
+            sum+=k;
+            if(is_rev) {
+                b.push_front(k);
+                ans2+=k*sz(b);
+                ans+=sum;
+            } else {
+                b.push_back(k);
+                ans2+=sum;
+                ans+=k*sz(b);
+            }
         }
-        cout << inv << nl;
+        debug(ans, ans2);
+        cout << (is_rev ? ans2 : ans) << nl;
     }
 }
 
@@ -103,7 +96,6 @@ signed main() {
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
-
