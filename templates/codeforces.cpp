@@ -4,7 +4,9 @@
 // Time Limit: $(TIMELIM)
 // Start: $(DATE)
 // codeforces
+#ifdef MISAKA
 #define _GLIBCXX_DEBUG
+#endif
 #include <bits/stdc++.h>
 #define int long long
 #define sz(x) (int)x.size()

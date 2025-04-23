@@ -4,7 +4,9 @@
 // Time Limit: $(TIMELIM)
 // Start: $(DATE)
 // atcoder
+#ifdef MISAKA
 #define _GLIBCXX_DEBUG
+#endif
 #include <bits/stdc++.h>
 #include <atcoder/modint>
 #define int long long
