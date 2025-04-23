@@ -4,6 +4,7 @@
 // Time Limit: 1000
 // Start: 2025/04/19 7:39:11
 // mintemplate
+#define _GLIBCXX_DEBUG
 #include <bits/stdc++.h>
 #define int long long
 #define sz(x) (int)x.size()
@@ -48,6 +49,7 @@ void shiina_mashiro() {
     string s; cin >> s;
     s = "<" + s;
     vector<int> ans(n);
+    cout << ans[n+1] << nl;
     int cnt = 1;
     for(int i = sz(s)-1; i>=0; i--) {
         if(s[i] == '<') {

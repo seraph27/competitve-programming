@@ -4,6 +4,7 @@
 // Time Limit: $(TIMELIM)
 // Start: $(DATE)
 // atcoder
+#define _GLIBCXX_DEBUG
 #include <bits/stdc++.h>
 #include <atcoder/modint>
 #define int long long
