@@ -1,13 +1,14 @@
-// Problem: Nested Ranges Count
-// Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/2169
-// Time Limit: 1000
-// Start: 2025/04/27 16:50:41
+// Problem: A - Fast Multiplication
+// Contest: UCSD ICPC SP25 Week 5
+// URL: https://vjudge.net/contest/713119#problem/A
+// Time Limit: 1649
+// Start: 2025/04/28 18:32:32
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
+#include <boost/multiprecision/cpp_int.hpp>
 #define int long long
 #define sz(x) (int)x.size()
 #define ar array
@@ -46,80 +47,14 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-struct fenwick {
-    int n; vector<int> bit;
-    fenwick(int sz) : n(sz), bit(sz+1) {};
-    
-    int lowbit(int x) {
-        return x & -x;
-    }
-    int sum(int pos) {
-        int ans = 0;
-        for(;pos; pos-=lowbit(pos)) ans+=bit[pos]; 
-        return ans;
-    }
-
-    void update(int pos, int x) {
-        ++pos;
-        for(; pos <= n; bit[pos]+=x, pos+=lowbit(pos));
-    }
-
-    int query(int l, int r) {
-        return sum(r+1) - sum(l);
-    }
-};
 void shiina_mashiro() {
-    int n; cin >> n;
-    vector<ar<int, 3>> vi(n);
-    vector<int> compress;
-    compress.reserve(2*n);
-    for(int i = 0; i < n; i++) {
-        int a, b; cin >> a >> b;
-        vi[i][0] = a, vi[i][1] = b;
-        vi[i][2] = i;
-        compress.pb(a);
-        compress.pb(b);
-    }
-    sort_unique(compress);
-    auto get = [&](int x) {
-        return lower_bound(all(compress), x) - compress.begin();
-    };
-    for(auto &[a, b, c] : vi) {
-        a = get(a);
-        b = get(b);
-    }
-    debug(vi);
-    sort(all(vi), [&](auto&a, auto&b) {
-        return a[0] == b[0] ? a[1] > b[1] : a[0] < b[0];
-    }); 
-    int m = sz(compress);
-    fenwick fw(m);
-    vector<int> contains(n, 0);
-    for(int i = 0; i < n; i++) {
-        int r = vi[i][1];
-        contains[vi[i][2]] = fw.query(r, m-1);
-        fw.update(r, 1);
-    }
-    sort(all(vi), [&](auto&a, auto&b) {
-        return a[0] == b[0] ? a[1] < b[1] : a[0] > b[0];
-    });
-    fenwick fw2(m);
-    vector<int> contains2(n, 0);
-    for(int i = 0; i < n; i++) {
-        int l = vi[i][0], r = vi[i][1];
-        contains2[vi[i][2]] = fw2.query(l, r);
-        fw2.update(r, 1);
-    }
-    for(auto &x : contains2) cout << x << " ";
-    cout << nl;
-    for(auto&x : contains) cout << x << " ";
-    cout << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
 

@@ -1,0 +1,17 @@
+8
+2
+AB
+2
+BA
+4
+ABAB
+4
+BABA
+3
+BAA
+5
+AAAAB
+5
+BAAAB
+6
+BBBAAA

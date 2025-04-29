@@ -47,7 +47,24 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    vector<int> mx(n);
+    for(int i = 0; i < n; i++) {
+        ckmax(mx[i], i-1>=0 ? max(mx[i-1], vi[i]) : vi[i]);
+    }
+    debug(mx);
+    int now = 0;
+    for(int i = 0; i < n; i++) {
+        if(vi[n-i-1] < mx[n-i-1]) {
+            cout << mx[n-i-1] + now << " ";
+        } else {
+            cout << vi[n-i-1] + now << " ";
+        } 
+        now += vi[n-i-1];
+    }
+    cout << nl;
 }
 
 signed main() {    
