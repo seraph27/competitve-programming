@@ -1,8 +1,8 @@
-// Problem: Rectangle Cutting
+// Problem: Mountain Range
 // Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1744
+// URL: https://cses.fi/problemset/task/3314
 // Time Limit: 1000
-// Start: 2025/05/14 13:33:56
+// Start: Thu May 15 01:10:08 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -43,30 +43,77 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #else
 #define debug(x...)
 #endif
+template <class T>
+struct segtree {
+    const int N; vector<T> tree;
+    segtree(int n) : N(1<<(__lg(n)+1)), tree(2*N) {}
+    void update(int pos, T x) {
+        for (int i = pos+N; i > 0; i >>= 1) ckmax(tree[i], x);
+    }
+    T query(int node, int nl, int nr, int ql, int qr) {
+        if (ql > nr || qr < nl) return 0;
+        if (ql <= nl && nr <= qr) return tree[node];
+        int mid = (nl+nr)/2;
+        return max(query(node*2, nl, mid, ql, qr), query(node*2+1, mid+1, nr, ql, qr));
+    }
+    T query(int l, int r) { return query(1, 0, N-1, l, r); }
+};
 
 const char nl = '\n';
 
-static int dp[501][501]{};
 void shiina_mashiro() {
-    int a, b; cin >> a >> b;
-    memset(dp, 0x3f, sizeof(dp));
-    for(int i = 1; i <= min(a, b); i++) {
-        dp[i][i] = 0;
+    int n;
+    cin >> n;
+    vector<int> h(n);
+    for(int i = 0; i < n; i++) 
+        cin >> h[i];
+
+    // parent[i] = index of parent of i in the Cartesian tree, or -1 if root
+    vector<int> parent(n, -1);
+    vector<int> stk;
+    stk.reserve(n);
+
+    // Build max‑Cartesian tree in O(n)
+    for(int i = 0; i < n; i++){
+        int last = -1;
+        // Pop all smaller; the last one popped becomes left child of i
+        while(!stk.empty() && h[stk.back()] < h[i]){
+            last = stk.back();
+            stk.pop_back();
+        }
+        if(last != -1){
+            parent[last] = i;
+        }
+        if(!stk.empty()){
+            parent[i] = stk.back();
+        }
+        stk.push_back(i);
     }
-    for(int i = 1; i <= a; i++) {
-        for(int j = 1; j <= b; j++) {
-            if(i == j) continue;
-            int best = 4e18;
-            for(int k = 1; k <= i/2; k++) {
-                ckmin(best, dp[k][j] + dp[i - k][j] + 1);
-            }
-            for(int k = 1; k <= j/2; k++) {
-                ckmin(best, dp[i][k] + dp[i][j - k] + 1);
-            }
-            dp[i][j] = best;
+
+    // Build children lists
+    vector<vector<int>> children(n);
+    int root = -1;
+    for(int i = 0; i < n; i++){
+        if(parent[i] == -1) {
+            root = i;
+        } else {
+            children[parent[i]].push_back(i);
         }
     }
-    cout << dp[a][b] << nl;
+
+    // BFS (or DFS) from root to compute depths
+    int answer = 0;
+    queue<pair<int,int>> q;
+    q.emplace(root, 1);
+    while(!q.empty()){
+        auto [u, d] = q.front(); q.pop();
+        answer = max(answer, d);
+        for(int v: children[u]){
+            q.emplace(v, d+1);
+        }
+    }
+
+    cout << answer << "\n";   
 }
 
 signed main() {    

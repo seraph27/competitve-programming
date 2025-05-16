@@ -1,8 +1,8 @@
-// Problem: Rectangle Cutting
+// Problem: Removal Game
 // Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1744
+// URL: https://cses.fi/problemset/task/1097
 // Time Limit: 1000
-// Start: 2025/05/14 13:33:56
+// Start: Wed May 14 23:35:10 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -45,28 +45,30 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #endif
 
 const char nl = '\n';
-
-static int dp[501][501]{};
+int dp[5005][5005];
 void shiina_mashiro() {
-    int a, b; cin >> a >> b;
-    memset(dp, 0x3f, sizeof(dp));
-    for(int i = 1; i <= min(a, b); i++) {
-        dp[i][i] = 0;
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    memset(dp, 0xc0, sizeof dp);
+    vector<int> pref(n+1);
+    for(int i = 1; i <= n; i++) {
+        pref[i] = pref[i-1] + vi[i-1];
     }
-    for(int i = 1; i <= a; i++) {
-        for(int j = 1; j <= b; j++) {
-            if(i == j) continue;
-            int best = 4e18;
-            for(int k = 1; k <= i/2; k++) {
-                ckmin(best, dp[k][j] + dp[i - k][j] + 1);
+    auto get = [&](int l, int r) {
+        return pref[r+1] - pref[l];
+    };
+    for(int len = 1; len <= n; len++) {
+        for(int i = 0; i + len <= n; i++) {
+            int R = i+len-1;
+            if(i==R) {
+                dp[i][R] = vi[i];
+            } else {
+                ckmax(dp[i][R], max(vi[i] + get(i+1, R) - dp[i+1][R], vi[R] + get(i, R-1) - dp[i][R-1]));
             }
-            for(int k = 1; k <= j/2; k++) {
-                ckmin(best, dp[i][k] + dp[i][j - k] + 1);
-            }
-            dp[i][j] = best;
         }
     }
-    cout << dp[a][b] << nl;
+    cout << dp[0][n-1] << nl;
 }
 
 signed main() {    

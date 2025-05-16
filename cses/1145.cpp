@@ -1,8 +1,8 @@
-// Problem: Rectangle Cutting
+// Problem: Increasing Subsequence
 // Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1744
+// URL: https://cses.fi/problemset/task/1145
 // Time Limit: 1000
-// Start: 2025/05/14 13:33:56
+// Start: Thu May 15 02:15:21 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -46,27 +46,23 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-static int dp[501][501]{};
+vector<int> lis(vector<int> &a) {
+    vector<int> dp;
+    for (int i = 0; i < sz(a); i++) {
+        auto it = lower_bound(all(dp), a[i]);
+        if (it == dp.end()) dp.pb(a[i]);
+        else *it = a[i];
+    }
+    return dp;
+}
+
 void shiina_mashiro() {
-    int a, b; cin >> a >> b;
-    memset(dp, 0x3f, sizeof(dp));
-    for(int i = 1; i <= min(a, b); i++) {
-        dp[i][i] = 0;
+    int n; cin >> n;
+    vector<int> vi(n);
+    for (int i = 0; i < n; i++) {
+        cin >> vi[i];
     }
-    for(int i = 1; i <= a; i++) {
-        for(int j = 1; j <= b; j++) {
-            if(i == j) continue;
-            int best = 4e18;
-            for(int k = 1; k <= i/2; k++) {
-                ckmin(best, dp[k][j] + dp[i - k][j] + 1);
-            }
-            for(int k = 1; k <= j/2; k++) {
-                ckmin(best, dp[i][k] + dp[i][j - k] + 1);
-            }
-            dp[i][j] = best;
-        }
-    }
-    cout << dp[a][b] << nl;
+    cout << sz(lis(vi)) << nl;
 }
 
 signed main() {    

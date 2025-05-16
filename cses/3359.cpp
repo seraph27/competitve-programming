@@ -1,8 +1,8 @@
-// Problem: Rectangle Cutting
+// Problem: Minimal Grid Path
 // Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1744
+// URL: https://cses.fi/problemset/task/3359
 // Time Limit: 1000
-// Start: 2025/05/14 13:33:56
+// Start: Wed May 14 21:56:38 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -46,29 +46,50 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-static int dp[501][501]{};
 void shiina_mashiro() {
-    int a, b; cin >> a >> b;
-    memset(dp, 0x3f, sizeof(dp));
-    for(int i = 1; i <= min(a, b); i++) {
-        dp[i][i] = 0;
-    }
-    for(int i = 1; i <= a; i++) {
-        for(int j = 1; j <= b; j++) {
-            if(i == j) continue;
-            int best = 4e18;
-            for(int k = 1; k <= i/2; k++) {
-                ckmin(best, dp[k][j] + dp[i - k][j] + 1);
+    int n; cin >> n;
+    vector<string> vi(n);
+    for(auto&a: vi) cin >> a;
+    string ans;
+    vector<vector<int>> vis(n, vector<int>(n, 0)), vis2(n, vector<int>(n, 0));
+    vis[0][0] = 1;
+    ans.pb(vi[0][0]);
+    for(int i = 1; i < n; i++) {
+        int mn = 50;
+        for(int k = i, j = 0; k >= 0; k--, j++) {
+            if((k-1 >= 0 && vis[k-1][j]) || (j-1 >= 0 && vis[k][j-1])) {
+                ckmin(mn, (int)vi[k][j] - 'A');
             }
-            for(int k = 1; k <= j/2; k++) {
-                ckmin(best, dp[i][k] + dp[i][j - k] + 1);
-            }
-            dp[i][j] = best;
         }
+        for(int k = i, j = 0; k >= 0; k--, j++) {
+            if((vi[k][j] - 'A' == mn) && ((k > 0 && vis[k-1][j]) || (j > 0 && vis[k][j-1]))) {
+                vis2[k][j] = 1;
+            } else {
+                vis[k][j] = 1;
+            }
+        }
+        ans.pb(char(mn + 'A'));
+        swap(vis, vis2);
     }
-    cout << dp[a][b] << nl;
+    for(int j = 1; j < n; j++) {
+        int mn = 50;
+        for(int i = n-1, k = j; k < n; i--, k++) {
+            if((i-1 >= 0 && vis[i-1][k]) || (k-1 >= 0 && vis[i][k-1])) {
+                ckmin(mn, (int)vi[i][k] - 'A');
+            }
+        }
+        for(int i = n-1, k = j; k < n; i--, k++) {
+            if((vi[i][k] - 'A' == mn) && ((i > 0 && vis[i-1][k]) || (k > 0 && vis[i][k-1]))) {
+                vis2[i][k] = 1;
+            } else {
+                vis[i][k] = 1;
+            }
+        }
+        ans.pb(char(mn + 'A'));
+        swap(vis, vis2);
+    }
+    cout << ans << nl;
 }
-
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);

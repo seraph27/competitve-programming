@@ -1,8 +1,8 @@
-// Problem: Rectangle Cutting
-// Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1744
+// Problem: C. Sum of Substrings
+// Contest: CodeCraft-22 and Codeforces Round 795 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/1691/C
 // Time Limit: 1000
-// Start: 2025/05/14 13:33:56
+// Start: Mon May 12 18:42:49 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -46,34 +46,43 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-static int dp[501][501]{};
 void shiina_mashiro() {
-    int a, b; cin >> a >> b;
-    memset(dp, 0x3f, sizeof(dp));
-    for(int i = 1; i <= min(a, b); i++) {
-        dp[i][i] = 0;
-    }
-    for(int i = 1; i <= a; i++) {
-        for(int j = 1; j <= b; j++) {
-            if(i == j) continue;
-            int best = 4e18;
-            for(int k = 1; k <= i/2; k++) {
-                ckmin(best, dp[k][j] + dp[i - k][j] + 1);
-            }
-            for(int k = 1; k <= j/2; k++) {
-                ckmin(best, dp[i][k] + dp[i][j - k] + 1);
-            }
-            dp[i][j] = best;
+    int n, k; cin >> n >> k;
+    string s; cin >> s;
+    int L = 0, R = n-1;
+    for(int i = 0; i < n-1; i++) {
+        if(s[i] == '1') {
+            L = i;
+            break;
         }
     }
-    cout << dp[a][b] << nl;
+    for(int i = n - 1; i > 0; i--) {
+        if(s[i] == '1') {
+            R = n-i-1;
+            break;
+        }
+    }
+    if(k>=R) {
+        swap(s[n-R-1], s[n-1]);
+        k-=R;
+    }
+    if(k>=L) {
+        swap(s[L], s[0]);
+        k-=L;
+    }
+    int ans = 0;
+    for(int i = 0; i < n-1; i++) {
+        ans += stoi(s.substr(i, 2));
+    }
+    cout << ans << nl;
+    
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 
