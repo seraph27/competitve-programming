@@ -8,6 +8,8 @@
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
+#pragma GCC optimize("Ofast","unroll-loops")
+#pragma GCC target("avx2")
 #define int long long
 #define sz(x) (int)x.size()
 #define ar array
@@ -45,20 +47,25 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #endif
 
 const char nl = '\n';
-template <class T>
-struct segtree {
-    const int N; vector<T> tree;
-    segtree(int n) : N(1<<(__lg(n)+1)), tree(2*N) {}
-    void update(int pos, T x) {
-        for (int i = pos+N; i > 0; i >>= 1) ckmax(tree[i], x);
+
+template<typename it, typename bin_op>
+struct sparse_table {
+    using T = typename remove_reference<decltype(*declval<it>())>::type;
+    vector<vector<T>> t; bin_op F;
+ 
+    sparse_table(it first, it last, bin_op op) : t(1), F(op) {
+        int n = distance(first, last);
+        t.assign(32-__builtin_clz(n), vector<T>(n));
+        t[0].assign(first, last);
+        for (int i = 1; i < sz(t); i++)
+            for (int j = 0; j < n-(1<<i)+1; j++)
+                t[i][j] = F(t[i-1][j], t[i-1][j+(1<<(i-1))]);
     }
-    T query(int node, int nl, int nr, int ql, int qr) {
-        if (ql > nr || qr < nl) return 0;
-        if (ql <= nl && nr <= qr) return tree[node];
-        int mid = (nl+nr)/2;
-        return max(query(node*2, nl, mid, ql, qr), query(node*2+1, mid+1, nr, ql, qr));
+ 
+    T query(int l, int r) {
+        int h = 31 - __builtin_clz(r-l+1);
+        return F(t[h][l], t[h][r-(1<<h)+1]);
     }
-    T query(int l, int r) { return query(1, 0, N-1, l, r); }
 };
 
 int dp[200005][64];
@@ -93,29 +100,82 @@ void shiina_mashiro() {
         }
     };
     auto root = cartesian();
-    debug(root, L, R, par);
-    segtree<int> seg(n);
-    for(int i = 0; i < n; i++) {
-        seg.update(i, a[i]);
-    }
 
-    memset(dp, 0x3f, sizeof(dp));
+    sparse_table st(all(a), [](int x, int y){ return max(x,y); });
 
     for(int i = 0; i < n; i++) {
-        int l = L[i]+1, r = (R[i]==-1 ? l : R[i]-1);
-        debug(i, l, r);
-        int mx = seg.query(l, r);
-        dp[i][0] = a[i];
-        for(int j = 1; j < 64; j++) {
-            assert(mx);
-            ckmin(dp[i][j], iceil(dp[i][j-1], mx));
+        for(int j = 0; j < 64; j++) {
+            dp[i][j] = 1e18;
         }
     }
-    debug(dp[0][0], dp[0][1], dp[0][2]);
-    auto dfs = [&](auto &&s, int u) -> void {
-        return;
+    //precalc 
+    vector<int> bL(n), bR(n);
+    auto dfs1 = [&](auto &&s, int u) -> void {
+        bL[u] = bR[u] = u;
+        if(~L[u]) {
+            s(s, L[u]);
+            bL[u] = bL[L[u]];
+        }
+        if(~R[u]) {
+            s(s, R[u]);
+            bR[u] = bR[R[u]];
+        }
+    };
+    dfs1(dfs1, root);
+    auto dfs2 = [&](auto &&s, int u) -> void {
+        if(~L[u]) s(s, L[u]);
+        if(~R[u]) s(s, R[u]);
+        //for(int i = 0; i < 64; i++) for(int j = 0; j < 64; j++) {
+        //    if(i+j >= 64) continue;
+        //    int l = L[u] == -1 ? -1e9 : dp[L[u]][i];
+        //    int r = R[u] == -1 ? -1e9 : dp[R[u]][j];
+        //    ckmin(dp[u][i+j], max({l, r, a[u]}));
+        //}
+        if (~L[u] && ~R[u]) {
+            ar<int, 64> comb;
+            int i = 0;
+            for(int k = 0; k < 64; k++) {
+                while(i+1 <= k) {
+                    int curr = max({dp[L[u]][i], dp[R[u]][k-i], a[u]});
+                    int nxt = max({dp[L[u]][i+1], dp[R[u]][k-i-1], a[u]});
+                    if(nxt <= curr) {
+                        i++;
+                    } else {
+                        break;
+                    }
+                }
+                comb[k] = max({dp[L[u]][i], dp[R[u]][k-i], a[u]});
+            }
+            for(int k = 0; k < 64; k++) {
+                ckmin(dp[u][k], comb[k]);
+            } 
+        } else if (L[u] != -1) {
+            for(int i = 0; i < 64; i++) {
+                ckmin(dp[u][i], max(dp[L[u]][i], a[u]));
+            }
+        } else if (R[u] != -1) {
+            for(int i = 0; i < 64; i++) {
+                ckmin(dp[u][i], max(dp[R[u]][i], a[u]));
+            }
+        }
+        int ll = bL[u], rr = bR[u];
+        int mx = st.query(ll, rr);
+        dp[u][0] = mx;
+        for(int j = 1; j < 64; j++) {
+            int m = (dp[u][j-1] + b[u] - 1) / b[u];
+            ckmin(dp[u][j], m);
+        }
     };
 
+    dfs2(dfs2, root);
+
+    for(int i = 0; i < 64; i++) {
+        if(dp[root][i] == 1) {
+            cout << i << nl;
+            return;
+        }
+    }
+    return;
 }
 
 signed main() {    
