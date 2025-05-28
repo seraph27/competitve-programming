@@ -1,8 +1,8 @@
-// Problem: D. Come a Little Closer
-// Contest: Codeforces Round  1027 (Div. 3)
-// URL: https://codeforces.com/contest/2114/problem/D
-// Time Limit: 2000
-// Start: 2025/05/27 11:20:08
+// Problem: C. Heavy Intervals
+// Contest: Test contest
+// URL: https://codeforces.com/group/Xa9FknAMM5/contest/612668/problem/C
+// Time Limit: 1000
+// Start: 2025/05/28 9:09:20
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -30,6 +30,8 @@ void sort_unique(vector<T> &vec){
 
 #ifdef MISAKA
 struct _debug {
+template<typename T, size_t N>
+static void __print(const T (&a)[N]) {cerr << '{';for (size_t i = 0; i < N; ++i) {if (i) cerr << ',';__print(a[i]);}cerr << '}';}
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -48,37 +50,28 @@ const char nl = '\n';
 
 void shiina_mashiro() {
     int n; cin >> n;
-
-    multiset<int> x, y;
-    vector<pair<int, int>> coords(n);
-    int ans = 1e18;
+    vector<int> l(n), c(n);
+    multiset<int> r;
+    for(auto&a : l) cin >> a;
     for(int i = 0; i < n; i++) {
-        int a, b; cin >> a >> b;
-        x.insert(a);
-        y.insert(b);
-        coords[i] = {a, b};
+        int x; cin >> x;
+        r.insert(x);
     }
-    if(n==1) {
-        cout << 1 << nl;
-        return;
-    }
+    for(auto&a : c) cin >> a;
+
+    sort(all(l));
+    sort(all(c));
     
-    for(auto &[a, b] : coords) {
-        x.erase(x.find(a));
-        y.erase(y.find(b));
-        if(!sz(x) || !sz(y)) {
-            ckmin(ans, 0LL);
-            continue;
-        }
-        int dx = *x.rbegin() - *x.begin() + 1;
-        int dy = *y.rbegin() - *y.begin() + 1;
-        if(n-1 == dx*dy) {
-            ckmin(ans, dx * dy + min(dx, dy));
-        } else {
-            ckmin(ans, dx * dy);
-        }
-        x.insert(a);
-        y.insert(b);
+    int ans = 0;
+    vector<int> segs;
+    for(int i = n-1; i>=0; i--) {
+        auto it = r.lower_bound(l[i]);
+        segs.pb(*it - l[i]);
+        r.erase(it);
+    }
+    sort(all(segs), greater<int>());
+    for(int i = 0; i < n; i++) {
+        ans += segs[i] * c[i];
     }
     cout << ans << nl;
 }

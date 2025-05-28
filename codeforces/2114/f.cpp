@@ -1,8 +1,8 @@
-// Problem: D. Come a Little Closer
+// Problem: F. Small Operations
 // Contest: Codeforces Round  1027 (Div. 3)
-// URL: https://codeforces.com/contest/2114/problem/D
-// Time Limit: 2000
-// Start: 2025/05/27 11:20:08
+// URL: https://codeforces.com/contest/2114/problem/F
+// Time Limit: 3000
+// Start: 2025/05/27 22:18:55
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -47,40 +47,37 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n; cin >> n;
+    int x, y, k; cin >> x >> y >> k;
+    int gd = gcd(x, y);
+    int sx = x / gd, sy = y / gd;
+    int ans = 0;
 
-    multiset<int> x, y;
-    vector<pair<int, int>> coords(n);
-    int ans = 1e18;
-    for(int i = 0; i < n; i++) {
-        int a, b; cin >> a >> b;
-        x.insert(a);
-        y.insert(b);
-        coords[i] = {a, b};
-    }
-    if(n==1) {
-        cout << 1 << nl;
-        return;
-    }
+    auto slv = [&](int v) {
+        vector<int> dp(v+1, 1e18);
+        dp[1] = 0;
+        vector<int> divs;
+        for(int i = 1; i*i <= v; i++) {
+            if(v%i==0) {
+                divs.pb(i);
+                if(i*i != v) divs.pb(v/i);
+            }
+        }
+        sort(all(divs));
+        for(int i : divs) {
+            for(auto j : divs) {
+                if(j <= k && i*j <= v) ckmin(dp[i * j], dp[i] + 1);
+                else break;
+            }
+        }
+        return dp[v];
+    };
+
+    auto sum = slv(sx) + slv(sy);
+    cout << (sum >= 32 ? -1 : sum) << nl;
+
+
+
     
-    for(auto &[a, b] : coords) {
-        x.erase(x.find(a));
-        y.erase(y.find(b));
-        if(!sz(x) || !sz(y)) {
-            ckmin(ans, 0LL);
-            continue;
-        }
-        int dx = *x.rbegin() - *x.begin() + 1;
-        int dy = *y.rbegin() - *y.begin() + 1;
-        if(n-1 == dx*dy) {
-            ckmin(ans, dx * dy + min(dx, dy));
-        } else {
-            ckmin(ans, dx * dy);
-        }
-        x.insert(a);
-        y.insert(b);
-    }
-    cout << ans << nl;
 }
 
 signed main() {    

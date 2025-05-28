@@ -1,9 +1,9 @@
-// Problem: D. Come a Little Closer
-// Contest: Codeforces Round  1027 (Div. 3)
-// URL: https://codeforces.com/contest/2114/problem/D
-// Time Limit: 2000
-// Start: 2025/05/27 11:20:08
-// mintemplate
+// Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
+// codeforces
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -48,39 +48,29 @@ const char nl = '\n';
 
 void shiina_mashiro() {
     int n; cin >> n;
-
-    multiset<int> x, y;
-    vector<pair<int, int>> coords(n);
-    int ans = 1e18;
-    for(int i = 0; i < n; i++) {
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    vector<vector<int>> g(n);
+    for(int i = 0; i < n-1; i++) {
         int a, b; cin >> a >> b;
-        x.insert(a);
-        y.insert(b);
-        coords[i] = {a, b};
+        --a; --b;
+        g[a].pb(b);
+        g[b].pb(a);
     }
-    if(n==1) {
-        cout << 1 << nl;
-        return;
-    }
-    
-    for(auto &[a, b] : coords) {
-        x.erase(x.find(a));
-        y.erase(y.find(b));
-        if(!sz(x) || !sz(y)) {
-            ckmin(ans, 0LL);
-            continue;
+
+    vector<int> mn(n, 4e18), mx(n, -4e18);
+    mn[0] = mx[0] = vi[0];
+    auto dfs = [&](auto&&s, int u, int p) -> void {
+        for(auto&e : g[u]) if(e != p) {
+            ckmax(mx[e], vi[e] - min(0LL, mn[u]));
+            ckmin(mn[e], vi[e] - max(0LL, mx[u]));
+            s(s, e, u);
         }
-        int dx = *x.rbegin() - *x.begin() + 1;
-        int dy = *y.rbegin() - *y.begin() + 1;
-        if(n-1 == dx*dy) {
-            ckmin(ans, dx * dy + min(dx, dy));
-        } else {
-            ckmin(ans, dx * dy);
-        }
-        x.insert(a);
-        y.insert(b);
-    }
-    cout << ans << nl;
+    };
+
+    dfs(dfs, 0, -1);
+    for(auto x : mx) cout << x << " ";
+    cout << nl;
 }
 
 signed main() {    
