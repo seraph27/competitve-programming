@@ -1,9 +1,9 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: C. Little Girl and Maximum Sum
+// Contest: Codeforces Round 169 (Div. 2)
+// URL: https://codeforces.com/contest/276/problem/C
+// Time Limit: 1000
+// Start: Wed May 28 22:17:15 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -48,6 +48,31 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
+    int n, q; cin >> n >> q;
+    vector<int> vi(n);
+    for(int i = 0; i < n; i++) {
+        cin >> vi[i];
+    }
+    vector<int> imos(n+1);
+    for(int i = 0; i < q; i++) {
+        int l, r; cin >> l >> r;
+        --l;--r;
+        imos[l]++;
+        imos[r+1]--;
+    }
+
+    for(int i = 0; i < n; i++) {
+        imos[i+1] += imos[i];
+    }
+    debug(imos);
+    sort(all(imos), greater<int>());
+    sort(all(vi), greater<int>());
+    int ans = 0;
+    for(int i = 0; i < n; i++) {
+        ans += imos[i] * vi[i];
+    }
+
+    cout << ans << nl;
 
 }
 
@@ -55,6 +80,7 @@ signed main() {
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+

@@ -1,9 +1,9 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: A. Plus-Minus
+// Contest: Contest XX. Greedy
+// URL: https://codeforces.com/group/jtU6D2hVEi/contest/533371/problem/A
+// Time Limit: 2000
+// Start: Wed May 21 12:52:47 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -30,7 +30,6 @@ void sort_unique(vector<T> &vec){
 
 #ifdef MISAKA
 struct _debug {
-template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -48,13 +47,30 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-
+    int n, m; cin >> n >> m;
+    vector<string> vi(n);
+    for(auto &s : vi) cin >> s;
+    for(int i = 0; i < n-1; i++) for(int j = 0; j < m-1; j++) {
+        if(vi[i][j] == '-') {
+            for(int k = 0; k < 2; k++) for(int l = 0; l < 2; l++) {
+                vi[i+k][j+l] = (vi[i+k][j+l] == '-') ? '+' : '-';
+            }
+        }
+    }
+    for(int i = 0; i < n; i++) for(int j = 0; j < m; j++) {
+        if(vi[i][j] == '-') {
+            cout << "No" << nl;
+            return;
+        }
+    }
+    cout << "Yes" << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+

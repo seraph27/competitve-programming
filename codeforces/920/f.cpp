@@ -1,9 +1,9 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: F. SUM and REPLACE
+// Contest: Educational Codeforces Round 37 (Rated for Div. 2)
+// URL: https://codeforces.com/contest/920/problem/F
+// Time Limit: 2000
+// Start: Sat May 24 00:26:49 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -30,7 +30,6 @@ void sort_unique(vector<T> &vec){
 
 #ifdef MISAKA
 struct _debug {
-template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -47,14 +46,73 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-void shiina_mashiro() {
+struct segs{
+    int n; vector<int> tr;
+    segs(int n) : n(n), tr(2*n, 0) {}
+    void update(int pos, int val) {
+        pos += n;
+        tr[pos] = val;
+        for(; pos > 1; pos >>= 1) tr[pos >> 1] = tr[pos] + tr[pos ^ 1];
+    }
+    int query(int l, int r) {
+        l+=n; r+=n;
+        int res = 0;
+        for(; l < r; l >>= 1, r >>= 1) {
+            if(l & 1) res += tr[l++];
+            if(r & 1) res += tr[--r];
+        }
+        return res;
+    }
+};
 
+void shiina_mashiro() {
+    int n, m; cin >> n >> m;
+    segs seg(n+1);
+    int mx = 0;
+    set<int> s;
+    for (int i = 0; i < n; i++) {
+        int x; cin >> x;
+        ckmax(mx, x);
+        seg.update(i, x);
+        if(x>2) s.insert(i);
+    }
+
+    auto div = [](int x) -> vector<int> {
+        vector<int> res(x+1, 0);
+        for(int d = 1; d <= x; d++) {
+            for(int i = d; i <= x; i += d) {
+                res[i]++;
+            }
+        }
+        return res;
+    };
+
+    auto divs = div(mx);
+    for(;m--;) {
+        int t, l, r; cin >> t >> l >> r;
+        if(t == 1) {
+            l--; r--;
+            vector<int> bad;
+            for(auto it = s.lower_bound(l); it != s.end() && *it <= r; it++) {
+                int now = seg.query(*it, *it + 1);
+                int nd = divs[now];
+                if(nd <= 2) bad.pb(*it);
+                seg.update(*it, nd);
+            }
+            for(auto &x : bad) {
+                s.erase(x);
+            }
+        } else {
+            cout << seg.query(l - 1, r) << nl;
+        }
+    }
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+

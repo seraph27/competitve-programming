@@ -8,8 +8,6 @@
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#pragma GCC optimize("Ofast","unroll-loops")
-#pragma GCC target("avx2")
 #define int long long
 #define sz(x) (int)x.size()
 #define ar array
@@ -75,7 +73,7 @@ void shiina_mashiro() {
     vector<int> a(n), b(n);
     for(auto &i : a) cin >> i;
     for(auto &i : b) cin >> i;
-
+    const int lg = __lg(*max_element(all(a))) + 2;
     vector<int> L(n, -1), R(n, -1), par(n, -1);
     auto cartesian = [&]() -> int{
         vector<int> st;
@@ -104,7 +102,7 @@ void shiina_mashiro() {
     sparse_table st(all(a), [](int x, int y){ return max(x,y); });
 
     for(int i = 0; i < n; i++) {
-        for(int j = 0; j < 64; j++) {
+        for(int j = 0; j < lg; j++) {
             dp[i][j] = 1e18;
         }
     }
@@ -134,7 +132,7 @@ void shiina_mashiro() {
         if (~L[u] && ~R[u]) {
             ar<int, 64> comb;
             int i = 0;
-            for(int k = 0; k < 64; k++) {
+            for(int k = 0; k < lg; k++) {
                 while(i+1 <= k) {
                     int curr = max({dp[L[u]][i], dp[R[u]][k-i], a[u]});
                     int nxt = max({dp[L[u]][i+1], dp[R[u]][k-i-1], a[u]});
@@ -146,22 +144,22 @@ void shiina_mashiro() {
                 }
                 comb[k] = max({dp[L[u]][i], dp[R[u]][k-i], a[u]});
             }
-            for(int k = 0; k < 64; k++) {
+            for(int k = 0; k < lg; k++) {
                 ckmin(dp[u][k], comb[k]);
             } 
         } else if (L[u] != -1) {
-            for(int i = 0; i < 64; i++) {
+            for(int i = 0; i < lg; i++) {
                 ckmin(dp[u][i], max(dp[L[u]][i], a[u]));
             }
         } else if (R[u] != -1) {
-            for(int i = 0; i < 64; i++) {
+            for(int i = 0; i < lg; i++) {
                 ckmin(dp[u][i], max(dp[R[u]][i], a[u]));
             }
         }
         int ll = bL[u], rr = bR[u];
         int mx = st.query(ll, rr);
         dp[u][0] = mx;
-        for(int j = 1; j < 64; j++) {
+        for(int j = 1; j < lg; j++) {
             int m = (dp[u][j-1] + b[u] - 1) / b[u];
             ckmin(dp[u][j], m);
         }
@@ -169,7 +167,7 @@ void shiina_mashiro() {
 
     dfs2(dfs2, root);
 
-    for(int i = 0; i < 64; i++) {
+    for(int i = 0; i < lg; i++) {
         if(dp[root][i] == 1) {
             cout << i << nl;
             return;

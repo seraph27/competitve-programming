@@ -1,9 +1,9 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: B. Karen and Coffee
+// Contest: Codeforces Round 419 (Div. 2)
+// URL: https://codeforces.com/contest/816/problem/B
+// Time Limit: 2500
+// Start: Wed May 21 12:18:10 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -30,7 +30,6 @@ void sort_unique(vector<T> &vec){
 
 #ifdef MISAKA
 struct _debug {
-template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -48,13 +47,30 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-
+    int n, k, q; cin >> n >> k >> q;
+    vector<int> imos(200002);
+    for(int i = 0; i < n; i++) {
+        int l, r; cin >> l >> r;
+        imos[l]++;
+        imos[r + 1]--;
+    }
+    for(int i = 1; i <= 200000; i++) {
+        imos[i] += imos[i - 1];
+    }
+    vector<int> pref(200002);
+    for(int i = 0; i <= 200000; i++) {
+        pref[i + 1] = pref[i] + (imos[i + 1] >= k);
+    }
+    for(;q--;) {
+        int a, b; cin >> a >> b;
+        cout << pref[b] - pref[a - 1] << nl;
+    }
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
     while (t--) shiina_mashiro();
 }
+

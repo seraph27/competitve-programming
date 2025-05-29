@@ -1,9 +1,9 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: D. QED's Favorite Permutation
+// Contest: Codeforces Round 979 (Div. 2)
+// URL: https://codeforces.com/contest/2030/problem/D
+// Time Limit: 2000
+// Start: Thu May 29 00:38:38 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -48,7 +48,42 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
+    int n, q; cin >> n >> q;
+    vector<int> vi(n);
+    for(int i = 0; i < n; i++) cin >> vi[i];
+    string s; cin >> s;
+    s.pb('R');
+    vector<int> pref(n+1);
+    for(int i = 0; i < n; i++) {
+        pref[i+1] += pref[i] + i + 1;
+    }
+    vector<int> pref2(n+1);
+    for(int i = 0; i < n; i++) {
+        pref2[i+1] += pref2[i] + vi[i];
+    }
 
+    set<int> bad;
+    for(int i = 0; i < n; i++) {
+        if(s[i] == 'L' && s[i+1] == 'R' && (pref[i+1] != pref2[i+1])) bad.insert(i);
+    }
+    for(int i = 0; i < q; i++) {
+        int x; cin >> x;
+        --x;
+        if(s[x] == 'L' && s[x+1] == 'R') bad.erase(x);
+        if(s[x] == 'R' && s[x-1] == 'L') bad.erase(x-1);
+        s[x] = (s[x] == 'R' ? 'L' : 'R');
+        if(s[x] == 'L' && s[x+1] == 'R') {
+            if(pref[x+1] != pref2[x+1]) {
+                bad.insert(x);
+            }
+        }
+        if(s[x] == 'R' && s[x-1] == 'L') {
+            if(pref[x] != pref2[x]) {
+                bad.insert(x-1);
+            }
+        }
+        cout << (sz(bad) ? "No" : "Yes") << nl;
+    }
 }
 
 signed main() {    
@@ -58,3 +93,4 @@ signed main() {
     cin >> t;
     while (t--) shiina_mashiro();
 }
+

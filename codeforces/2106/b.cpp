@@ -1,9 +1,9 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: B. St. Chroma
+// Contest: Codeforces Round 1020 (Div. 3)
+// URL: https://codeforces.com/contest/2106/problem/B
+// Time Limit: 2000
+// Start: Mon May 19 03:28:38 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -30,7 +30,6 @@ void sort_unique(vector<T> &vec){
 
 #ifdef MISAKA
 struct _debug {
-template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -48,7 +47,19 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-
+    int n, x; cin >> n >> x;
+    vector<int> ans;
+    for(int i = 0; i < x; i++) {
+        ans.pb(i);
+    }
+    for(int i = x + 1; i < n; i++) {
+        ans.pb(i);
+    }
+    if(x < n) ans.pb(x);
+    for(auto i : ans) {
+        cout << i << " ";
+    }
+    cout << nl;
 }
 
 signed main() {    
@@ -58,3 +69,4 @@ signed main() {
     cin >> t;
     while (t--) shiina_mashiro();
 }
+

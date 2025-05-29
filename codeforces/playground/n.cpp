@@ -1,9 +1,9 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: N. Nusret Gökçe
+// Contest: 2022 ICPC Southeastern Europe Regional Contest
+// URL: https://codeforces.com/gym/104114/problem/N
+// Time Limit: 1000
+// Start: Wed May 28 19:59:19 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -48,13 +48,34 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-
+    int n, m; cin >> n >> m;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    for(int i = 0; i < n-1; i++) {
+        if(vi[i+1]-vi[i] > m) {
+            vi[i] += vi[i+1]-vi[i]-m;
+        } 
+        if(vi[i]-vi[i+1] > m) {
+            vi[i+1] += vi[i]-vi[i+1]-m;
+        }
+    }
+    for(int i = n-1; i > 0; i--) {
+        if(vi[i]-vi[i-1] > m) {
+            vi[i-1] += vi[i]-vi[i-1]-m;
+        } 
+        if(vi[i-1]-vi[i] > m) {
+            vi[i] += vi[i-1]-vi[i]-m;
+        }
+    }
+    for(auto x : vi) cout << x << " ";
+    cout << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+

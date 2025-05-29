@@ -1,9 +1,9 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: D. D/D/D
+// Contest: Codeforces Round 1025 (Div. 2)
+// URL: https://codeforces.com/contest/2109/problem/D
+// Time Limit: 2000
+// Start: Sun May 18 03:14:12 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -30,7 +30,6 @@ void sort_unique(vector<T> &vec){
 
 #ifdef MISAKA
 struct _debug {
-template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -48,7 +47,65 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
+    int n, m, l; cin >> n >> m >> l;
+    vector<int> vi(l);
+    for(auto &a : vi) cin >> a;
+    vector<vector<int>> adj(n);
+    for(int i = 0; i < m; i++) {
+        int u, v; cin >> u >> v;
+        u--, v--;
+        adj[u].pb(v);
+        adj[v].pb(u);
+    }
 
+    vector<int> even(n, 0), odd(n, 0); // can i visit vertex with even / odd steps
+    queue<pair<int, int>> q;
+    q.push({0, 0});
+    even[0] = 1;
+    while(!q.empty()) {
+        auto [f, dist] = q.front(); q.pop();
+        for(auto &a : adj[f]) {
+            int nd = dist + 1;
+            if(nd % 2 == 0 && !even[a]) {
+                even[a] = nd;
+                q.push({a, nd});
+            }
+            if(nd % 2 && !odd[a]) {
+                odd[a] = nd;
+                q.push({a, nd});
+            }
+        }
+    }
+    int mnodd = 4e18;
+    int oddsum = 0, cnt = 0;
+    for(int i = 0; i < l; i++) {
+        if(vi[i]%2) {
+            oddsum += vi[i];
+            ckmin(mnodd, vi[i]);
+            cnt++;
+        }
+    }
+    int sum = accumulate(all(vi), 0LL);
+    int mxodd = sum;
+    if(cnt%2 == 0) {
+        mxodd = sum - mnodd;
+    }
+    int mxeven = sum;
+    if(cnt%2 == 1) {
+        mxeven = sum - mnodd;
+    }
+
+    vector<int> ans(n, 0);
+    for(int i = 0; i < n; i++) {
+        if(even[i] && even[i] <= mxeven) ans[i] = 1;
+        if(odd[i] && odd[i] <= mxodd) ans[i] = 1;
+    }
+    ans[0] = 1;
+    for(auto &a : ans) {
+        cout << a;
+    }
+    debug(odd, even);
+    cout << nl;
 }
 
 signed main() {    
@@ -58,3 +115,4 @@ signed main() {
     cin >> t;
     while (t--) shiina_mashiro();
 }
+

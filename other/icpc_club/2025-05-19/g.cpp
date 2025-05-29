@@ -1,15 +1,14 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: G - Almost Union-Find
+// Contest: UCSD ICPC SP25 Week 8
+// URL: https://vjudge.net/contest/718118#problem/G
+// Time Limit: 4000
+// Start: Mon May 19 18:25:48 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
 #define int long long
-#define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
@@ -30,7 +29,6 @@ void sort_unique(vector<T> &vec){
 
 #ifdef MISAKA
 struct _debug {
-template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -48,13 +46,61 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
+    int n, m;
+    while(cin >> n >> m) {
+        int id = n;
+        vector<int> par(2*n+m+5), sz(2*n+m+5), sum(2*n+m+5), who(n+1);
+        for (int i = 1; i <= n; i++) {
+            par[i] = i;
+            sz[i] = 1;
+            sum[i] = i;
+            who[i] = i;
+        }
+        auto find = [&](auto&&s, int x) -> int {
+            return par[x] == x ? x : par[x] = s(s, par[x]);
+        };
+        
+        auto uf = [&](int a, int b) {
+            a = find(find, a);
+            b = find(find, b);
+            if(a == b) return;
+            if(sz[a] < sz[b]) swap(a, b);
+            par[b] = a;
+            sum[a] += sum[b];
+            sz[a] += sz[b];
+        };
+        for(;m--;) {
+            int type; cin >> type;
+            if(type == 1) {
+                int p, q; cin >> p >> q;
+                uf(who[p], who[q]);
+            } else if(type == 2) {
+                int p, q; cin >> p >> q;
+                int pp = find(find, who[p]), qq = find(find, who[q]);
+                if(pp == qq) continue;
+                int rep = find(find, who[p]);
+                who[p] = ++id;
+                par[id] = id;
+                sz[id] = 1;
+                sum[id] = p;
+                sz[rep]--;
+                sum[rep] -= p;
+                uf(who[q], id);
+            } else {
+                int p; cin >> p;
+                int rep = find(find, who[p]);
+                cout << sz[rep] << " " << sum[rep] << nl;
+            }
+        }
+    }
 
+    return;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
     while (t--) shiina_mashiro();
 }
+

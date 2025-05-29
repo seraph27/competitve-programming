@@ -1,9 +1,9 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: E. Wolf
+// Contest: Codeforces Round 1020 (Div. 3)
+// URL: https://codeforces.com/contest/2106/problem/E
+// Time Limit: 4000
+// Start: Mon May 19 04:45:22 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -30,7 +30,6 @@ void sort_unique(vector<T> &vec){
 
 #ifdef MISAKA
 struct _debug {
-template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -48,7 +47,41 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-
+    int n, q; cin >> n >> q;
+    vector<int> p(n), pos(n);
+    for(int i = 0; i < n; i++) {
+        cin >> p[i];
+        --p[i];
+        pos[p[i]] = i;
+    }
+    for(;q--;) {
+        int l, r, x; cin >> l >> r >> x;
+        --l; --r, --x;
+        if(pos[x] < l || pos[x] > r) {
+            cout << -1 << " ";
+            continue;
+        }
+        int step1 = 0, step2 = 0, ans1 = 0, ans2 = 0;
+        while(l<=r) {
+            int m = (l+r) / 2;
+            if(m == pos[x]) break;
+            if(m > pos[x]) {
+                if(p[m] < x) ans1+=2;
+                step1++;
+                r = m - 1;
+            } else {
+                if(p[m] > x) ans2+=2;
+                step2++;
+                l = m + 1;
+            }
+        }
+        if(step1 > n-1-x || step2 > x) {
+            cout << -1 << " ";
+            continue;
+        }
+        cout << max(ans1, ans2) << " ";
+    }
+    cout << nl;
 }
 
 signed main() {    
@@ -58,3 +91,4 @@ signed main() {
     cin >> t;
     while (t--) shiina_mashiro();
 }
+

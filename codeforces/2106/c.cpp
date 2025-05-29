@@ -1,9 +1,9 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: C. Cherry Bomb
+// Contest: Codeforces Round 1020 (Div. 3)
+// URL: https://codeforces.com/contest/2106/problem/C
+// Time Limit: 2000
+// Start: Mon May 19 03:34:06 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -30,7 +30,6 @@ void sort_unique(vector<T> &vec){
 
 #ifdef MISAKA
 struct _debug {
-template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -48,7 +47,33 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-
+    int n, k; cin >> n >> k;
+    vector<int> a(n), b(n);
+    for(auto &x : a) cin >> x;
+    for(auto &x : b) cin >> x;
+    
+    int sum = -1, cnt = 0;
+    for(int i = 0; i < n; i++) {
+        if(b[i] != -1) {
+            cnt++;
+            if(sum == -1) sum = a[i] + b[i];
+            else {
+                if(sum != a[i] + b[i]) {
+                    cout << 0 << nl;
+                    return;
+                }
+            }
+        }
+    }
+    if(cnt > 0) {
+        if(*min_element(all(a)) + k >= sum && *max_element(all(a)) <= sum) {
+            cout << 1 << nl;
+        } else {
+            cout << 0 << nl;
+        }
+    } else {
+        cout << k - *max_element(all(a)) + *min_element(all(a)) + 1 << nl;
+    }
 }
 
 signed main() {    
@@ -58,3 +83,4 @@ signed main() {
     cin >> t;
     while (t--) shiina_mashiro();
 }
+

@@ -1,9 +1,9 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: F. Faculty
+// Contest: Codeforces Round 1026 (Div. 2)
+// URL: https://codeforces.com/contest/2110/problem/F#
+// Time Limit: 2000
+// Start: Sat May 24 17:22:24 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -30,7 +30,6 @@ void sort_unique(vector<T> &vec){
 
 #ifdef MISAKA
 struct _debug {
-template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -48,6 +47,50 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    /*
+    vector<int> correct(n);
+    for(int k = 0; k < n; k++) {
+        int mx = 0;
+        for(int i = 0; i <= k; i++) for(int j = 0; j < i; j++) {
+            ckmax(mx, vi[i] % vi[j] + vi[j] % vi[i]);
+        }
+        correct[k] = mx;
+    }
+    */
+    
+
+    auto f = [&](int x, int y) {
+        return x % y + y % x;
+    };
+
+    vector<int> ans(n);
+    set<int> s;
+    s.insert(vi[0]);
+    ans[0] = 0;
+    for(int i = 1; i < n; i++) {
+        ans[i] = ans[i-1];
+        auto it = prev(s.end());
+        int mx = *it, x = vi[i];
+        ckmax(ans[i], f(mx, x));
+        if(x <= mx) {
+            s.insert(vi[i]);
+            continue;
+        } else if(mx > x/2) {
+            ans[i] = x;
+        } else {
+            for(auto x : s) {
+                ckmax(ans[i], f(x, vi[i]));
+            }
+        }
+        s.insert(vi[i]);
+    }
+    for(int i = 0; i < n; i++) {
+        cout << ans[i] << " ";
+    }
+    cout << nl;
 
 }
 
@@ -58,3 +101,4 @@ signed main() {
     cin >> t;
     while (t--) shiina_mashiro();
 }
+

@@ -1,9 +1,9 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: B. Cut
+// Contest: Contest XX. Greedy
+// URL: https://codeforces.com/group/jtU6D2hVEi/contest/533371/problem/B
+// Time Limit: 1000
+// Start: Wed May 21 13:00:39 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -30,7 +30,6 @@ void sort_unique(vector<T> &vec){
 
 #ifdef MISAKA
 struct _debug {
-template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -48,13 +47,43 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    int k; cin >> k;
+ 
+    auto bucket = [&](int x) {
+        if(x % 10 == 0) return 0;
+        if(x > 10) return 1;
+        if(x < 10) return 2;
+        return 3;
+    };
+    sort(all(vi), [&](int a, int b) {
+        if(bucket(a) != bucket(b)) return bucket(a) < bucket(b);
+        return a < b;
+    });
+    debug(vi);
+    int ans = 0;
+    for(int x : vi) {
+        int pieces = x / 10;
+        int cost = x % 10 == 0 ? x/10-1 : x/10;
+        if(pieces == 0) continue;
+        if(cost <= k) {
+            ans += pieces;
+            k -= cost;
+        } else {
+            ans += k;
+            break;
+        }
+    }
+    cout << ans << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+

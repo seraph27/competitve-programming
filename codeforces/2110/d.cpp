@@ -1,9 +1,9 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: D. Fewer Batteries
+// Contest: Codeforces Round 1026 (Div. 2)
+// URL: https://codeforces.com/contest/2110/problem/D
+// Time Limit: 3000
+// Start: Sat May 24 09:08:46 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -30,7 +30,6 @@ void sort_unique(vector<T> &vec){
 
 #ifdef MISAKA
 struct _debug {
-template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -48,7 +47,44 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
+    int n, m; cin >> n >> m;
+    vector<int> b(n);
+    for (int i = 0; i < n; i++) {
+        cin >> b[i];
+    }
 
+    vector<vector<pii>> adj(n);
+    for (int i = 0; i < m; i++) {
+        int u, v, w; cin >> u >> v >> w;
+        u--, v--;
+        adj[u].pb({v, w});
+    }
+    
+    int l = 0, r = 1e9, ans = -1;
+    while(l<=r) {
+        int mid = (l+r)/2;
+
+        priority_queue<pii, vector<pii>, greater<pii>> pq;
+        vector<int> max_battery(n, -1);
+        pq.push({0, 0});
+        max_battery[0] = 0;
+        while(!pq.empty()) {
+            auto [battery, node] = pq.top(); pq.pop();
+            if(battery < max_battery[node]) continue;
+            //can i pass through the edge or do i have enough battery
+            int mn = min(mid, max_battery[node] + b[node]);
+            for(auto &[e, c] : adj[node]) {
+                if(mn < c) continue;
+                if(ckmax(max_battery[e], mn)) pq.push({mn, e});
+            }
+        }
+        if(max_battery[n-1] >= 0) {
+            r = mid - 1, ans = mid;
+        } else {
+            l = mid + 1;
+        }
+    }
+    cout << ans << nl;
 }
 
 signed main() {    
@@ -58,3 +94,4 @@ signed main() {
     cin >> t;
     while (t--) shiina_mashiro();
 }
+

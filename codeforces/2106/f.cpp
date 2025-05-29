@@ -1,9 +1,9 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: F. Goblin
+// Contest: Codeforces Round 1020 (Div. 3)
+// URL: https://codeforces.com/problemset/problem/2106/F
+// Time Limit: 2000
+// Start: Tue May 20 00:12:32 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -30,7 +30,6 @@ void sort_unique(vector<T> &vec){
 
 #ifdef MISAKA
 struct _debug {
-template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -48,9 +47,47 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-
+    int n; cin >> n;
+    string s; cin >> s;
+    if(s == "0") {
+        cout << 0 << nl;
+        return;
+    }
+    if(s == string(n, '0')) {
+        cout << (1 + n-1) * (n-1) / 2 << nl;
+        return;
+    }
+    auto calc = [&](int l, int r, int type) -> int {
+        if(type == 1) {
+            int heightl = n-l-1, heightr = heightl - (r - l);
+            int width = r - l + 1;
+            return (heightr + heightl) * (r - l + 1) / 2;
+        } else {
+            int heightl = l, heightr = heightl + (r - l);
+            return (heightr + heightl) * (r - l + 1) / 2;
+        }
+    };
+    vector<pair<int, int> > v;
+    for(int L = 0; L < n;) {
+        if(s[L] == '0') {
+            int start = L;
+            while(L < n && s[L] == '0') L++;
+            v.emplace_back(start, L-1);
+        } else L++;
+    }
+    int ans = 1;
+    for(auto [l, r] : v) {
+        ckmax(ans, max(calc(l, r, 1), calc(l, r, 2)) + 1);
+    }
+    for(int i = 0; i + 1 < sz(v); i++) {
+        auto [l1, r1] = v[i];
+        auto [l2, r2] = v[i+1];
+        if(r1 + 2 == l2) {
+            ckmax(ans, calc(l1, r1, 1) + calc(l2, r2, 2) + 1);
+        }
+    }
+    cout << ans << nl;
 }
-
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
@@ -58,3 +95,4 @@ signed main() {
     cin >> t;
     while (t--) shiina_mashiro();
 }
+

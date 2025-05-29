@@ -1,9 +1,9 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: C. Racing
+// Contest: Codeforces Round 1026 (Div. 2)
+// URL: https://codeforces.com/contest/2110/problem/C
+// Time Limit: 2000
+// Start: Sat May 24 07:56:31 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -30,7 +30,6 @@ void sort_unique(vector<T> &vec){
 
 #ifdef MISAKA
 struct _debug {
-template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -48,7 +47,55 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vector<int> d(n);
+    for(auto &i : d) {
+        cin >> i;
+    }
+    vector<int> L(n), R(n);
+    for(int i = 0; i < n; i++) {
+        int a, b; cin >> a >> b;
+        L[i] = a;
+        R[i] = b;
+    }
 
+    vector<int> mn(n, 1e9), mx(n, 0);
+    mn[0] = 0;
+    for(int i = 0; i < n; i++) {
+        int l, r;
+        if(d[i] == 0 || d[i] == 1) {
+            l = (i-1>=0 ? mn[i-1] : 0) + d[i]; 
+            r = (i-1>=0 ? mx[i-1] : 0) + d[i];
+        } else {
+            l = (i-1>=0 ? mn[i-1] : 0);
+            r = (i-1>=0 ? mx[i-1] : 0) + 1;
+        }
+        mn[i] = max(l, L[i]);
+        mx[i] = min(r, R[i]);
+        if(mn[i] > mx[i]) {
+            cout << -1 << nl;
+            return;
+        }
+    }
+    int h = mn[n-1];
+    debug(h);
+    for(int i = n-1; ~i; i--) {
+        if(d[i] == 0 || d[i] == 1) {
+            h -= d[i];
+        } else {
+            int ok = (i-1>=0 ? (mn[i-1] <= h && h <= mx[i-1]) : (h == 0));
+            if(ok) d[i] = 0;
+            else {
+                d[i] = 1;
+                h--;
+            }
+        }
+    }
+    assert(h == 0);
+    for(int i = 0; i < n; i++) {
+        cout << d[i] << " ";
+    }
+    cout << nl;
 }
 
 signed main() {    
@@ -58,3 +105,4 @@ signed main() {
     cin >> t;
     while (t--) shiina_mashiro();
 }
+

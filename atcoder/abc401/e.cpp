@@ -1,13 +1,14 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: E - Reachable Set
+// Contest: AtCoder Beginner Contest 401
+// URL: https://atcoder.jp/contests/abc401/tasks/abc401_e
+// Time Limit: 2000
+// Start: Thu May 22 00:18:00 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
+#include <atcoder/dsu>
 #define int long long
 #define sz(x) (int)x.size()
 #define ar array
@@ -30,7 +31,6 @@ void sort_unique(vector<T> &vec){
 
 #ifdef MISAKA
 struct _debug {
-template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -48,13 +48,30 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-
+    int n, m; cin >> n >> m;
+    vector<vector<int>> g(n);
+    for(int i = 0; i < m; i++) {
+        int a, b; cin >> a >> b;
+        a--, b--;
+        g[a].pb(b);
+        g[b].pb(a);
+    }
+    atcoder::dsu uf1(n), uf2(n);
+    
+    for(int i = 0; i < n; i++) {
+        for(auto j : g[i]) {
+            if (j < i) uf1.merge(i, j);
+            else uf2.merge(i, j);
+        }
+        cout << (uf1.size(i) == i+1 ? uf2.size(i) - (i+1) : -1) << nl;
+    }
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+
