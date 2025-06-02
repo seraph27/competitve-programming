@@ -1,8 +1,8 @@
-// Problem: B. Preparing for Merge Sort
-// Contest: 2017-2018 ACM-ICPC, NEERC, Southern Subregional Contest, qualification stage (Online Mirror, ACM-ICPC Rules, Teams Preferred)
-// URL: https://codeforces.com/contest/847/problem/B
+// Problem: E. Minimizing Difference
+// Contest: Codeforces Round 592 (Div. 2)
+// URL: https://codeforces.com/contest/1244/problem/E
 // Time Limit: 2000
-// Start: 2025/05/30 14:13:42
+// Start: Fri May 30 19:05:57 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -18,7 +18,7 @@ using namespace std;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
-template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
+template<typename T> bool ckmax(T &a, const T &b) { return a <= b ? a = b, 1 : 0; }
 template<typename T, typename S> constexpr T ifloor(const T a, const S b){return a/b-(a%b&&(a^b)<0);}
 template<typename T, typename S> constexpr T iceil(const T a, const S b){return ifloor(a+b-1,b);}
 template<typename T> T isqrt(const T &x){T y=sqrt(x+2); while(y*y>x) y--; return y;}
@@ -48,43 +48,49 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n; cin >> n;
+    int n, k; cin >> n >> k;
     vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    sort(all(vi));
+    vector<int> pref(n+1);
     for(int i = 0; i < n; i++) {
-        cin >> vi[i];
+        pref[i+1] += pref[i] + vi[i];
     }
+    int l = 0, r = 1e9, ans = 0;
+    while(l<=r) {
+        int mid = (l+r)/2;
+        int need = 0;
+        bool ok = false;
+        for(int i = 0; i < n; i++) {
+            int j = upper_bound(vi.begin() + i, vi.end(), vi[i] + mid) - vi.begin() -1;
 
-    vector<vector<int>> v(n);
-    vector<int> end(n);
-
-    for(int i = 0; i < n; i++) {
-        int x = vi[i];
-        if(i==0) {
-            v[n-1].pb(x);
-            end[n-1] = x;
-        } else {
-            int L = 0, R = n-1, ans = 0;
-            while(L<=R) {
-                int m = (L+R)/2;
-                if(end[m] < x) {
-                    ans = m;
-                    L = m + 1;
-                } else {
-                    R = m - 1;
-                }
+            int lc = vi[i] * i - pref[i];
+            int rc = (pref[n] - pref[j+1]) - (n - j - 1) * (vi[i] + mid);
+            if(lc + rc <= k) {
+                ok = true;
+                break;
             }
-            v[ans].pb(x);
-            end[ans] = x;
+        }
+        for(int i = n-1; i>=0; i--) {
+            int j = lower_bound(vi.begin(), vi.begin() + i + 1, vi[i] - mid) - vi.begin();
+            int lc = (vi[i] - mid) * j - pref[j];
+            int rc = (pref[n] - pref[i+1]) - (n - i - 1) * vi[i];
+            if(lc + rc <= k) {
+                ok = true;
+                break;
+            }
+        }
+        if(ok) {
+            r = mid - 1, ans = mid;
+        } else {
+            l = mid + 1;
         }
     }
-    for(int i = n-1; i >= 0; i--) {
-        for(auto x : v[i]) cout << x << " ";
-        cout << nl;
-    }
+    cout << ans << nl;
 
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;

@@ -1,8 +1,8 @@
-// Problem: B. Preparing for Merge Sort
-// Contest: 2017-2018 ACM-ICPC, NEERC, Southern Subregional Contest, qualification stage (Online Mirror, ACM-ICPC Rules, Teams Preferred)
-// URL: https://codeforces.com/contest/847/problem/B
-// Time Limit: 2000
-// Start: 2025/05/30 14:13:42
+// Problem: Problem 1. Paired Up
+// Contest: USACO 2017 US Open Contest, Silver
+// URL: https://usaco.org/index.php?page=viewproblem2&cpid=738
+// Time Limit: 4000
+// Start: Thu May 29 15:29:51 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,44 +49,35 @@ const char nl = '\n';
 
 void shiina_mashiro() {
     int n; cin >> n;
-    vector<int> vi(n);
+    int cnt = 0;
+    vector<pii> cow;
     for(int i = 0; i < n; i++) {
-        cin >> vi[i];
-    }
-
-    vector<vector<int>> v(n);
-    vector<int> end(n);
-
-    for(int i = 0; i < n; i++) {
-        int x = vi[i];
-        if(i==0) {
-            v[n-1].pb(x);
-            end[n-1] = x;
-        } else {
-            int L = 0, R = n-1, ans = 0;
-            while(L<=R) {
-                int m = (L+R)/2;
-                if(end[m] < x) {
-                    ans = m;
-                    L = m + 1;
-                } else {
-                    R = m - 1;
-                }
-            }
-            v[ans].pb(x);
-            end[ans] = x;
+        int x, y; cin >> x >> y;
+        cnt += x;
+        cow.pb({y, x});
+    }   
+    sort(all(cow));
+    debug(cow);
+    int L = 0, R = n-1;
+    int ans = 0;
+    while(L<=R) {
+        int mn = min(cow[L].second, cow[R].second);
+        if(L==R) {
+            ckmax(ans, cow[L].first * 2);
+            break;
         }
+        cow[L].second -= mn;
+        cow[R].second -= mn;
+        ckmax(ans, cow[L].first + cow[R].first);
+        if(cow[L].second == 0) L++;
+        if(cow[R].second == 0) R--;
     }
-    for(int i = n-1; i >= 0; i--) {
-        for(auto x : v[i]) cout << x << " ";
-        cout << nl;
-    }
-
+    cout << ans << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
+    freopen("pairup.in","r",stdin); freopen("pairup.out","w",stdout);
     int t = 1;
     //cin >> t;
     while (t--) shiina_mashiro();

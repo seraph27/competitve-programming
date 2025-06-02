@@ -1,8 +1,8 @@
-// Problem: B. Preparing for Merge Sort
-// Contest: 2017-2018 ACM-ICPC, NEERC, Southern Subregional Contest, qualification stage (Online Mirror, ACM-ICPC Rules, Teams Preferred)
-// URL: https://codeforces.com/contest/847/problem/B
-// Time Limit: 2000
-// Start: 2025/05/30 14:13:42
+// Problem: Problem 1. Angry Cows
+// Contest: USACO 2016 January Contest, Silver
+// URL: https://usaco.org/index.php?page=viewproblem2&cpid=594
+// Time Limit: 4000
+// Start: Mon Jun  2 00:17:08 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -48,47 +48,38 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n; cin >> n;
+    int n, k; cin >> n >> k;
     vector<int> vi(n);
-    for(int i = 0; i < n; i++) {
-        cin >> vi[i];
-    }
+    for(int i = 0; i < n; i++) cin >> vi[i];
 
-    vector<vector<int>> v(n);
-    vector<int> end(n);
-
-    for(int i = 0; i < n; i++) {
-        int x = vi[i];
-        if(i==0) {
-            v[n-1].pb(x);
-            end[n-1] = x;
-        } else {
-            int L = 0, R = n-1, ans = 0;
-            while(L<=R) {
-                int m = (L+R)/2;
-                if(end[m] < x) {
-                    ans = m;
-                    L = m + 1;
-                } else {
-                    R = m - 1;
-                }
-            }
-            v[ans].pb(x);
-            end[ans] = x;
+    sort(all(vi));
+    auto ok = [&](int r) -> bool {
+        int pos = 0, lb = vi[0];
+        for(int i = 0; i < k; i++) {
+            while(pos < n && vi[pos] <= lb + 2*r) pos++;
+            if(pos == n) return true;
+            lb = vi[pos];
         }
+        if(pos != n) {
+            return false;
+        }
+        return true;
+    };
+    int l = 0, r = 1e9, ans = 0;
+    while(l<=r) {
+        int mid = (l+r)>>1;
+        
+        if(ok(mid)) {
+            r = mid - 1, ans = mid;
+        } else l = mid + 1;
     }
-    for(int i = n-1; i >= 0; i--) {
-        for(auto x : v[i]) cout << x << " ";
-        cout << nl;
-    }
-
+    cout << ans << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
     while (t--) shiina_mashiro();
 }
 

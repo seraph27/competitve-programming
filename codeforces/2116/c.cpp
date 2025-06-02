@@ -1,8 +1,8 @@
-// Problem: B. Preparing for Merge Sort
-// Contest: 2017-2018 ACM-ICPC, NEERC, Southern Subregional Contest, qualification stage (Online Mirror, ACM-ICPC Rules, Teams Preferred)
-// URL: https://codeforces.com/contest/847/problem/B
+// Problem: C. Gellyfish and Flaming Peony
+// Contest: Codeforces Round 1028 (Div. 2)
+// URL: https://codeforces.com/contest/2116/problem/C
 // Time Limit: 2000
-// Start: 2025/05/30 14:13:42
+// Start: Sat May 31 09:05:49 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -50,45 +50,35 @@ const char nl = '\n';
 void shiina_mashiro() {
     int n; cin >> n;
     vector<int> vi(n);
-    for(int i = 0; i < n; i++) {
-        cin >> vi[i];
+    for(int i = 0; i < n; i++) cin >> vi[i];
+    int gd = vi[0], mx = vi[0];
+    for(int i = 1; i < n; i++) {
+        gd = gcd(gd, vi[i]);
+        ckmax(mx, vi[i]);
     }
-
-    vector<vector<int>> v(n);
-    vector<int> end(n);
-
+    vector<int> dp(mx+5, 4e18);
+    //dp[i][j] := considering first i, what is minimum steps to get to gcd j
     for(int i = 0; i < n; i++) {
-        int x = vi[i];
-        if(i==0) {
-            v[n-1].pb(x);
-            end[n-1] = x;
-        } else {
-            int L = 0, R = n-1, ans = 0;
-            while(L<=R) {
-                int m = (L+R)/2;
-                if(end[m] < x) {
-                    ans = m;
-                    L = m + 1;
-                } else {
-                    R = m - 1;
-                }
-            }
-            v[ans].pb(x);
-            end[ans] = x;
+        vector<int> dp2 = dp;
+        dp2[vi[i]] = 0;
+        for(int j = 1; j <= mx; j++) if(dp[j] < 2e18){
+            ckmin(dp2[gcd(vi[i], j)], dp[j] + 1);
         }
+        dp = dp2;
     }
-    for(int i = n-1; i >= 0; i--) {
-        for(auto x : v[i]) cout << x << " ";
-        cout << nl;
+    int cnt_g = count(all(vi), gd);
+    if(cnt_g) {
+        cout << n-cnt_g << nl;
+    } else {
+        cout << dp[gd] + n - 1 << nl;
     }
-
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

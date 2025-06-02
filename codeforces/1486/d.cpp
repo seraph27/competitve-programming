@@ -1,8 +1,8 @@
-// Problem: B. Preparing for Merge Sort
-// Contest: 2017-2018 ACM-ICPC, NEERC, Southern Subregional Contest, qualification stage (Online Mirror, ACM-ICPC Rules, Teams Preferred)
-// URL: https://codeforces.com/contest/847/problem/B
+// Problem: D. Max Median
+// Contest: Codeforces Round 703 (Div. 2)
+// URL: https://codeforces.com/contest/1486/problem/D
 // Time Limit: 2000
-// Start: 2025/05/30 14:13:42
+// Start: Fri May 30 23:21:56 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -48,43 +48,47 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n; cin >> n;
+    int n, k; cin >> n >> k;
     vector<int> vi(n);
     for(int i = 0; i < n; i++) {
         cin >> vi[i];
     }
+    
+    int l = 0, r = n, ans = 0;
+    while(l<=r) {
+        int mid = (l+r)>>1;
+        
+        auto nv = vi;
+        for(int i = 0; i < n; i++) {
+            nv[i] = (nv[i] >= mid ? 1 : -1);
+        }
+        vector<int> pref(n+1);
+        for(int i = 0; i < n; i++) {
+            pref[i+1] += pref[i] + nv[i];
+        }
 
-    vector<vector<int>> v(n);
-    vector<int> end(n);
-
-    for(int i = 0; i < n; i++) {
-        int x = vi[i];
-        if(i==0) {
-            v[n-1].pb(x);
-            end[n-1] = x;
-        } else {
-            int L = 0, R = n-1, ans = 0;
-            while(L<=R) {
-                int m = (L+R)/2;
-                if(end[m] < x) {
-                    ans = m;
-                    L = m + 1;
-                } else {
-                    R = m - 1;
-                }
+        int ok = 0;
+        int mn = 4e18;
+        for(int i = k; i <= n; i++) {
+            ckmin(mn, pref[i-k]);
+            if(pref[i] - mn > 0) {
+                ok = 1;
+                break;
             }
-            v[ans].pb(x);
-            end[ans] = x;
+        }
+
+        if(ok) {
+            l = mid + 1, ans = mid;
+        } else {
+            r = mid - 1;
         }
     }
-    for(int i = n-1; i >= 0; i--) {
-        for(auto x : v[i]) cout << x << " ";
-        cout << nl;
-    }
 
+    cout << ans << nl;
+    
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;

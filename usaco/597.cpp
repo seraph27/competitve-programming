@@ -1,8 +1,8 @@
-// Problem: B. Preparing for Merge Sort
-// Contest: 2017-2018 ACM-ICPC, NEERC, Southern Subregional Contest, qualification stage (Online Mirror, ACM-ICPC Rules, Teams Preferred)
-// URL: https://codeforces.com/contest/847/problem/B
-// Time Limit: 2000
-// Start: 2025/05/30 14:13:42
+// Problem: Problem 1. Angry Cows
+// Contest: USACO 2016 January Contest, Gold
+// URL: https://usaco.org/index.php?page=viewproblem2&cpid=597
+// Time Limit: 4000
+// Start: Sun Jun  1 20:50:13 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -52,41 +52,67 @@ void shiina_mashiro() {
     vector<int> vi(n);
     for(int i = 0; i < n; i++) {
         cin >> vi[i];
+        vi[i] *= 2;
     }
 
-    vector<vector<int>> v(n);
-    vector<int> end(n);
+    sort(all(vi));
 
-    for(int i = 0; i < n; i++) {
-        int x = vi[i];
-        if(i==0) {
-            v[n-1].pb(x);
-            end[n-1] = x;
-        } else {
-            int L = 0, R = n-1, ans = 0;
-            while(L<=R) {
-                int m = (L+R)/2;
-                if(end[m] < x) {
-                    ans = m;
-                    L = m + 1;
-                } else {
-                    R = m - 1;
-                }
+    auto calc = [&](int pos, int idx, int radius, int type) -> bool {
+        while(true) {
+            if(type == 1) {
+                //go right
+                if(pos + radius >= vi[n-1]) return true;
+                int newidx = idx;
+                while(newidx < n && pos + radius >= vi[newidx]) newidx++;
+                if(newidx == idx) return false;
+                assert(newidx-1 >= 0);
+                pos = vi[newidx-1];
+                idx = newidx;
+                radius-=2;
+                if(radius < 0) return false;
+            } else {
+                if(pos - radius <= vi[0]) return true;
+                int newidx = idx;
+                while(newidx >= 0 && pos - radius <= vi[newidx]) newidx--;
+                if(newidx == idx) return false;
+                assert(newidx+1 <= n-1);
+                pos = vi[newidx+1];
+                idx = newidx;
+                radius -= 2;
+                if(radius < 0) return false;
             }
-            v[ans].pb(x);
-            end[ans] = x;
+        }
+    };
+
+    int l = 0, r = 2e9, ans = 0;
+    while(l<=r) {
+        int mid = (l+r)/2;
+        int l2 = 0, r2 = 2e9, ans2 = 0; //where to shoot
+        
+        while(l2 <= r2) {
+            int mid2 = (l2 + r2) / 2;
+            int where = lower_bound(all(vi), mid2) - vi.begin();
+            if(where == n) where = n - 1;
+            if(calc(mid2, where, mid, 2)) {
+                l2 = mid2 + 1, ans2 = mid2;
+            } else {
+                r2 = mid2 - 1;
+            }
+        }
+        
+        int where2 = upper_bound(all(vi), ans2) - vi.begin();
+        if(calc(ans2, where2, mid, 1)) {
+            r = mid - 1, ans = mid;
+        } else {
+            l = mid + 1;
         }
     }
-    for(int i = n-1; i >= 0; i--) {
-        for(auto x : v[i]) cout << x << " ";
-        cout << nl;
-    }
-
+    cout << fixed << setprecision(1) << (double)ans/2.0 << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
+    freopen("angry.in","r",stdin); freopen("angry.out","w",stdout);
     int t = 1;
     //cin >> t;
     while (t--) shiina_mashiro();

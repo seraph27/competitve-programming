@@ -1,8 +1,8 @@
-// Problem: B. Preparing for Merge Sort
-// Contest: 2017-2018 ACM-ICPC, NEERC, Southern Subregional Contest, qualification stage (Online Mirror, ACM-ICPC Rules, Teams Preferred)
-// URL: https://codeforces.com/contest/847/problem/B
-// Time Limit: 2000
-// Start: 2025/05/30 14:13:42
+// Problem: G. Grouped Carriages
+// Contest: COMPFEST 15 - Preliminary Online Mirror (Unrated, ICPC Rules, Teams Preferred)
+// URL: https://codeforces.com/contest/1866/problem/G
+// Time Limit: 3000
+// Start: Fri May 30 23:45:51 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,42 +49,67 @@ const char nl = '\n';
 
 void shiina_mashiro() {
     int n; cin >> n;
-    vector<int> vi(n);
+    vector<int> vi(n), door(n);
+    for(int i = 0; i < n; i++) cin >> vi[i];
+    for(int i = 0; i < n; i++) cin >> door[i];
+
+    vector<ar<int, 3>> seg(n);
     for(int i = 0; i < n; i++) {
-        cin >> vi[i];
+        seg[i] = {max(0LL, i - door[i]), min(n-1, i + door[i]), i};
     }
+    int l = 0, r = *max_element(all(vi)), ans = 0;
+    while(l<=r) {
+        auto tmp = vi;
+        auto segs = seg;
+        sort(all(segs));
+        int mid = (l+r) >> 1;
+        priority_queue<pii, vector<pii>, greater<pii>> pq;
+        int curr = 0;
+        bool ok = true;
+        for(int i = 0; i < n; i++) {
+            while(curr < n && segs[curr][0] <= i) {
+                pq.push({segs[curr][1], segs[curr][2]});
+                curr++;
+            }
 
-    vector<vector<int>> v(n);
-    vector<int> end(n);
+            int need1 = 0;
+            while(!pq.empty() && pq.top().first == i) {
+                auto [rb, idx] = pq.top(); pq.pop();
+                need1 += tmp[idx];
+                tmp[idx] = 0;
+            }
+            if(need1 > mid) {
+                ok = false;
+                break;
+            }
+            int need2 = mid - need1;
+            while(need2 > 0 && !pq.empty()) {
+                auto [rb, idx] = pq.top(); pq.pop();
+                if(rb < i) {
+                    ok = false;
+                    break;
+                }
 
-    for(int i = 0; i < n; i++) {
-        int x = vi[i];
-        if(i==0) {
-            v[n-1].pb(x);
-            end[n-1] = x;
-        } else {
-            int L = 0, R = n-1, ans = 0;
-            while(L<=R) {
-                int m = (L+R)/2;
-                if(end[m] < x) {
-                    ans = m;
-                    L = m + 1;
-                } else {
-                    R = m - 1;
+                int take = min(need2, tmp[idx]);
+                tmp[idx] -= take;
+                need2 -= take;
+                if(tmp[idx] > 0) {
+                    pq.push({rb, idx});
                 }
             }
-            v[ans].pb(x);
-            end[ans] = x;
+            if(!ok) break;
+        }
+        if(ok) {
+            r = mid - 1, ans = mid;
+        } else {
+            l = mid + 1;
         }
     }
-    for(int i = n-1; i >= 0; i--) {
-        for(auto x : v[i]) cout << x << " ";
-        cout << nl;
-    }
 
+    cout << ans << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
