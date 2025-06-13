@@ -14,7 +14,7 @@ template<typename T> T isqrt(const T &x){T y=sqrt(x+2); while(y*y>x) y--; return
 template<typename T>
 void sort_unique(vector<T> &vec){
     sort(vec.begin(),vec.end());
-    vec.resize(unique(vec.begin(),vec.end())-vec.begin());
+    vec.resize(unique(vec.begin(),vec.end())-vec.begin()); 
 }
 struct _debug {
 template<typename T> static void __print(const T &x) {

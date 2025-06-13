@@ -39,6 +39,33 @@ struct segtree {
 
 
 
+struct Node {
+    int sum, pref;
+};
+
+Node combine(const Node& a, const Node& b){
+    return { a.sum + b.sum,
+             std::max(a.pref, a.sum + b.pref) };
+}
+
+template <>
+struct segtree<Node> {
+    const int N;
+    vector<Node> tree;
+    segtree(int n): N(1 << (__lg(n) + 1)), tree(2 * N, {0,0}) {}
+
+    void add(int pos, int x){
+        int i = pos + N;
+        tree[i].sum += x;
+        tree[i].pref = std::max(0, tree[i].sum);
+        for(i >>= 1; i; i >>= 1)
+            tree[i] = combine(tree[i<<1], tree[i<<1|1]);
+    }
+    int query() const { return tree[1].pref; }   //get mx
+};
+
+
+
 // const int SZ = 1<<19;
 // ll n, a[SZ], t[SZ<<1];
 

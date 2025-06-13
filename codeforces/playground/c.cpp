@@ -49,6 +49,7 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
+    
     int n; cin >> n;
     vector<int> l(n), c(n);
     multiset<int> r;
