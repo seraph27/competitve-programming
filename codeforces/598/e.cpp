@@ -46,33 +46,50 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #endif
 
 const char nl = '\n';
-int dp[31][31][51]{}; //
+int dp[31][31][50]{}; //
 void shiina_mashiro() {
     memset(dp, 0x3f, sizeof dp);
-    dp[1][1][1] = 0;
+    auto dfs = [&](auto&&s, int h, int w, int left) -> void {
+        if(h * w == left) {
+            dp[h][w][left] = 0;
+            return;
+        }
+        if(!left) return;
+        if(dp[h][w][left] < 1e18) return;
 
-    for(int i = 1; i < 31; i++) {
-        for(int j = 1; j < 31; j++) {
-            for(int k = 0; k <= i*j; k++) {
-                for(int row = 1; row < 31; row++) { //try adding back some row
-                    int add = j * row;
-                    if(k+add<=50 && i + row <= 30) ckmin(dp[i+row][j][k+add], dp[i][j][k] + j * j);
-                }
-                for(int col = 1; col < 31; col++) {
-                    int add = i * col;
-                    if(k+add<=50 && j + col <= 30) ckmin(dp[i][j+col][k+add], dp[i][j][k] + i * i);
-                }
+        for(int i = 1; i < h; i++) {
+            int top = w * i;
+            int bot = w * (h-i);
+            if(left >= top) {
+                s(s, i, w, left-top);
+            }
+            if(left >= bot) {
+                s(s, h-i, w, left-bot);
+            }
+            ckmin(dp[h][w][left], dp[i][w][left-top] + dp[h-i][wh-i][w][]])
+        }
+
+        for(int i = 1; i < w; i++) {
+            int L = h * i;
+            int R = h * (w-i);
+            if(left >= L) {
+                s(s, h, i, left-L);
+            }
+            if(left >= R) {
+                s(s, h, w-i, left-R);
             }
         }
+    };
+    for(int i = 1; i < 31; i++) for(int j = 1; j < 31; j++) for(int k = 1; k < min(i*j, (int)51); k++){
+        dfs(dfs, i, j, k);
     }
-    debug(dp);
 
     int q; cin >> q;
     for(int i = 0; i < q; i++) {
         int n, m, k; cin >> n >> m >> k;
         if(n * m == k) {
             cout << 0 << nl;
-            continue;
+            return;
         }
 
         cout << dp[n][m][k] << nl;
