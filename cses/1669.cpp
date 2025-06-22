@@ -1,8 +1,8 @@
-// Problem: Mountain Range
+// Problem: Round Trip
 // Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/3314
+// URL: https://cses.fi/problemset/task/1669
 // Time Limit: 1000
-// Start: Thu May 15 01:10:08 2025
+// Start: Sat Jun 21 22:35:54 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -27,9 +27,11 @@ void sort_unique(vector<T> &vec){
     sort(vec.begin(),vec.end());
     vec.resize(unique(vec.begin(),vec.end())-vec.begin());
 }
-
+template<typename T> ostream& operator<<(ostream& os, const vector<T>& v) {for (auto &x : v) os << x << " "; return os;}
+ 
 #ifdef MISAKA
 struct _debug {
+template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -43,73 +45,48 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #else
 #define debug(x...)
 #endif
-template <class T>
-struct segtree {
-    const int N; vector<T> tree;
-    segtree(int n) : N(1<<(__lg(n)+1)), tree(2*N) {}
-    void update(int pos, T x) {
-        for (int i = pos+N; i > 0; i >>= 1) ckmax(tree[i], x);
-    }
-    T query(int node, int nl, int nr, int ql, int qr) {
-        if (ql > nr || qr < nl) return 0;
-        if (ql <= nl && nr <= qr) return tree[node];
-        int mid = (nl+nr)/2;
-        return max(query(node*2, nl, mid, ql, qr), query(node*2+1, mid+1, nr, ql, qr));
-    }
-    T query(int l, int r) { return query(1, 0, N-1, l, r); }
-};
-
+ 
 const char nl = '\n';
-
+ 
 void shiina_mashiro() {
-    int n; cin >> n;
-    vector<int> vi(n);
-    for(auto&a: vi) cin >> a;
-    vector<int> dp(n);
-    map<int, set<int>> mp;
-    for(int i = 0; i < n; i++) {
-        mp[vi[i]].insert(i);
+    int n, m; cin >> n >> m;
+    vector<vector<int>> adj(n+1);
+    for(int i = 0; i < m; i++) {
+        int a, b; cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
-    segtree<int> st(n);
-    for(int i = 0; i < n; i++) {
-        st.update(i, vi[i]);
-    }
-    auto rec = [&](auto&&s, int l, int r, int v) -> void{
-        if(l == r) {
-            dp[l] = v;
-            return;
-        }
-        if(l > r) return;
-        auto mx = st.query(l, r);
-        debug(mx);
-        int lst = -1;
-        auto now = mp[mx].lower_bound(l);
-        debug(mp[mx]);
-        while(now != mp[mx].end() && *now <= r) {
-            int idx = *now;
-            dp[idx] = v;
-            if(lst == -1) {
-                lst = *now;
-                if(lst-1>=l) s(s, l, lst-1, v+1);
-            } else {
-                if(lst+1<=r) s(s, lst+1, *now-1, v+1);
-                lst = *now;
+ 
+    vector<int> color(n+1, 0), path;
+    vector<int> par(n+1);
+    bool cycle = 0;
+    bool ok = 0;
+    auto dfs = [&](auto&&s, int u, int p) -> void {
+        color[u] = 1;
+        path.pb(u);
+        for(auto &e : adj[u]) if(e != p){
+            debug(u, e, color[e]);
+            if(cycle) return;
+            else if(!color[e]) {
+                s(s, e, u);
+            } else if (color[e] == 1) {
+                int idx = find(all(path), e) - path.begin();
+                int len = sz(path)-idx+1;
+                cycle = 1;
+                cout << len << nl;
+                for(int i = idx; i < sz(path); i++) cout << path[i] << " ";
+                cout << e << nl;
+                ok = 1;
+                return;
             }
-            now++;
         }
-        if(lst != -1) {
-            if(lst+1 <= r) s(s, lst+1, r, v+1);
-        }
+        color[u] = 2;
+        path.pop_back();
     };
-    rec(rec, 0, n-1, 1);
-    debug(dp);
-    int ans = 1;
-    for(int i = 0; i < n; i++) {
-        ckmax(ans, dp[i]);
-    }
-    cout << ans << nl;
+    for(int i = 1;i <= n; i++) if(!color[i] && !ok) dfs(dfs, i, 0);
+    if(!ok) cout << "IMPOSSIBLE" << nl;
 }
-
+ 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
@@ -117,4 +94,3 @@ signed main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
-
