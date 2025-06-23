@@ -62,58 +62,52 @@ struct segtree {
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n;
-    cin >> n;
-    vector<int> h(n);
-    for(int i = 0; i < n; i++) 
-        cin >> h[i];
-
-    // parent[i] = index of parent of i in the Cartesian tree, or -1 if root
-    vector<int> parent(n, -1);
-    vector<int> stk;
-    stk.reserve(n);
-
-    // Build max‑Cartesian tree in O(n)
-    for(int i = 0; i < n; i++){
-        int last = -1;
-        // Pop all smaller; the last one popped becomes left child of i
-        while(!stk.empty() && h[stk.back()] < h[i]){
-            last = stk.back();
-            stk.pop_back();
-        }
-        if(last != -1){
-            parent[last] = i;
-        }
-        if(!stk.empty()){
-            parent[i] = stk.back();
-        }
-        stk.push_back(i);
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    vector<int> dp(n);
+    map<int, set<int>> mp;
+    for(int i = 0; i < n; i++) {
+        mp[vi[i]].insert(i);
     }
-
-    // Build children lists
-    vector<vector<int>> children(n);
-    int root = -1;
-    for(int i = 0; i < n; i++){
-        if(parent[i] == -1) {
-            root = i;
-        } else {
-            children[parent[i]].push_back(i);
-        }
+    segtree<int> st(n);
+    for(int i = 0; i < n; i++) {
+        st.update(i, vi[i]);
     }
-
-    // BFS (or DFS) from root to compute depths
-    int answer = 0;
-    queue<pair<int,int>> q;
-    q.emplace(root, 1);
-    while(!q.empty()){
-        auto [u, d] = q.front(); q.pop();
-        answer = max(answer, d);
-        for(int v: children[u]){
-            q.emplace(v, d+1);
+    auto rec = [&](auto&&s, int l, int r, int v) -> void{
+        if(l == r) {
+            dp[l] = v;
+            return;
         }
+        if(l > r) return;
+        auto mx = st.query(l, r);
+        debug(mx);
+        int lst = -1;
+        auto now = mp[mx].lower_bound(l);
+        debug(mp[mx]);
+        while(now != mp[mx].end() && *now <= r) {
+            int idx = *now;
+            dp[idx] = v;
+            if(lst == -1) {
+                lst = *now;
+                if(lst-1>=l) s(s, l, lst-1, v+1);
+            } else {
+                if(lst+1<=r) s(s, lst+1, *now-1, v+1);
+                lst = *now;
+            }
+            now++;
+        }
+        if(lst != -1) {
+            if(lst+1 <= r) s(s, lst+1, r, v+1);
+        }
+    };
+    rec(rec, 0, n-1, 1);
+    debug(dp);
+    int ans = 1;
+    for(int i = 0; i < n; i++) {
+        ckmax(ans, dp[i]);
     }
-
-    cout << answer << "\n";   
+    cout << ans << nl;
 }
 
 signed main() {    

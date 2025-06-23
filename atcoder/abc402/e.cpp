@@ -47,7 +47,7 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-double dp[1 << 8][5005]{}; 
+double dp[1 << 8][5005]{}; // we've solved the subset of problems, with x money left 
 void shiina_mashiro() {
     int n, x; cin >> n >> x;
     vector<int> pts(n), cost(n), per(n);
@@ -55,27 +55,17 @@ void shiina_mashiro() {
     for(int i = 0; i < n; i++) {
         cin >> pts[i] >> cost[i] >> per[i];
     }
-    for(int msk = 0; msk < (1 << n); msk++) {
-        for(int i = 0; i <= x; i++) {
+    for(int i = 0; i <= x; i++) {
+        for(int msk = 0; msk < (1 << n); msk++) {
             for(int j = 0; j < n; j++) {
-                if(!(msk & (1 << j))) {
-                    int nmsk = msk | (1 << j);
-                    if(i + cost[j] > x) continue;
-                    ckmax(dp[nmsk][i + cost[j]], ((dp[msk][i] + pts[j]) * (double)1 / per[j] * 0.01)); //success
-                    ckmax(dp[msk][i], dp[nmsk][i + cost[j]] * (double)1 / (1 - per[j] * 0.01)); //failure
-                }
+                int nmsk = msk | (1 << j);
+                if(i - cost[j] < 0) continue;
+                if(nmsk == msk) continue;
+                ckmax(dp[msk][i], (dp[nmsk][i-cost[j]] + pts[j]) * (double)per[j] * 0.01 + dp[msk][i-cost[j]] * (double)(1 - per[j] * 0.01));
             }
         }
     }
-    double ans = 0;
-    for(int i = 0; i < (1 << n); i++) {
-        for(int j = 0; j <= x; j++) {
-            if(dp[i][j] > 0) {
-                ckmax(ans, dp[i][j]);
-            }
-        }
-    }
-    cout << fixed << setprecision(16) << ans << nl;
+    cout << fixed << setprecision(16) << dp[0][x] << nl;
 }
 
 signed main() {    

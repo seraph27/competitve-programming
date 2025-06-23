@@ -29,6 +29,7 @@ void sort_unique(vector<T> &vec){
     sort(vec.begin(),vec.end());
     vec.resize(unique(vec.begin(),vec.end())-vec.begin());
 }
+template<typename T> ostream& operator<<(ostream& os, const vector<T>& v) {for (auto &x : v) os << x << " "; return os;}
 
 #ifdef MISAKA
 struct _debug {

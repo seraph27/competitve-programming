@@ -51,26 +51,23 @@ void shiina_mashiro() {
     int n, d; cin >> n >> d;
     vector<int> vi(n);
     for(auto&a: vi) cin >> a;
-    vector<int> freq(1e6+5, 0);
+    vector<int> freq(1e6+5,  0);
     for(auto&a: vi) {
         freq[a]++;
     }
     int ans = 0;
-    for(int i = 0; i < sz(freq); i++) {
-        if(freq[i] == 0) continue;
-        int curr = (i-d>=0 ? freq[i-d] : 0) + (i+d < sz(freq) ? freq[i+d] : 0);
-        int curr2 = freq[i] + (i+d+d < sz(freq) ? freq[i+d+d] : 0);
-        if(curr > curr2) {
-            ans += freq[i];
-            if(i-d>=0) freq[i-d] = 0;
-            if(i+d < sz(freq)) freq[i+d] = 0;
-        } else {
-            ans += (i+d<sz(freq) ? freq[i+d] : 0);
-            freq[i] = 0;
-            if(i+d+d < sz(freq)) freq[i+d+d] = 0;
-        }
+    for(int i = 0; i < d; i++) {
+        int dp0 = 0, dp1 = 0; //min if we take or skip
+        for(int j = i; j < sz(freq); j+=d) {
+            int ndp0 = min(dp0, dp1) + freq[j];
+            int ndp1 = dp0;
+            dp0 = ndp0;
+            dp1 = ndp1;
+        }    
+        ans += min(dp0, dp1);
     }
-    cout << ans << nl;
+    sort_unique(vi);
+    cout << (d==0 ? n-sz(vi) : ans) << nl;
 }
 
 signed main() {    
