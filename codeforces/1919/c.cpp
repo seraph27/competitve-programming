@@ -1,8 +1,8 @@
-// Problem: D1. Red Light, Green Light (Easy version)
-// Contest: Codeforces Round 1030 (Div. 2)
-// URL: https://codeforces.com/contest/2118/problem/D1
-// Time Limit: 4000
-// Start: Thu Jun 12 15:23:23 2025
+// Problem: C. Grouping Increases
+// Contest: Hello 2024
+// URL: https://codeforces.com/problemset/problem/1919/C
+// Time Limit: 1000
+// Start: Sun Jun 22 01:20:12 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,43 +49,28 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> pos(n), d(n);
-    for(auto&a : pos) cin >> a;
-    for(auto&a : d) cin >> a;
-
-    int q; cin >> q;
-    while(q--) {
-        int st; cin >> st;
-        vector<ar<int, 2>> vis(n);
-        bool rev = 0;
-        auto id = lower_bound(all(pos), st) - pos.begin();
-        if(id >= n) {
-            cout << "Yes" << nl;
-            continue;
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    vector<int> v1, v2;
+    int ans = 0;
+    v1.pb(vi[0]);
+    for(int i = 1; i < n; i++) {
+        if(vi[i]<=v1.back() && vi[i]<=(sz(v2) ? v2.back() : -4e18)) {
+            if(v1.back() < v2.back()) v1.pb(vi[i]);
+            else v2.pb(vi[i]);
+        } else if(vi[i]<=v1.back()) {
+            v1.pb(vi[i]);
+        } else if(vi[i]<=(sz(v2) ? v2.back() : 4e18)){
+            v2.pb(vi[i]);
+        } else {
+            ans++;
+            if(v2.back() > v1.back()) v1.pb(vi[i]);
+            else v2.pb(vi[i]);
         }
-        int walked = pos[id] - st;
-        while(true) {
-            if(id < 0 || id >= n) {
-                cout << "Yes" << nl;
-                break;
-            }
-            if(d[id] % k == walked % k) {
-                rev ^= 1;
-                if(++vis[id][rev] >= 2) {
-                    cout << "No" << nl;
-                    break;
-                }
-            }
-            if(rev) {
-                if(id-1 >= 0) walked += pos[id] - pos[id-1];
-                id--;
-            } else {
-                if(id+1 < n) walked += pos[id+1] - pos[id];
-                id++;
-            }
-        } 
     }
+    cout << ans << nl;
+    debug(v1, v2);
 }
 
 signed main() {    

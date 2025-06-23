@@ -49,14 +49,67 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-
+    int n, k; cin >> n >> k;
+    vector<int> pos(n), d(n);
+    for(auto&a : pos) cin >> a;
+    for(auto&a : d) cin >> a;
+    vector<int> cycle(n);
+    for(int i = 0; i < n; i++) { //consider starting at any node
+        if(!cycle[i]) {
+            bool rev = 0;
+            vector<int> curr;
+            int walked = 0;
+            int id = i;
+            vector<ar<int, 2>> vis(n);
+            while(true) {
+                if(rev) curr.pb(id);
+                if(d[id] % k == walked % k) {
+                    rev ^= 1;
+                    if(++vis[id][rev] >= 2) {
+                        for(auto &x : curr) cycle[x] = 1; //cycle
+                        break;
+                    }
+                }
+                if(rev) {
+                    if(id-1 >= 0) walked += pos[id] - pos[id-1];
+                    if(id-1 < 0) {
+                        for(auto &x : curr) cycle[x] = 2; //escape
+                        break;
+                    }
+                    id--;
+                } else {
+                    if(id+1 < n) walked += pos[id+1] - pos[id];
+                    if(id+1 >= n) {
+                        for(auto &x : curr) cycle[x] = 2;
+                        break;
+                    }
+                    id++;
+                }
+            } 
+        }
+    }
+    debug(cycle);
+    int q; cin >> q;
+    while(q--) {
+        int st; cin >> st;
+        auto id = lower_bound(all(pos), st) - pos.begin();
+        bool done = 0;
+        for(; id < n; id++) {
+            if((pos[id]-st) % k == d[id] % k && cycle[id] == 2) {
+                cout << "Yes" << nl;
+                done = 1;
+                break;
+            }
+        }
+        if(!done) cout << "No" << nl;
+    }
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

@@ -1,8 +1,8 @@
-// Problem: D1. Red Light, Green Light (Easy version)
+// Problem: E. Grid Coloring
 // Contest: Codeforces Round 1030 (Div. 2)
-// URL: https://codeforces.com/contest/2118/problem/D1
-// Time Limit: 4000
-// Start: Thu Jun 12 15:23:23 2025
+// URL: https://codeforces.com/contest/2118/problem/E
+// Time Limit: 2000
+// Start: Sun Jun 22 02:45:56 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,43 +49,30 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> pos(n), d(n);
-    for(auto&a : pos) cin >> a;
-    for(auto&a : d) cin >> a;
-
-    int q; cin >> q;
-    while(q--) {
-        int st; cin >> st;
-        vector<ar<int, 2>> vis(n);
-        bool rev = 0;
-        auto id = lower_bound(all(pos), st) - pos.begin();
-        if(id >= n) {
-            cout << "Yes" << nl;
-            continue;
-        }
-        int walked = pos[id] - st;
-        while(true) {
-            if(id < 0 || id >= n) {
-                cout << "Yes" << nl;
-                break;
-            }
-            if(d[id] % k == walked % k) {
-                rev ^= 1;
-                if(++vis[id][rev] >= 2) {
-                    cout << "No" << nl;
-                    break;
-                }
-            }
-            if(rev) {
-                if(id-1 >= 0) walked += pos[id] - pos[id-1];
-                id--;
-            } else {
-                if(id+1 < n) walked += pos[id+1] - pos[id];
-                id++;
-            }
-        } 
+    int n, m; cin >> n >> m;
+    int cx = n/2;
+    int cy = m/2;
+    vector<pii> vi;
+    for(int i = 0; i < n; i++) for(int j = 0; j < m; j++) {
+        vi.pb({i, j});
     }
+    auto op = [&](auto &a, auto&b) -> bool {
+        int layer_a = max(abs(a.first - cx), abs(a.second - cy));
+        int layer_b = max(abs(b.first - cx), abs(b.second - cy));
+        if(layer_a == layer_b) {
+            int ma = abs(a.first - cx) + abs(a.second - cy);
+            int mb = abs(b.first - cx) + abs(b.second - cy);
+            if(ma == mb) {
+                if(a.first != b.first) return a.first < b.first;
+                return a.second < b.second;
+            }
+            return ma < mb;
+        } else {
+            return layer_a < layer_b;
+        }
+    };
+    sort(all(vi), op);
+    for(auto &[x, y] : vi) cout << x+1 << " " << y+1 << nl;
 }
 
 signed main() {    

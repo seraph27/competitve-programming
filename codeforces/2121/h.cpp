@@ -110,20 +110,11 @@ void shiina_mashiro() {
     int MX = sz(vi);
     segtree<int> st(MX+1);
     for(int i = 0; i < n; i++) {
-        for(int i = 0; i < MX-1; i++) {
-            debug(i, st.query(i, i).sum, st.query(i, i).mx); 
-        }
         int lb = mp[segs[i][0]], rb = mp[segs[i][1]];
-        if(i == 0) {
-            st.update(lb, lb, 1);
-            cout << st.query(0, MX-1).mx << " ";
-            continue;
-        } 
-        int lst = st.query(lb, rb).mx;
-        int curr = st.query(0, lb).mx;
-        int mxx = max(curr, lst) + 1;
-        debug(lst, curr, mxx);
-        st.update(lb, lb, mxx - st.query(lb, lb).mx);
+        int l_max = st.query(0, lb).mx;
+        int add = l_max - st.query(lb ,lb).mx;
+        st.update(lb, lb, add);
+        st.update(lb, rb, 1);
         cout << st.query(0, MX-1).mx << " ";
     }
     cout << endl;

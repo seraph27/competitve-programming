@@ -1,8 +1,8 @@
-// Problem: D1. Red Light, Green Light (Easy version)
-// Contest: Codeforces Round 1030 (Div. 2)
-// URL: https://codeforces.com/contest/2118/problem/D1
-// Time Limit: 4000
-// Start: Thu Jun 12 15:23:23 2025
+// Problem: A. Square of Rectangles
+// Contest: Codeforces Round 1033 (Div. 2) and CodeNite 2025
+// URL: https://codeforces.com/contest/2120/problem/0
+// Time Limit: 1000
+// Start: Sat Jun 21 07:36:32 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,43 +49,45 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> pos(n), d(n);
-    for(auto&a : pos) cin >> a;
-    for(auto&a : d) cin >> a;
-
-    int q; cin >> q;
-    while(q--) {
-        int st; cin >> st;
-        vector<ar<int, 2>> vis(n);
-        bool rev = 0;
-        auto id = lower_bound(all(pos), st) - pos.begin();
-        if(id >= n) {
-            cout << "Yes" << nl;
-            continue;
-        }
-        int walked = pos[id] - st;
-        while(true) {
-            if(id < 0 || id >= n) {
-                cout << "Yes" << nl;
-                break;
-            }
-            if(d[id] % k == walked % k) {
-                rev ^= 1;
-                if(++vis[id][rev] >= 2) {
-                    cout << "No" << nl;
-                    break;
-                }
-            }
-            if(rev) {
-                if(id-1 >= 0) walked += pos[id] - pos[id-1];
-                id--;
-            } else {
-                if(id+1 < n) walked += pos[id+1] - pos[id];
-                id++;
-            }
-        } 
+    int a, b, c, d, e, f; cin >> a >> b >> c >> d >> e >> f;
+    int sum = a*b+c*d+e*f;
+    int r = isqrt(sum);
+    if(r*r != sum) {
+        cout << "No" << nl;
+        return;
     }
+    vector<ar<int, 2>> v = {{a, b}, {c, d}, {e, f}};
+    sort(all(v));
+    int mxh = max({a, c, e});
+    int mxw = max({b, d, f});
+    debug(mxw, mxh, v);
+    if(mxh > mxw) {
+        if(v[1][0] + v[0][0] == v[2][0] && v[2][1]+v[0][1] == v[2][0]) {
+            cout << "Yes" << nl;
+            return;
+        }
+    } else if(mxw > mxh) {
+        if(v[0][1] + v[1][1] == v[2][1] && v[2][0]+v[0][0] == v[2][1]) {
+            cout << "Yes" << nl;
+            return;
+        }
+    }
+    if(a==c && c ==e) {
+        if(b+d+f == a) {
+            cout << "Yes" << nl;
+        } else {
+            cout << "No" << nl;
+        }
+        return;
+    } else if(b==d && d==f) {
+        if(a+c+e == b) {
+            cout << "Yes" << nl;
+        } else {
+            cout << "No" << nl;
+        }
+        return;
+    }
+    cout << "No" << nl;
 }
 
 signed main() {    

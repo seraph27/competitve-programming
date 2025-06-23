@@ -46,50 +46,40 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #endif
 
 const char nl = '\n';
-int dp[31][31][50]{}; //
+int dp[31][31][51]{}; //
 void shiina_mashiro() {
     memset(dp, 0x3f, sizeof dp);
-    auto dfs = [&](auto&&s, int h, int w, int left) -> void {
-        if(h * w == left) {
-            dp[h][w][left] = 0;
-            return;
-        }
-        if(!left) return;
-        if(dp[h][w][left] < 1e18) return;
-
-        for(int i = 1; i < h; i++) {
-            int top = w * i;
-            int bot = w * (h-i);
-            if(left >= top) {
-                s(s, i, w, left-top);
-            }
-            if(left >= bot) {
-                s(s, h-i, w, left-bot);
-            }
-            ckmin(dp[h][w][left], dp[i][w][left-top] + dp[h-i][wh-i][w][]])
-        }
-
-        for(int i = 1; i < w; i++) {
-            int L = h * i;
-            int R = h * (w-i);
-            if(left >= L) {
-                s(s, h, i, left-L);
-            }
-            if(left >= R) {
-                s(s, h, w-i, left-R);
-            }
-        }
-    };
-    for(int i = 1; i < 31; i++) for(int j = 1; j < 31; j++) for(int k = 1; k < min(i*j, (int)51); k++){
-        dfs(dfs, i, j, k);
+    for(int i = 1; i < 31; i++) for(int j = 1; j < 31; j++) {
+        dp[i][j][0] = 0;
+        if(i*j <= 50) dp[i][j][i*j] = 0;
     }
-
+    for(int i = 1; i < 31; i++) for(int j = 1; j < 31; j++) for(int k = 0; k < min(i*j, 51LL); k++) {
+        // try cut row
+        for(int row = 0; row <= i; row++) {
+            int top = row * j;
+            int bot = (i - row) * j;
+            for(int take = 0; take < k; take++) {
+                if(top >= take && bot >= k-take) {
+                    ckmin(dp[i][j][k], dp[row][j][take] + dp[i-row][j][k-take] + j * j);
+                }
+            }
+        }
+        for(int col = 0; col <= j; col++) {
+            int left = col * i;
+            int right = (j - col) * i;
+            for(int take = 0; take < k; take++) {
+                if(left >= take && right >= k-take) {
+                    ckmin(dp[i][j][k], dp[i][col][take] + dp[i][j-col][k-take] + i * i);
+                }
+            }
+        }
+    }
     int q; cin >> q;
     for(int i = 0; i < q; i++) {
         int n, m, k; cin >> n >> m >> k;
         if(n * m == k) {
             cout << 0 << nl;
-            return;
+            continue;
         }
 
         cout << dp[n][m][k] << nl;

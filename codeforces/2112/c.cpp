@@ -1,8 +1,8 @@
-// Problem: D1. Red Light, Green Light (Easy version)
-// Contest: Codeforces Round 1030 (Div. 2)
-// URL: https://codeforces.com/contest/2118/problem/D1
-// Time Limit: 4000
-// Start: Thu Jun 12 15:23:23 2025
+// Problem: C. Coloring Game
+// Contest: Educational Codeforces Round 180 (Rated for Div. 2)
+// URL: https://codeforces.com/contest/2112/problem/C
+// Time Limit: 2500
+// Start: Mon Jun 23 07:52:51 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,43 +49,26 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> pos(n), d(n);
-    for(auto&a : pos) cin >> a;
-    for(auto&a : d) cin >> a;
-
-    int q; cin >> q;
-    while(q--) {
-        int st; cin >> st;
-        vector<ar<int, 2>> vis(n);
-        bool rev = 0;
-        auto id = lower_bound(all(pos), st) - pos.begin();
-        if(id >= n) {
-            cout << "Yes" << nl;
-            continue;
+    int n; cin >> n;
+    int mx = 0;
+    vector<int> vi(n);
+    for(auto&a: vi){
+        cin >> a;
+    } 
+    
+    int ans = 0;
+    for(int i = 0; i < n; i++) for(int j = i+1, L = n-1, R = j+1; j < n; j++) {
+        ckmax(L, j+1);
+        while(L-1 > j && vi[i] + vi[j] + vi[L-1] > vi[n-1]) {
+            L--;
         }
-        int walked = pos[id] - st;
-        while(true) {
-            if(id < 0 || id >= n) {
-                cout << "Yes" << nl;
-                break;
-            }
-            if(d[id] % k == walked % k) {
-                rev ^= 1;
-                if(++vis[id][rev] >= 2) {
-                    cout << "No" << nl;
-                    break;
-                }
-            }
-            if(rev) {
-                if(id-1 >= 0) walked += pos[id] - pos[id-1];
-                id--;
-            } else {
-                if(id+1 < n) walked += pos[id+1] - pos[id];
-                id++;
-            }
-        } 
+        ckmax(R, j+1);
+        while(R < n && vi[i] + vi[j] > vi[R]) {
+            R++;
+        }
+        ans += max(0LL, R-L);
     }
+    cout << ans << nl;
 }
 
 signed main() {    

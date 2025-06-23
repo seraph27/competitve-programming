@@ -1,8 +1,8 @@
-// Problem: D1. Red Light, Green Light (Easy version)
-// Contest: Codeforces Round 1030 (Div. 2)
-// URL: https://codeforces.com/contest/2118/problem/D1
-// Time Limit: 4000
-// Start: Thu Jun 12 15:23:23 2025
+// Problem: B. Shrinking Array
+// Contest: Educational Codeforces Round 180 (Rated for Div. 2)
+// URL: https://codeforces.com/contest/2112/problem/B
+// Time Limit: 2000
+// Start: Mon Jun 23 07:38:46 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,43 +49,33 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> pos(n), d(n);
-    for(auto&a : pos) cin >> a;
-    for(auto&a : d) cin >> a;
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(int i = 0; i < n; i++) cin >> vi[i];
 
-    int q; cin >> q;
-    while(q--) {
-        int st; cin >> st;
-        vector<ar<int, 2>> vis(n);
-        bool rev = 0;
-        auto id = lower_bound(all(pos), st) - pos.begin();
-        if(id >= n) {
-            cout << "Yes" << nl;
-            continue;
-        }
-        int walked = pos[id] - st;
-        while(true) {
-            if(id < 0 || id >= n) {
-                cout << "Yes" << nl;
-                break;
-            }
-            if(d[id] % k == walked % k) {
-                rev ^= 1;
-                if(++vis[id][rev] >= 2) {
-                    cout << "No" << nl;
-                    break;
-                }
-            }
-            if(rev) {
-                if(id-1 >= 0) walked += pos[id] - pos[id-1];
-                id--;
-            } else {
-                if(id+1 < n) walked += pos[id+1] - pos[id];
-                id++;
-            }
-        } 
+    int ok = 0;
+    for(int i = 0; i < n-1; i++) {
+        if(abs(vi[i+1]- vi[i]) <= 1) ok = 1;
     }
+    if(ok) {
+        cout << 0 << nl;
+        return;
+    }
+    int ok2 = 0;
+    for(int i = 0; i < n-2; i++) {
+        if(min(vi[i], vi[i+1]) <= vi[i+2] && max(vi[i], vi[i+1]) >= vi[i+2]) ok2 = 1;
+        if(min(vi[i+1], vi[i+2]) <= vi[i] && max(vi[i+1], vi[i+2]) >= vi[i]) ok2 = 1;
+    }
+    if(!ok2) {
+        cout << -1 << nl;
+        return;
+    }
+    if(n==2 && !ok) {
+        cout << -1 << nl;
+        return;
+    }
+    cout << 1 << nl;
+    return;
 }
 
 signed main() {    
