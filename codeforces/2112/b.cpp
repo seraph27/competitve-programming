@@ -70,10 +70,6 @@ void shiina_mashiro() {
         cout << -1 << nl;
         return;
     }
-    if(n==2 && !ok) {
-        cout << -1 << nl;
-        return;
-    }
     cout << 1 << nl;
     return;
 }
