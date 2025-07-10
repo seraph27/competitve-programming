@@ -1,8 +1,8 @@
-// Problem: Planets Queries I
-// Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1750
-// Time Limit: 1000
-// Start: 2025/07/01 13:01:30
+// Problem: D. Make a Palindrome
+// Contest: EPIC Institute of Technology Round Summer 2025 (Codeforces Round 1036, Div. 1 + Div. 2)
+// URL: https://codeforces.com/contest/2124/problem/D
+// Time Limit: 2000
+// Start: Sun Jul  6 09:06:13 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,44 +49,50 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, query; cin >> n >> query;
-    vector<int> to(n);
-    const int LOG = 35;
-    vector<vector<int>> up(LOG, vector<int>(n));
+    int n, k; cin >> n >> k;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    
+    int ok = 1;
+    for(int i = 0; i <= n/2; i++) {
+        if(vi[i] != vi[n-i-1]) {
+            ok = 0;
+            break;
+        }
+    }
+    if(ok) {
+        cout << "Yes" << nl;
+        return;
+    }
+    auto tmp = vi;
+    sort(all(tmp));
+    auto lst = tmp[k-1];
+    vector<int> nw;
     for(int i = 0; i < n; i++) {
-        int dest; cin >> dest;
-        --dest;
-        to[i] = dest;
-        up[0][i] = dest;
+        if(vi[i] <= lst) nw.pb(vi[i]);
     }
-
-    for(int i = 1; i < LOG; i++) {
-        for(int j = 0; j < n; j++) {
-            up[i][j] = up[i-1][up[i-1][j]];
+    int can = sz(nw) - (k-1);
+    debug(nw, k-1, can);
+    int l = 0, r = sz(nw) - 1;
+    while (l < r) {
+        if (nw[l] == nw[r]) {
+            l++; r--;
+        } else if (nw[l] == lst && can > 0) {
+            l++; can--;
+        } else if (nw[r] == lst && can > 0) {
+            r--; can--;
+        } else {
+            break;
         }
     }
-
-    auto lift = [&](int u, int d) {
-        for(int i = 0; i < LOG; i++) {
-            if((d >> i) & 1) {
-                u = up[i][u];
-            }
-        }
-        return u;
-    };
-
-    for(int i = 0; i < query; i++) {
-        int x, k; cin >> x >> k;
-        --x;
-        cout << lift(x, k) + 1 << nl;
-    }
+    cout << (l >= r ? "Yes" : "No") << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

@@ -1,8 +1,8 @@
-// Problem: Planets Queries I
-// Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1750
-// Time Limit: 1000
-// Start: 2025/07/01 13:01:30
+// Problem: B. Line Segments
+// Contest: Codeforces Round 1035 (Div. 2)
+// URL: https://codeforces.com/contest/2119/problem/B
+// Time Limit: 1500
+// Start: Sat Jul  5 07:49:25 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,44 +49,29 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, query; cin >> n >> query;
-    vector<int> to(n);
-    const int LOG = 35;
-    vector<vector<int>> up(LOG, vector<int>(n));
-    for(int i = 0; i < n; i++) {
-        int dest; cin >> dest;
-        --dest;
-        to[i] = dest;
-        up[0][i] = dest;
+    int n; cin >> n;
+    int px, py, qx, qy; cin >> px >> py >> qx >> qy;
+    vector<int> vi(n);
+    int sum = 0, mx = 0;
+    for (auto &a : vi) {
+        cin >> a;
+        sum += a;
+        ckmax(mx, a);
     }
-
-    for(int i = 1; i < LOG; i++) {
-        for(int j = 0; j < n; j++) {
-            up[i][j] = up[i-1][up[i-1][j]];
-        }
-    }
-
-    auto lift = [&](int u, int d) {
-        for(int i = 0; i < LOG; i++) {
-            if((d >> i) & 1) {
-                u = up[i][u];
-            }
-        }
-        return u;
-    };
-
-    for(int i = 0; i < query; i++) {
-        int x, k; cin >> x >> k;
-        --x;
-        cout << lift(x, k) + 1 << nl;
-    }
+    int dx = qx - px;
+    int dy = qy - py;
+    int d = dx * dx + dy * dy;
+    int L = max(0LL, 2*mx - sum);
+    int R = sum;
+    if (d >= L*L && d <= R*R) cout << "Yes" << nl;
+    else cout << "No" << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

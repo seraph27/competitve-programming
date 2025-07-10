@@ -1,8 +1,8 @@
-// Problem: Planets Queries I
-// Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1750
-// Time Limit: 1000
-// Start: 2025/07/01 13:01:30
+// Problem: E - LCM Sequence
+// Contest: AtCoder Beginner Contest 412
+// URL: https://atcoder.jp/contests/abc412/tasks/abc412_e
+// Time Limit: 4000
+// Start: Thu Jul  3 01:27:28 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -48,38 +48,76 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-void shiina_mashiro() {
-    int n, query; cin >> n >> query;
-    vector<int> to(n);
-    const int LOG = 35;
-    vector<vector<int>> up(LOG, vector<int>(n));
-    for(int i = 0; i < n; i++) {
-        int dest; cin >> dest;
-        --dest;
-        to[i] = dest;
-        up[0][i] = dest;
-    }
-
-    for(int i = 1; i < LOG; i++) {
-        for(int j = 0; j < n; j++) {
-            up[i][j] = up[i-1][up[i-1][j]];
-        }
-    }
-
-    auto lift = [&](int u, int d) {
-        for(int i = 0; i < LOG; i++) {
-            if((d >> i) & 1) {
-                u = up[i][u];
+template <int N>
+struct sieve {
+    vector<int> primes;
+    array<int, N+1> spf;
+    sieve() : spf() {
+        for (int i = 2; i <= N; i++) {
+            if (!spf[i]) {
+                spf[i] = i;
+                primes.push_back(i);
+            }
+            for (int j = 0; i * primes[j] <= N; j++) {
+                spf[i*primes[j]] = primes[j];
+                if (primes[j] == spf[i]) break;
             }
         }
-        return u;
-    };
-
-    for(int i = 0; i < query; i++) {
-        int x, k; cin >> x >> k;
-        --x;
-        cout << lift(x, k) + 1 << nl;
     }
+    bool prime(int x) const {
+        return spf[x] == x;
+    }
+    vector<int> facs(int x) const {
+        vector<int> ret;
+        while (x != 1) {
+            ret.push_back(spf[x]);
+            x /= spf[x];
+        }
+        return ret;
+    }
+    vector<array<int, 2>> facs2(int x) const {
+        vector<array<int, 2>> ret;
+        while (x != 1) {
+            if (!ret.empty() && ret.back()[0] == spf[x]) ret.back()[1]++;
+            else ret.push_back({spf[x], 1});
+            x /= spf[x];
+        }
+        return ret;
+    }
+    vector<int> divs(int x) const {
+        vector<int> divisors(1, 1);
+        while (x > 1) {
+            int p = spf[x], c = 0;
+            while (x % p == 0) x /= p, c++;
+            int sz = divisors.size();
+            divisors.reserve(sz*(c+1));
+            for (int i = 1, pw = p; i <= c; i++, pw *= p) {
+                for (int j = 0; j < sz; j++) {
+                    divisors.push_back(divisors[j] * pw);
+                }
+            }
+        }
+        return divisors;
+    }
+};
+
+sieve<10000500> S;
+void shiina_mashiro() {
+    int L, R; cin >> L >> R;
+    vector<int> vis(R-L+1);
+    int ans = 0;
+    for(auto &p : S.primes) {
+        for (int k = (L+p-1)/p*p; k <= R; k+=p) {
+            if(k==L) continue;
+            if(vis[k - L]) continue;
+            vis[k - L] = 1;
+            int y = k;
+            while(y%p == 0) y/=p;
+            if(y == 1) ans++;
+        }
+    }
+    ans += count(all(vis), 0);
+    cout << ans << nl;
 }
 
 signed main() {    

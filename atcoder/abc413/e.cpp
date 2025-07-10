@@ -1,9 +1,10 @@
-// Problem: Planets Queries I
-// Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1750
-// Time Limit: 1000
-// Start: 2025/07/01 13:01:30
+// Problem: E - Reverse 2^i
+// Contest: Denso Create Programming Contest 2025（AtCoder Beginner Contest 413）
+// URL: https://atcoder.jp/contests/abc413/tasks/abc413_e
+// Time Limit: 2000
+// Start: Sat Jul  5 06:16:06 2025
 // mintemplate
+#include <algorithm>
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -49,44 +50,35 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, query; cin >> n >> query;
-    vector<int> to(n);
-    const int LOG = 35;
-    vector<vector<int>> up(LOG, vector<int>(n));
-    for(int i = 0; i < n; i++) {
-        int dest; cin >> dest;
-        --dest;
-        to[i] = dest;
-        up[0][i] = dest;
-    }
+    int n; cin >> n;
 
-    for(int i = 1; i < LOG; i++) {
-        for(int j = 0; j < n; j++) {
-            up[i][j] = up[i-1][up[i-1][j]];
-        }
-    }
+    vector<int> vi(1 << n, 0);
+    for(auto&a: vi) cin >> a;
 
-    auto lift = [&](int u, int d) {
-        for(int i = 0; i < LOG; i++) {
-            if((d >> i) & 1) {
-                u = up[i][u];
-            }
+    auto merge = [&](auto&&s, int l, int r) -> void {
+        if(l==r) return;
+        int mid = (l+r) >> 1;
+        s(s, l, mid);
+        s(s, mid+1, r);
+        int len = (r-l+1)/2;
+        auto it1 = vi.begin()+l;
+        auto it2 = vi.begin()+mid+1;
+        bool op = lexicographical_compare(it1, it1+len, it2, it2+len);
+        if(!op) {
+            vector<int> tmp(it1, it1 + len);
+            copy(it2, it2 + len, it1);
+            copy(all(tmp), it1 + len);
         }
-        return u;
     };
-
-    for(int i = 0; i < query; i++) {
-        int x, k; cin >> x >> k;
-        --x;
-        cout << lift(x, k) + 1 << nl;
-    }
+    merge(merge, 0, (1<<n)-1);
+    cout << vi << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

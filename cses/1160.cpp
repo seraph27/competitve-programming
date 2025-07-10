@@ -1,8 +1,8 @@
-// Problem: Planets Queries I
+// Problem: Planets Queries II
 // Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1750
+// URL: https://cses.fi/problemset/task/1160
 // Time Limit: 1000
-// Start: 2025/07/01 13:01:30
+// Start: Wed Jul  2 01:15:49 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -51,34 +51,109 @@ const char nl = '\n';
 void shiina_mashiro() {
     int n, query; cin >> n >> query;
     vector<int> to(n);
-    const int LOG = 35;
-    vector<vector<int>> up(LOG, vector<int>(n));
+    vector<vector<int>> rev(n);
+    vector<int> indeg(n, 0);
     for(int i = 0; i < n; i++) {
         int dest; cin >> dest;
         --dest;
+        indeg[dest]++;
         to[i] = dest;
-        up[0][i] = dest;
+        rev[dest].pb(i);
     }
-
-    for(int i = 1; i < LOG; i++) {
-        for(int j = 0; j < n; j++) {
-            up[i][j] = up[i-1][up[i-1][j]];
+ 
+    queue<int> q;
+    for(int i = 0; i < n; i++) if(indeg[i] == 0) q.push(i);
+    while(!q.empty()) {
+        auto f = q.front(); q.pop();
+        int nxt = to[f];
+        indeg[nxt]--;
+        if(indeg[nxt] == 0) {
+            q.push(nxt);
         }
     }
-
-    auto lift = [&](int u, int d) {
-        for(int i = 0; i < LOG; i++) {
-            if((d >> i) & 1) {
-                u = up[i][u];
+    vector<int> vis(n, 0);
+    vector<int> where(n, 0);
+    vector<int> pos(n, 0);
+    vector<vector<int>> cycles;
+    int idx = 0;
+    for(int i = 0; i < n; i++) {
+        vector<int> cyc;
+        if(!vis[i] && indeg[i] == 1) {
+            for(auto cur = i; !vis[cur]; cur = to[cur]) {
+                vis[cur] = 1;
+                cyc.pb(cur);
+                where[cur] = idx;
+                pos[cur] = sz(cyc) - 1;
             }
         }
-        return u;
-    };
+        if(sz(cyc)) {
+            idx++;
+            cycles.pb(cyc);
+        }
+    }
+    
+    vector<int> dist_to_cyc(n, -1), cycle_entry(n, -1);
+    queue<int> q2;
+    for(int i = 0; i < n; i++) {
+        if(vis[i]) {
+            dist_to_cyc[i] = 0;
+            cycle_entry[i] = i;
+            q2.push(i);
+        }
+    }
+    while(!q2.empty()) {
+        auto u = q2.front(); q2.pop();
+        for(int &e : rev[u]) {
+            if(dist_to_cyc[e] == -1) {
+                dist_to_cyc[e] = dist_to_cyc[u] + 1;
+                cycle_entry[e] = cycle_entry[u];
+                q2.push(e);
+            }
+        }
+    }
+    
+    const int LOG = 20;
+    vector<vector<int>> up(LOG, vector<int>(n, 0));
+    for(int i = 0; i < n; i++) {
+        up[0][i] = to[i];
+    }
+    for(int u = 1; u < LOG; u++) {
+        for(int j = 0; j < n; j++) {
+            up[u][j] = up[u-1][up[u-1][j]];
+        }
+    }
 
+    auto lift = [&](int f, int d) {
+        for(int i = 0; i < LOG; i++) {
+            if((d >> i) & 1) {
+                f = up[i][f];
+            }
+        }
+        return f;
+    };
+    
     for(int i = 0; i < query; i++) {
-        int x, k; cin >> x >> k;
-        --x;
-        cout << lift(x, k) + 1 << nl;
+        int a, b; cin >> a >> b;
+        --a; --b;
+        int ans = -1;
+        if(dist_to_cyc[b] > 0) { // b is on branch
+            //then if a is further than b on the branch
+            int d = dist_to_cyc[a] - dist_to_cyc[b];
+            if(d > 0 && cycle_entry[a] == cycle_entry[b] && lift(a, d) == b) {
+                ans = d;
+            }
+        } else {
+            //b is on the cycle
+            if(where[cycle_entry[a]] == where[b]) {
+                int d = dist_to_cyc[a];
+                int c = cycle_entry[a];
+                auto &C = cycles[where[b]];
+                int L = sz(C);
+                ans = d + abs(pos[b] - pos[c] + L) % L;
+            } 
+        }
+        if(a==b) ans=0;
+        cout << ans << nl;
     }
 }
 

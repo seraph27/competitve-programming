@@ -1,8 +1,8 @@
-// Problem: Planets Queries I
-// Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1750
+// Problem: A. Deranged Deletions
+// Contest: EPIC Institute of Technology Round Summer 2025 (Codeforces Round 1036, Div. 1 + Div. 2)
+// URL: https://codeforces.com/contest/2124/problem/A
 // Time Limit: 1000
-// Start: 2025/07/01 13:01:30
+// Start: Sun Jul  6 07:38:59 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,44 +49,36 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, query; cin >> n >> query;
-    vector<int> to(n);
-    const int LOG = 35;
-    vector<vector<int>> up(LOG, vector<int>(n));
+    int asd = 0;
+    for(int i = 1; i <= 8; i++) for(int j = 1; j <= 8; j++){
+        asd+=(bool)(i*j > i+j);
+    }
+    debug(asd);
+    int n; cin >> n;
+    vector<int> vi(n);
     for(int i = 0; i < n; i++) {
-        int dest; cin >> dest;
-        --dest;
-        to[i] = dest;
-        up[0][i] = dest;
+        cin >> vi[i];
     }
-
-    for(int i = 1; i < LOG; i++) {
-        for(int j = 0; j < n; j++) {
-            up[i][j] = up[i-1][up[i-1][j]];
+    if(n==1) {
+        cout << "No" << nl;
+        return;
+    }
+    for(int i = 0; i < n; i++) for(int j = i+1; j < n; j++) {
+        if(vi[i] > vi[j]) {
+            cout << "Yes" << nl;
+            cout << 2 << nl;
+            cout << vi[i] << " " << vi[j] << nl;
+            return;
         }
-    }
-
-    auto lift = [&](int u, int d) {
-        for(int i = 0; i < LOG; i++) {
-            if((d >> i) & 1) {
-                u = up[i][u];
-            }
-        }
-        return u;
-    };
-
-    for(int i = 0; i < query; i++) {
-        int x, k; cin >> x >> k;
-        --x;
-        cout << lift(x, k) + 1 << nl;
-    }
+    }   
+    cout << "No" << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 
