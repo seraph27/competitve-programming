@@ -1,8 +1,8 @@
-// Problem: Planets Queries I
-// Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1750
+// Problem: A. Add or XOR
+// Contest: Codeforces Round 1035 (Div. 2)
+// URL: https://codeforces.com/contest/2119/problem/0
 // Time Limit: 1000
-// Start: 2025/07/01 13:01:30
+// Start: Sat Jul  5 07:35:23 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,44 +49,51 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, query; cin >> n >> query;
-    vector<int> to(n);
-    const int LOG = 35;
-    vector<vector<int>> up(LOG, vector<int>(n));
-    for(int i = 0; i < n; i++) {
-        int dest; cin >> dest;
-        --dest;
-        to[i] = dest;
-        up[0][i] = dest;
+    int a, b, x, y; cin >> a >> b >> x >> y;
+    int ans = 0;
+    if(a == b) {
+        cout << 0 << nl;
+        return;
     }
-
-    for(int i = 1; i < LOG; i++) {
-        for(int j = 0; j < n; j++) {
-            up[i][j] = up[i-1][up[i-1][j]];
+    if(a > b) { //only possible to flip 1 bit away
+        if(a & 1 && a == b + 1) {
+            cout << y << nl;
+        } else {
+            cout << -1 << nl;
         }
+        return;
     }
 
-    auto lift = [&](int u, int d) {
-        for(int i = 0; i < LOG; i++) {
-            if((d >> i) & 1) {
-                u = up[i][u];
+    if(x < y) {
+        cout << (b-a) * x << nl;
+        return;
+    } else {
+        int op = (b-a)/2;
+        if(a%2==0) {
+            if(b%2==0) { // same for odd and even
+                ans = op * (x + y);
+            } else {
+                ans = op * x + (op+1) * y;
+            }
+        } else {
+            if(b%2==0) {
+                ans = (op+1) * x + op * y;
+            } else {
+                ans = op * (x + y);
             }
         }
-        return u;
-    };
-
-    for(int i = 0; i < query; i++) {
-        int x, k; cin >> x >> k;
-        --x;
-        cout << lift(x, k) + 1 << nl;
+        cout << ans << nl;
+        return;
     }
+
+
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

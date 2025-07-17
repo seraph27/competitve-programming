@@ -1,8 +1,8 @@
-// Problem: Planets Queries I
-// Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1750
-// Time Limit: 1000
-// Start: 2025/07/01 13:01:30
+// Problem: B. Minimise Sum
+// Contest: EPIC Institute of Technology Round Summer 2025 (Codeforces Round 1036, Div. 1 + Div. 2)
+// URL: https://codeforces.com/contest/2124/problem/B
+// Time Limit: 1500
+// Start: Sun Jul  6 07:52:46 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,44 +49,35 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, query; cin >> n >> query;
-    vector<int> to(n);
-    const int LOG = 35;
-    vector<vector<int>> up(LOG, vector<int>(n));
-    for(int i = 0; i < n; i++) {
-        int dest; cin >> dest;
-        --dest;
-        to[i] = dest;
-        up[0][i] = dest;
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    vector<int> pref(n);
+    int mn = vi[0];
+    pref[0] = mn;
+    for(int i = 1; i < n; i++){
+        ckmin(mn, vi[i]);
+        pref[i] = mn;
     }
-
-    for(int i = 1; i < LOG; i++) {
-        for(int j = 0; j < n; j++) {
-            up[i][j] = up[i-1][up[i-1][j]];
-        }
+    vector<int> suf(n+1);
+    suf[n] = 0;
+    for(int i = n-1; ~i; i--)suf[i] = suf[i+1] + pref[i];
+    int res = 0;
+    if (n > 1)ckmax(res, suf[1] - vi[1]);
+    for(int i = 1; i + 1 < n; i++){
+        int diff = pref[i-1] - pref[i];
+        int s = suf[i+1];
+        ckmax(res, s - diff);
     }
-
-    auto lift = [&](int u, int d) {
-        for(int i = 0; i < LOG; i++) {
-            if((d >> i) & 1) {
-                u = up[i][u];
-            }
-        }
-        return u;
-    };
-
-    for(int i = 0; i < query; i++) {
-        int x, k; cin >> x >> k;
-        --x;
-        cout << lift(x, k) + 1 << nl;
-    }
+    ckmax(res, 0LL);
+    cout << suf[0] - res << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

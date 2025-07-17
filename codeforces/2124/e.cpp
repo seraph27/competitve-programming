@@ -1,8 +1,8 @@
-// Problem: Planets Queries I
-// Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1750
-// Time Limit: 1000
-// Start: 2025/07/01 13:01:30
+// Problem: E. Make it Zero
+// Contest: EPIC Institute of Technology Round Summer 2025 (Codeforces Round 1036, Div. 1 + Div. 2)
+// URL: https://codeforces.com/contest/2124/problem/E
+// Time Limit: 2000
+// Start: Sun Jul  6 09:45:56 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,44 +49,61 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, query; cin >> n >> query;
-    vector<int> to(n);
-    const int LOG = 35;
-    vector<vector<int>> up(LOG, vector<int>(n));
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    auto sum = reduce(all(vi));
+    if(sum&1) {
+        cout << -1 << nl;
+        return;
+    }
+
+    int k = 0, i = 0, half = sum/2;
+    for(; i < n; i++) {
+        k += vi[i];
+        if(k==half) {
+            cout << 1 << nl;
+            cout << vi << nl;
+            return;
+        }
+        if(k>half) break;
+    }
+    int diff = k - half, other = vi[i] - diff, tmp;
+    vector<int> res = vi;
+    if(diff <= other)  {
+        tmp = diff;
+        for(int j = i-1; j >= 0; j--) {
+            int left = min(tmp, res[j]);
+            res[j]-=left;
+            tmp-=left;
+        }
+        res[i]-=diff;
+    } else {
+        tmp = other;
+        for(int j = i+1; j < n; j++) {
+            int left = min(tmp, res[j]);
+            res[j]-=left;
+            tmp-=left;
+        }
+        res[i]-=other;
+    }
+    if(tmp > 0) {
+        cout << -1 << nl;
+        return;
+    }
+    cout << 2 << nl;
+    cout << res << nl;
     for(int i = 0; i < n; i++) {
-        int dest; cin >> dest;
-        --dest;
-        to[i] = dest;
-        up[0][i] = dest;
+        cout << vi[i] - res[i] << " ";
     }
-
-    for(int i = 1; i < LOG; i++) {
-        for(int j = 0; j < n; j++) {
-            up[i][j] = up[i-1][up[i-1][j]];
-        }
-    }
-
-    auto lift = [&](int u, int d) {
-        for(int i = 0; i < LOG; i++) {
-            if((d >> i) & 1) {
-                u = up[i][u];
-            }
-        }
-        return u;
-    };
-
-    for(int i = 0; i < query; i++) {
-        int x, k; cin >> x >> k;
-        --x;
-        cout << lift(x, k) + 1 << nl;
-    }
+    cout << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

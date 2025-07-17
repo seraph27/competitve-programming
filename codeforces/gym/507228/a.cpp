@@ -1,14 +1,16 @@
-// Problem: Planets Queries I
-// Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1750
-// Time Limit: 1000
-// Start: 2025/07/01 13:01:30
+// Problem: A. Mixologist - Extreme
+// Contest: Mixologist-Ex
+// URL: https://codeforces.com/gym/507228/problem/A
+// Time Limit: 4000
+// Start: Wed Jul  2 04:56:55 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define int long long
+#include <atcoder/convolution>
+#include <atcoder/modint>
+#define ll long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
@@ -48,38 +50,74 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+
 void shiina_mashiro() {
-    int n, query; cin >> n >> query;
-    vector<int> to(n);
-    const int LOG = 35;
-    vector<vector<int>> up(LOG, vector<int>(n));
-    for(int i = 0; i < n; i++) {
-        int dest; cin >> dest;
-        --dest;
-        to[i] = dest;
-        up[0][i] = dest;
-    }
-
-    for(int i = 1; i < LOG; i++) {
-        for(int j = 0; j < n; j++) {
-            up[i][j] = up[i-1][up[i-1][j]];
+    int n, m; cin >> n >> m;
+    vector<int> vi(m);
+    for(int i = 0; i < m; i++) cin >> vi[i];
+    
+    /*
+    //O(nm)
+    vector<mint> dp(n+1, 0), dp2(n+1, 0), pref(n+2, 0);
+    dp[0] = 1;
+    for(int k = 0; k < m; k++) {
+        pref[0] = 0;
+        for(int i = 0; i <= n; i++) {
+            pref[i+1] = pref[i] + dp[i];
         }
-    }
-
-    auto lift = [&](int u, int d) {
-        for(int i = 0; i < LOG; i++) {
-            if((d >> i) & 1) {
-                u = up[i][u];
-            }
+        for(int i = 0; i <= n; i++) {
+            int L = max(0, i - vi[k]);
+            dp2[i] = pref[i+1] - pref[L];
         }
-        return u;
+        swap(dp, dp2);
+    }
+    for(int i = 1; i <= n; i++) {
+        cout << dp[i].v << " ";
+    }
+    */
+    using mint = atcoder::modint998244353;
+    using poly = vector<mint>;
+    poly facs(m+n+5);
+    facs[0] = facs[1] = 1;
+    for(int i = 2; i < sz(facs); i++) facs[i] = facs[i-1] * i; 
+    auto choose = [&](int n_, int k) {
+        return facs[n_] * (facs[n_-k] * facs[k]).inv();
     };
-
-    for(int i = 0; i < query; i++) {
-        int x, k; cin >> x >> k;
-        --x;
-        cout << lift(x, k) + 1 << nl;
+    poly invD(n+1);
+    for(int i = 0; i <= n; i++) {
+        invD[i] = mint(-1).pow(m) * choose(m + i - 1, i);
     }
+    sort(all(vi));
+    auto cmp = [](pair<int, poly> const &a, pair<int, poly> const &b) {
+        return a.first > b.first;
+    };
+    priority_queue<pair<int, poly>, vector<pair<int, poly>>, decltype(cmp)> pq(cmp);
+    auto make = [&](int siz) {
+        int D = min(siz+1, n);
+        poly r(D+1, 0);
+        r[0] = -1;
+        if(siz+1 <= n) r[siz+1] = 1;
+        return r;
+    };
+    for(int a : vi) {
+        auto P = make(a);
+        pq.emplace(sz(P), move(P));
+    }
+    while(sz(pq) > 1) {
+        auto [s1, A] = move(pq.top()); pq.pop();
+        auto [s2, B] = move(pq.top()); pq.pop();
+        poly C = atcoder::convolution(A, B);
+        if(sz(C) > n+1) C.resize(n+1);
+        pq.emplace(sz(C), C);
+    }
+    poly ans = move(pq.top().second);
+    ans.resize(n+1);
+    ans = atcoder::convolution(ans, invD);
+    ans.resize(n+1);
+    for(int i = 1; i <= n; i++) {
+        cout << ans[i].val() << " ";
+    }
+    cout << nl;
 }
 
 signed main() {    

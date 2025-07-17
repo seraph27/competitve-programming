@@ -1,13 +1,14 @@
-// Problem: Planets Queries I
-// Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1750
-// Time Limit: 1000
-// Start: 2025/07/01 13:01:30
+// Problem: F - Socks 4
+// Contest: AtCoder Beginner Contest 412
+// URL: https://atcoder.jp/contests/abc412/tasks/abc412_f
+// Time Limit: 2000
+// Start: Sat Jul  5 01:12:29 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
+#include <atcoder/all>
 #define int long long
 #define sz(x) (int)x.size()
 #define ar array
@@ -15,6 +16,7 @@
 #define pii pair<int, int>
 #define pb push_back
 using namespace std;
+using namespace atcoder;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -48,39 +50,15 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+using mint = modint998244353;
 void shiina_mashiro() {
-    int n, query; cin >> n >> query;
-    vector<int> to(n);
-    const int LOG = 35;
-    vector<vector<int>> up(LOG, vector<int>(n));
-    for(int i = 0; i < n; i++) {
-        int dest; cin >> dest;
-        --dest;
-        to[i] = dest;
-        up[0][i] = dest;
-    }
+    int n, c; cin >> n >> c;
+    mint dp[3001][3001]{};
+    memset(dp, 0, sizeof dp);
 
-    for(int i = 1; i < LOG; i++) {
-        for(int j = 0; j < n; j++) {
-            up[i][j] = up[i-1][up[i-1][j]];
-        }
-    }
 
-    auto lift = [&](int u, int d) {
-        for(int i = 0; i < LOG; i++) {
-            if((d >> i) & 1) {
-                u = up[i][u];
-            }
-        }
-        return u;
-    };
-
-    for(int i = 0; i < query; i++) {
-        int x, k; cin >> x >> k;
-        --x;
-        cout << lift(x, k) + 1 << nl;
-    }
 }
+
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);

@@ -1,8 +1,8 @@
-// Problem: Planets Queries I
+// Problem: Planets Cycles
 // Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1750
+// URL: https://cses.fi/problemset/task/1751
 // Time Limit: 1000
-// Start: 2025/07/01 13:01:30
+// Start: Wed Jul  2 03:50:18 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,37 +49,62 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, query; cin >> n >> query;
+    int n; cin >> n;
     vector<int> to(n);
-    const int LOG = 35;
-    vector<vector<int>> up(LOG, vector<int>(n));
+    vector<int> indeg(n, 0);
+    vector<vector<int>> rev(n);
     for(int i = 0; i < n; i++) {
-        int dest; cin >> dest;
-        --dest;
-        to[i] = dest;
-        up[0][i] = dest;
+        int x; cin >> x;
+        --x;
+        to[i] = x;
+        rev[x].pb(i);
+        indeg[x]++;
     }
 
-    for(int i = 1; i < LOG; i++) {
-        for(int j = 0; j < n; j++) {
-            up[i][j] = up[i-1][up[i-1][j]];
-        }
+    queue<int> bfs;
+    for(int i = 0; i < n; i++) {
+        if(!indeg[i]) bfs.push(i);
+    }
+    while(!bfs.empty()) {
+        auto f = bfs.front(); bfs.pop();
+        int nxt = to[f];
+        indeg[nxt]--;
+        if(indeg[nxt] == 0) bfs.push(nxt);
     }
 
-    auto lift = [&](int u, int d) {
-        for(int i = 0; i < LOG; i++) {
-            if((d >> i) & 1) {
-                u = up[i][u];
+    vector<int> vis(n, 0);
+    vector<vector<int>> cycles;
+    vector<int> siz(n, -1);
+    for(int i = 0; i < n; i++) {
+        vector<int> cyc;
+        if(!vis[i] && indeg[i] == 1) {
+            for(auto cur = i; !vis[cur]; cur = to[cur]) {
+                vis[cur] = 1;
+                cyc.pb(cur);
             }
         }
-        return u;
-    };
-
-    for(int i = 0; i < query; i++) {
-        int x, k; cin >> x >> k;
-        --x;
-        cout << lift(x, k) + 1 << nl;
+        if(sz(cyc)) {
+            for(auto x : cyc) siz[x] = sz(cyc);
+            cycles.pb(cyc);
+        }
     }
+
+    queue<int> bfs2;
+    for(int i = 0; i < n; i++) {
+        if(vis[i]) bfs2.push(i);
+    }
+    while(!bfs2.empty()) {
+        auto f = bfs2.front(); bfs2.pop();
+        for(auto &e : rev[f]) {
+            if(siz[e] == -1) {
+                siz[e] = siz[f] + 1;
+            }
+            if(!vis[e]) bfs2.push(e);
+        }
+    }
+    for(auto x : siz) cout << x << " ";
+    cout << nl;
+
 }
 
 signed main() {    
