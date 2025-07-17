@@ -1,8 +1,8 @@
-// Problem: De Bruijn Sequence
+// Problem: Teleporters Path
 // Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1692
+// URL: https://cses.fi/problemset/task/1693
 // Time Limit: 1000
-// Start: Wed Jul 16 16:50:40 2025
+// Start: Wed Jul 16 21:50:20 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -48,42 +48,48 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-struct Edge {
-    int to, rev;
-};
 void shiina_mashiro() {
-    //00110
-    //3: 000111010
-    //4: 0000111100110010
-    int n; cin >> n;
-    int N = 1 << (n-1);
-    vector<vector<int>> adj(N);
-
-    for(int u = 0; u < N; u++) {
-        for(auto &b : {0, 1}) {
-            int v = ((u << 1) & (N - 1)) | b;
-            adj[u].pb(v);
+    int n, m; cin >> n >> m;
+    vector<vector<int>> adj(n);
+    vector<int> indeg(n), outdeg(n);
+    for(int i = 0; i < m; i++) {
+        int a, b; cin >> a >> b;
+        --a; --b;
+        adj[a].pb(b);
+        indeg[b]++;
+        outdeg[a]++;
+    }
+    for(int i = 0; i < n; i++) {
+        if (i == 0) {
+            if (outdeg[i] != indeg[i] + 1) { cout << "IMPOSSIBLE" << nl; return; }
+        } else if (i == n-1) {
+            if (indeg[i] != outdeg[i] + 1) { cout << "IMPOSSIBLE" << nl; return; }
+        } else {
+            if (indeg[i] != outdeg[i])     { cout << "IMPOSSIBLE" << nl; return; }
         }
     }
 
-    vector<int> euler, it(N, 0);
-    vector<int> st = {0};
-
+    vector<int> st, euler, it(n, 0);
+    st.pb(0);
     while(!st.empty()) {
         auto tp = st.back();
         if(it[tp] < sz(adj[tp])) {
-            int v = adj[tp][it[tp]++];
-            st.pb(v);
+            auto &e = adj[tp][it[tp]++];
+            st.pb(e);
         } else {
-            euler.pb(tp);
+            euler.pb(tp + 1);
             st.pop_back();
         }
     }
     reverse(all(euler));
-    auto start = euler[0];
-    for (int i = n-2; i >= 0; i--) cout << ((start>>i)&1);
-    for(int i = 1; i < sz(euler); i++) cout << (euler[i]&1);
-    cout << nl;
+    debug(euler);
+    if(sz(euler) != m+1) {
+        cout << "IMPOSSIBLE" << nl;
+        return;
+    }
+
+    cout << euler << nl;
+    
 }
 
 signed main() {    

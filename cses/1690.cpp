@@ -1,8 +1,8 @@
-// Problem: De Bruijn Sequence
+// Problem: Hamiltonian Flights
 // Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1692
+// URL: https://cses.fi/problemset/task/1690
 // Time Limit: 1000
-// Start: Wed Jul 16 16:50:40 2025
+// Start: Wed Jul 16 23:19:00 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -48,42 +48,29 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-struct Edge {
-    int to, rev;
-};
 void shiina_mashiro() {
-    //00110
-    //3: 000111010
-    //4: 0000111100110010
-    int n; cin >> n;
-    int N = 1 << (n-1);
-    vector<vector<int>> adj(N);
-
-    for(int u = 0; u < N; u++) {
-        for(auto &b : {0, 1}) {
-            int v = ((u << 1) & (N - 1)) | b;
-            adj[u].pb(v);
+    int n, m; cin >> n >> m;
+    vector<vector<int>> adj(n);
+    for(int i = 0; i < m; i++) {
+        int u, v; cin >> u >> v;
+        --u; --v;
+        adj[u].pb(v);
+    }
+    const int MOD = 1e9+7;
+    vector<vector<int>> dp(1 << n, vector<int>(n));
+    dp[1][0] = 1;
+    for(int msk = 0; msk < (1 << n); msk++) {
+        if(!(msk&1)) continue;
+        for(int u = 0; u < n; u++) if((msk >> u) & 1) {
+            for(auto &v : adj[u]) {
+                if(!((msk >> v) & 1)) {
+                    dp[msk | (1 << v)][v] += dp[msk][u];
+                    if(dp[msk | (1 << v)][v] >= 1e9+7) dp[msk | (1 << v)][v] %= MOD;
+                }
+            }
         }
     }
-
-    vector<int> euler, it(N, 0);
-    vector<int> st = {0};
-
-    while(!st.empty()) {
-        auto tp = st.back();
-        if(it[tp] < sz(adj[tp])) {
-            int v = adj[tp][it[tp]++];
-            st.pb(v);
-        } else {
-            euler.pb(tp);
-            st.pop_back();
-        }
-    }
-    reverse(all(euler));
-    auto start = euler[0];
-    for (int i = n-2; i >= 0; i--) cout << ((start>>i)&1);
-    for(int i = 1; i < sz(euler); i++) cout << (euler[i]&1);
-    cout << nl;
+    cout << dp[(1 << n)-1][n-1] << nl;
 }
 
 signed main() {    

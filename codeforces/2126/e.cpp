@@ -1,8 +1,8 @@
-// Problem: De Bruijn Sequence
-// Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1692
-// Time Limit: 1000
-// Start: Wed Jul 16 16:50:40 2025
+// Problem: E. G-C-D, Unlucky!
+// Contest: Codeforces Round 1037 (Div. 3)
+// URL: https://codeforces.com/contest/2126/problem/E
+// Time Limit: 2000
+// Start: Thu Jul 17 08:25:45 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -48,49 +48,58 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-struct Edge {
-    int to, rev;
-};
 void shiina_mashiro() {
-    //00110
-    //3: 000111010
-    //4: 0000111100110010
     int n; cin >> n;
-    int N = 1 << (n-1);
-    vector<vector<int>> adj(N);
-
-    for(int u = 0; u < N; u++) {
-        for(auto &b : {0, 1}) {
-            int v = ((u << 1) & (N - 1)) | b;
-            adj[u].pb(v);
+    vector<int> p(n), s(n);
+    for(auto&a: p) cin >> a;
+    for(auto&a: s) cin >> a;
+    if(n==1 && p[0]!=s[0]) {cout << "No" << nl; return;}
+    for(int i = 0; i < n-1; i++) {
+        if(p[i+1] > p[i]) {
+            cout << "No" << nl;
+            return;
+        }
+        if(s[i+1] < s[i]) {
+            cout << "No" << nl;
+            return;
+        }
+        if(p[i]%p[i+1] != 0) {
+            cout << "No" << nl;
+            return;
+        }
+        if(s[i+1]%s[i] != 0) {
+            cout << "No" << nl;
+            return;
         }
     }
-
-    vector<int> euler, it(N, 0);
-    vector<int> st = {0};
-
-    while(!st.empty()) {
-        auto tp = st.back();
-        if(it[tp] < sz(adj[tp])) {
-            int v = adj[tp][it[tp]++];
-            st.pb(v);
-        } else {
-            euler.pb(tp);
-            st.pop_back();
+    vector<int> chk(n);
+    for(int i = 0; i < n; i++) {
+        chk[i] = lcm(s[i], p[i]);
+    }
+    int pref = chk[0];
+    for(int i= 1; i < n; i++) {
+        pref = gcd(pref, chk[i]);
+        if(pref != p[i]) {
+            cout << "No" << nl;
+            return;
         }
     }
-    reverse(all(euler));
-    auto start = euler[0];
-    for (int i = n-2; i >= 0; i--) cout << ((start>>i)&1);
-    for(int i = 1; i < sz(euler); i++) cout << (euler[i]&1);
-    cout << nl;
+    int suf = chk[n-1];
+    for(int i = n-2; i >= 0; i--) {
+        suf = gcd(suf, chk[i]);
+        if(suf != s[i]) {
+            cout << "No" << nl;
+            return;
+        }
+    }
+    cout << "Yes" << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 
