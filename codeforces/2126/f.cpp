@@ -1,8 +1,8 @@
-// Problem: De Bruijn Sequence
-// Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1692
-// Time Limit: 1000
-// Start: Wed Jul 16 16:50:40 2025
+// Problem: F. 1-1-1, Free Tree!
+// Contest: Codeforces Round 1037 (Div. 3)
+// URL: https://codeforces.com/contest/2126/problem/F
+// Time Limit: 4000
+// Start: Thu Jul 17 09:07:17 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -48,49 +48,78 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-struct Edge {
-    int to, rev;
-};
 void shiina_mashiro() {
-    //00110
-    //3: 000111010
-    //4: 0000111100110010
-    int n; cin >> n;
-    int N = 1 << (n-1);
-    vector<vector<int>> adj(N);
+    int n, q; cin >> n >> q;
+    vector<int> color(n);
+    for(int i = 0; i < n; i++) cin >> color[i];
 
-    for(int u = 0; u < N; u++) {
-        for(auto &b : {0, 1}) {
-            int v = ((u << 1) & (N - 1)) | b;
-            adj[u].pb(v);
+    vector<vector<pii>> adj(n);
+    vector<int> deg(n);
+    int ans = 0;
+    for(int i = 0; i < n-1; i++) {
+        int u, v, c; cin >> u >> v >> c;
+        --u; --v;
+        if(color[u] != color[v]) ans+=c;
+        adj[u].pb({v, c});
+        adj[v].pb({u, c});
+        deg[u]++;
+        deg[v]++;
+    }
+    const int B = 444;
+    vector<int> heavy;
+    for(int i = 0; i < n; i++) if(deg[i] > B) heavy.pb(i);
+
+    auto getidx = [&](int x) -> int {
+        return lower_bound(all(heavy), x) - heavy.begin();
+    };
+    vector<map<int, int>> heavy_color(sz(heavy));
+    vector<vector<pii>> heavy_adj(sz(heavy));
+    for(int i = 0; i < sz(heavy); i++) {
+        auto v = heavy[i];
+        for(auto&[e, c]: adj[v]) {
+            heavy_color[i][color[e]]+=c;
+            if(deg[e] > B){
+                heavy_adj[i].pb({e, c});
+            }
         }
     }
 
-    vector<int> euler, it(N, 0);
-    vector<int> st = {0};
-
-    while(!st.empty()) {
-        auto tp = st.back();
-        if(it[tp] < sz(adj[tp])) {
-            int v = adj[tp][it[tp]++];
-            st.pb(v);
-        } else {
-            euler.pb(tp);
-            st.pop_back();
+    for(;q--;) {
+        int v, x; cin >> v >> x;
+        --v;
+        int old = color[v];
+        if(old != x) {
+            if(deg[v] > B) {
+                auto idx = getidx(v);
+                ans += heavy_color[idx][old];
+                ans -= heavy_color[idx][x];
+                for(auto&[e, c] : heavy_adj[idx]) {
+                    auto idx = getidx(e);
+                    heavy_color[idx][old] -= c;
+                    heavy_color[idx][x] += c;
+                }
+            } else {
+                for(auto&[e, c] : adj[v]) {
+                    if(color[e] == x) ans-=c;
+                    if(color[e] == old) ans+=c;
+                    if(deg[e] > B) {
+                        auto idx = getidx(e);
+                        heavy_color[idx][old]-=c;
+                        heavy_color[idx][x]+=c;
+                    }
+                }
+            }
+            color[v] = x;
         }
+        cout << ans << nl;
     }
-    reverse(all(euler));
-    auto start = euler[0];
-    for (int i = n-2; i >= 0; i--) cout << ((start>>i)&1);
-    for(int i = 1; i < sz(euler); i++) cout << (euler[i]&1);
-    cout << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 
