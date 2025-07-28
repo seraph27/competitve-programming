@@ -50,69 +50,59 @@ const char nl = '\n';
 
 void shiina_mashiro() {
     int n, q; cin >> n >> q;
-    vector<int> color(n);
-    for(int i = 0; i < n; i++) cin >> color[i];
-
-    vector<vector<pii>> adj(n);
-    vector<int> deg(n);
+    vector<int> color(n+1);
+    for(int i = 1; i <= n; i++) cin >> color[i];
+    
+    vector<vector<pii>> adj(n+1), heavy_adj(n+1);
+    vector<int> deg(n+1), a(n+1), id(n+1);
     int ans = 0;
     for(int i = 0; i < n-1; i++) {
-        int u, v, c; cin >> u >> v >> c;
-        --u; --v;
-        if(color[u] != color[v]) ans+=c;
-        adj[u].pb({v, c});
-        adj[v].pb({u, c});
+        int u, v, w; cin >> u >> v >> w;
+        ans += (color[u] != color[v]) * w;
+        adj[u].pb({v, w});
+        adj[v].pb({u, w});
         deg[u]++;
         deg[v]++;
     }
-    const int B = 444;
-    vector<int> heavy;
-    for(int i = 0; i < n; i++) if(deg[i] > B) heavy.pb(i);
+    const int B = 1500;
+    int big = 0;
 
-    auto getidx = [&](int x) -> int {
-        return lower_bound(all(heavy), x) - heavy.begin();
-    };
-    vector<map<int, int>> heavy_color(sz(heavy));
-    vector<vector<pii>> heavy_adj(sz(heavy));
-    for(int i = 0; i < sz(heavy); i++) {
-        auto v = heavy[i];
-        for(auto&[e, c]: adj[v]) {
-            heavy_color[i][color[e]]+=c;
-            if(deg[e] > B){
-                heavy_adj[i].pb({e, c});
+    for(int i = 1; i <= n; i++) {
+        if(deg[i] > B) id[i] = big++;
+        for(auto &[e, w] : adj[i]) {
+            if(deg[e] > B) {
+                heavy_adj[i].pb({e, w});
             }
         }
     }
 
-    for(;q--;) {
-        int v, x; cin >> v >> x;
-        --v;
-        int old = color[v];
-        if(old != x) {
-            if(deg[v] > B) {
-                auto idx = getidx(v);
-                ans += heavy_color[idx][old];
-                ans -= heavy_color[idx][x];
-                for(auto&[e, c] : heavy_adj[idx]) {
-                    auto idx = getidx(e);
-                    heavy_color[idx][old] -= c;
-                    heavy_color[idx][x] += c;
-                }
-            } else {
-                for(auto&[e, c] : adj[v]) {
-                    if(color[e] == x) ans-=c;
-                    if(color[e] == old) ans+=c;
-                    if(deg[e] > B) {
-                        auto idx = getidx(e);
-                        heavy_color[idx][old]-=c;
-                        heavy_color[idx][x]+=c;
-                    }
-                }
-            }
-            color[v] = x;
+    vector<vector<int>> clr(big, vector<int>(n+1));
+    for(int i = 1; i <= n; i++) if(deg[i] > B) {
+        for(auto &[e, w] : adj[i]) {
+            clr[id[i]][color[e]] += w;
         }
+    }
+
+    while(q--) {
+        int v, x; cin >> v >> x;
+        if(deg[v] > B) {
+            ans += clr[id[v]][color[v]];
+            ans -= clr[id[v]][x];
+        } else {
+            for(auto&[e, w] : adj[v]) {
+                ans -= (color[e] != color[v]) * w;
+                ans += (color[e] != x) * w;
+            }
+        }
+        for(auto&[e, w] : heavy_adj[v]) {
+            clr[id[e]][x]+=w;
+            clr[id[e]][color[v]]-=w;
+        }
+
+        color[v] = x;
         cout << ans << nl;
     }
+
 }
 
 signed main() {    

@@ -1,8 +1,8 @@
-// Problem: B. Preparing for Merge Sort
-// Contest: 2017-2018 ACM-ICPC, NEERC, Southern Subregional Contest, qualification stage (Online Mirror, ACM-ICPC Rules, Teams Preferred)
-// URL: https://codeforces.com/contest/847/problem/B
+// Problem: B. Warehouse
+// Contest: Codeforces Beta Round 35 (Div. 2)
+// URL: https://codeforces.com/contest/35/problem/B
 // Time Limit: 2000
-// Start: 2025/05/30 14:13:42
+// Start: Wed Jul 23 02:22:24 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -27,6 +27,7 @@ void sort_unique(vector<T> &vec){
     sort(vec.begin(),vec.end());
     vec.resize(unique(vec.begin(),vec.end())-vec.begin());
 }
+template<typename T> ostream& operator<<(ostream& os, const vector<T>& v) {for (auto &x : v) os << x << " "; return os;}
 
 #ifdef MISAKA
 struct _debug {
@@ -48,45 +49,46 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n; cin >> n;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) {
-        cin >> vi[i];
-    }
-
-    vector<vector<int>> v(n);
-    vector<int> end(n);
-
-    for(int i = 0; i < n; i++) {
-        int x = vi[i];
-        if(i==0) {
-            v[n-1].pb(x);
-            end[n-1] = x;
-        } else {
-            int L = 0, R = n-1, ans = 0;
-            while(L<=R) {
-                int m = (L+R)/2;
-                if(end[m] < x) {
-                    ans = m;
-                    L = m + 1;
-                } else {
-                    R = m - 1;
+    int n, m; cin >> n >> m;
+    int q; cin >> q;
+    bool vis[30][30];
+    memset(vis, 0, sizeof vis);
+    
+    map<string, pii> mp;
+    for(int i = 0; i < q; i++) {
+        string type; cin >> type;
+        if(type == "+1") {
+            int x, y; cin >> x >> y;
+            string s; cin >> s;
+            --x; --y;
+            int ok = 0;
+            for(int j = x; j < n; j++) {
+                for(int k = (j==x ? y : 0); k < m; k++) {
+                    if(!vis[j][k]) {
+                        mp[s] = {j, k};
+                        vis[j][k] = 1;
+                        ok = 1;
+                        break;
+                    }
                 }
+                if(ok) break;
             }
-            v[ans].pb(x);
-            end[ans] = x;
+        } else {
+            string s; cin >> s;
+            if(!mp.count(s) || mp[s].first == -1) {
+                cout << -1 << " " << -1 << nl;
+            } else {
+                vis[mp[s].first][mp[s].second] = 0;
+                cout << mp[s].first + 1 << " " << mp[s].second + 1<< nl;
+            }
+            mp[s] = {-1, -1};
         }
     }
-    for(int i = n-1; i >= 0; i--) {
-        for(auto x : v[i]) cout << x << " ";
-        cout << nl;
-    }
-
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
+    //freopen("input.in","r",stdin); freopen("output.out","w",stdout);
     int t = 1;
     //cin >> t;
     while (t--) shiina_mashiro();

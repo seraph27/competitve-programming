@@ -1,8 +1,8 @@
-// Problem: C. Heavy Intervals
-// Contest: Test contest
-// URL: https://codeforces.com/group/Xa9FknAMM5/contest/612668/problem/C
+// Problem: C. LIS or Reverse LIS?
+// Contest: Codeforces Round 793 (Div. 2)
+// URL: https://codeforces.com/contest/1682/problem/C
 // Time Limit: 1000
-// Start: 2025/05/28 9:09:20
+// Start: Mon Jul 21 23:39:09 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -27,11 +27,11 @@ void sort_unique(vector<T> &vec){
     sort(vec.begin(),vec.end());
     vec.resize(unique(vec.begin(),vec.end())-vec.begin());
 }
+template<typename T> ostream& operator<<(ostream& os, const vector<T>& v) {for (auto &x : v) os << x << " "; return os;}
 
 #ifdef MISAKA
 struct _debug {
-template<typename T, size_t N>
-static void __print(const T (&a)[N]) {cerr << '{';for (size_t i = 0; i < N; ++i) {if (i) cerr << ',';__print(a[i]);}cerr << '}';}
+template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
     if constexpr (is_convertible_v<T, string> || is_fundamental_v<T>) cerr << x;
     else { cerr << '{'; int f{}; for (auto i : x) cerr << (f++?",":""), __print(i); cerr << '}'; }
@@ -49,32 +49,19 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    
     int n; cin >> n;
-    vector<int> l(n), c(n);
-    multiset<int> r;
-    for(auto&a : l) cin >> a;
-    for(int i = 0; i < n; i++) {
-        int x; cin >> x;
-        r.insert(x);
-    }
-    for(auto&a : c) cin >> a;
-
-    sort(all(l));
-    sort(all(c));
-    
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    auto mx = *max_element(all(vi));
+    map<int, int> freq;
+    for(auto&x: vi) freq[x]++;
     int ans = 0;
-    vector<int> segs;
-    for(int i = n-1; i>=0; i--) {
-        auto it = r.lower_bound(l[i]);
-        segs.pb(*it - l[i]);
-        r.erase(it);
+    int left = 0;
+    for(auto &[k, v] : freq) {
+        if(v >= 2) ans++;
+        left += (v==1);
     }
-    sort(all(segs), greater<int>());
-    for(int i = 0; i < n; i++) {
-        ans += segs[i] * c[i];
-    }
-    cout << ans << nl;
+    cout << ans + (left+1)/2 << nl;
 }
 
 signed main() {    
