@@ -1,8 +1,8 @@
-// Problem: A. Infinite Sequence
-// Contest: Codeforces Round 353 (Div. 2)
-// URL: https://codeforces.com/contest/675/problem/A
+// Problem: Hotel Queries
+// Contest: CSES Problem Set
+// URL: https://cses.fi/problemset/task/1143
 // Time Limit: 1000
-// Start: Wed Jul 23 02:16:07 2025
+// Start: Wed Jul 30 00:08:18 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -48,16 +48,79 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+struct segtree {
+    int n, siz;
+    vector<int> tr;
+    
+    segtree(int _n) : n(_n) {
+        siz = 1;
+        while(siz < n) siz <<= 1;
+        tr.assign(2 * siz, 0);
+    };
+
+    void build(vector<int> &v) {
+        for(int i = 0; i < n; i++) {
+            tr[i + siz] = v[i];
+        }
+        for(int i = siz-1; i > 0; i--) {
+            tr[i] = max(tr[i << 1], tr[i << 1 | 1]);
+        }
+    }
+
+    int query(int l, int r) {
+        int res = 0;
+        for(l+=siz, r+=siz; l <= r; l>>=1, r>>=1) {
+            if(l&1) ckmax(res, tr[l++]);
+            if(!(r&1)) ckmax(res, tr[--r]);
+        }
+        return res;
+    }
+    void update(int pos, int x) {
+        int i = pos+siz;
+        tr[i] = x;
+        for(i>>=1; i > 0; i >>= 1) {
+            tr[i] = max(tr[i << 1], tr[i << 1 | 1]);
+        }
+    }
+
+    int search(int x) {
+        if(tr[1] < x) return n;
+        int p = 1;
+        while(p < siz) {
+            debug(p);
+            debug(tr[p<<1]);
+            if(tr[p<<1] >= x) p = p << 1;
+            else p = p << 1 | 1;
+        }
+        return (p - siz < n ? p - siz : n);
+    }
+};
 void shiina_mashiro() {
-    int a, b; cin >> a >> b;
-    cout << a + b << nl;
+    int n, m; cin >> n >> m;
+    vector<int> h(n);
+    for(auto&a: h) cin >> a;
+
+    segtree seg(n);
+    seg.build(h);
+
+    for(int i = 0; i < m; i++) {
+        int x; cin >> x;
+        auto get = seg.search(x);
+        cout << (get == n ? 0 : get + 1) << " ";
+        if(get != n) {
+            h[get]-=x;
+            seg.update(get, h[get]);
+        }
+    }
+
+
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
 

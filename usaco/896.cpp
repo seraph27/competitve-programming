@@ -1,8 +1,8 @@
-// Problem: A. Infinite Sequence
-// Contest: Codeforces Round 353 (Div. 2)
-// URL: https://codeforces.com/contest/675/problem/A
-// Time Limit: 1000
-// Start: Wed Jul 23 02:16:07 2025
+// Problem: Problem 3. Mountain View
+// Contest: USACO 2019 January Contest, Silver
+// URL: https://usaco.org/index.php?page=viewproblem2&cpid=896
+// Time Limit: 4000
+// Start: Tue Jul 29 14:13:12 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,15 +49,33 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int a, b; cin >> a >> b;
-    cout << a + b << nl;
+    int n; cin >> n;
+    vector<pii> vi(n);
+    for(int i = 0; i < n; i++) {
+        int x, y; cin >> x >> y;
+        vi[i] = {x-y, y};
+    }
+    sort(all(vi), [&](auto&a, auto&b){
+        if(a.first == b.first) return a.second > b.second;
+        return a.first < b.first;
+    });
+
+    int mxX = 0, ans = 0;
+    for(int i = 0; i < n; i++) {
+        auto [x, y] = vi[i];
+        if(ckmax(mxX, x + 2*y)) {
+            ans++;
+        }
+    }
+    cout << ans << nl;
+    debug(vi);
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
+    freopen("mountains.in","r",stdin); freopen("mountains.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
 

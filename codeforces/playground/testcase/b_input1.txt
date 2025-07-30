@@ -1,9 +1,0 @@
-2 2 8
-+1 1 1 cola
--1 cola
-+1 1 1 fanta
--1 fanta
-+1 1 1 sevenup
--1 sevenup
-+1 1 1 whitekey
--1 whitekey

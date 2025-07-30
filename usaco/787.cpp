@@ -1,8 +1,8 @@
-// Problem: A. Infinite Sequence
-// Contest: Codeforces Round 353 (Div. 2)
-// URL: https://codeforces.com/contest/675/problem/A
-// Time Limit: 1000
-// Start: Wed Jul 23 02:16:07 2025
+// Problem: Problem 2. Rental Service
+// Contest: USACO 2018 January Contest, Silver
+// URL: https://usaco.org/index.php?page=viewproblem2&cpid=787
+// Time Limit: 4000
+// Start: Mon Jul 28 23:31:09 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,15 +49,62 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int a, b; cin >> a >> b;
-    cout << a + b << nl;
+    int n, m; cin >> n >> m;
+    int r; cin >> r;
+    vector<int> vi(n);
+    for(int i = 0; i < n; i++) cin >> vi[i];
+    
+    vector<pii> store(m);
+    for(int i = 0; i < m; i++) {
+        int x, y; cin >> x >> y;
+        store[i] = {y, x};
+    }
+
+    vector<int> rent(r);
+    for(int i = 0; i < r; i++) cin >> rent[i];
+    sort(all(vi), greater<int>());
+    sort(all(store), greater<pii>());
+    sort(rent.rbegin(), rent.rend());
+
+    vector<int> sell(n+2, 0);
+    
+    int idx = 0;
+    for(int i = 1; i <= n; i++) {
+        int milk = vi[i-1];
+        while(idx < m) {
+            auto [price, cnt] = store[idx];
+            if(milk >= cnt) {
+                sell[i] += cnt * price;
+                milk -= cnt;
+                idx++;
+            } else {
+                sell[i] += milk * price;
+                store[idx].second-=milk;
+                break;
+            }
+        }
+        sell[i+1]+=sell[i];
+    }
+
+    vector<int> rpt(r+1, 0); //rent profit
+    for(int i = 1; i <= r; i++) {
+        rpt[i] = rpt[i-1] + rent[i-1];
+    }
+
+    int best = 0;
+    for(int i = 0; i <= min(n, r); i++) {
+        int left = n - i;
+        auto tot = rpt[i] + sell[left];
+        ckmax(best, tot);
+    }
+    cout << best << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
+    freopen("rental.in","r",stdin); freopen("rental.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
 

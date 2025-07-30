@@ -1,8 +1,8 @@
-// Problem: A. Infinite Sequence
-// Contest: Codeforces Round 353 (Div. 2)
-// URL: https://codeforces.com/contest/675/problem/A
-// Time Limit: 1000
-// Start: Wed Jul 23 02:16:07 2025
+// Problem: Problem 1. Splitting the Field
+// Contest: USACO 2016 US Open Contest, Gold
+// URL: https://usaco.org/index.php?page=viewproblem2&cpid=645
+// Time Limit: 4000
+// Start: Tue Jul 29 16:47:54 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,15 +49,62 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int a, b; cin >> a >> b;
-    cout << a + b << nl;
+    int n; cin >> n;
+    vector<pii> pts(n), pts2(n);
+
+    for(int i = 0; i < n; i++) {
+        int x, y; cin >> x >> y;
+        pts[i] = {x, y};
+        pts2[i] = {y, x};
+    }
+
+    sort(all(pts));
+    sort(all(pts2));
+    int orig;
+    auto f = [&](auto &points) -> int {
+        int mnx = 4e18, mny = 4e18, mxx = 1, mxy = 1;
+        for(auto&a : points) {
+            ckmax(mxx, a.first);
+            ckmax(mxy, a.second);
+            ckmin(mnx, a.first);
+            ckmin(mny, a.second);
+        }
+        debug(mxx, mxy, mnx, mny);
+        int ans = (mxx-mnx) * (mxy-mny);
+        orig = ans;
+        multiset<int> y;
+        for(auto&a: points) y.insert(a.second);
+        debug(points);
+        multiset<int> y2;
+        int idx = 0;
+        while(idx < n) {
+            auto [fi, se] = points[idx];
+            idx++;
+            y2.insert(se);
+            debug(y, y2, fi, se);
+            y.erase(y.find(se));
+            while(idx < n && points[idx].first == fi) {
+                auto [_f, s] = points[idx];
+                y2.insert(s);
+                y.erase(y.find(s));
+                idx++;
+            }
+            int nxtx = idx < n ? points[idx].first : mxx;
+            int curry = sz(y2) ? *y2.rbegin() - *y2.begin() : 0;
+            int nxty = sz(y) ? *y.rbegin() - *y.begin() : 0;
+            ckmin(ans, (fi - mnx) * curry + (mxx - nxtx) * nxty);
+        }
+        return ans;
+    };
+    auto mn = min(f(pts), f(pts2));
+    cout << orig - mn << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
+    //freopen("split.in","r",stdin); freopen("split.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
 

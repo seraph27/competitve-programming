@@ -1,8 +1,8 @@
-// Problem: A. Infinite Sequence
-// Contest: Codeforces Round 353 (Div. 2)
-// URL: https://codeforces.com/contest/675/problem/A
-// Time Limit: 1000
-// Start: Wed Jul 23 02:16:07 2025
+// Problem: Problem 2. Convention II
+// Contest: USACO 2018 December Contest, Silver
+// URL: https://usaco.org/index.php?page=viewproblem2&cpid=859
+// Time Limit: 4000
+// Start: Tue Jul 29 17:45:37 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,15 +49,48 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int a, b; cin >> a >> b;
-    cout << a + b << nl;
+    int n; cin >> n;
+    vector<ar<int, 3>> vi(n);
+    for(int i = 0; i < n; i++) {
+        int a, t; cin >> a >> t;
+        vi[i] = {a, t, i};
+    }
+
+    auto op = [&](ar<int, 3>&a, ar<int, 3>&b) {
+        if(a[0] == b[0]) return a[2] < b[2];
+        return a[0] < b[0];
+    };
+    sort(all(vi), op);
+
+    int ans = 0;
+    priority_queue<ar<int, 3>, vector<ar<int, 3>>, greater<ar<int, 3>>> pq;
+    int idx = 0, time = 0;
+    while(idx < n) {
+        if(pq.empty()) {
+            ckmax(time, vi[idx][0]);
+            pq.push({vi[idx][2], vi[idx][0], vi[idx][1]});
+            idx++;
+        }
+        while(!pq.empty()) {
+            auto [id, arrive, t] = pq.top(); pq.pop();
+            ckmax(ans, time - arrive);
+            debug(id, time, arrive);
+            time += t;
+            while(idx < n && vi[idx][0] <= time) {
+                pq.push({vi[idx][2], vi[idx][0], vi[idx][1]});
+                debug(vi[idx]);
+                idx++;
+            }
+        }
+    }
+    cout << ans << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
+    freopen("convention2.in","r",stdin); freopen("convention2.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
 

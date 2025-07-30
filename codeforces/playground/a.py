@@ -1,7 +1,13 @@
-a = int(input());
+import sys
 
-if(a > 9223372036854775807): print("BigInteger")
-elif(a > 2147483647): print("long")
-elif(a > 32767): print("int")
-elif(a > 127): print("short")
-else: print("byte")
+def solve():
+    a, b = map(int, input().split())
+    print(a + b)
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        solve()
+
+if __name__ == "__main__":
+    main()
