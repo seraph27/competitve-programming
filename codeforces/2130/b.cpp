@@ -1,8 +1,8 @@
-// Problem: Graph Paths II
-// Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1724
+// Problem: B. Pathless
+// Contest: Codeforces Round 1040 (Div. 2)
+// URL: https://codeforces.com/contest/2130/problem/B
 // Time Limit: 1000
-// Start: Thu Jul 31 15:44:32 2025
+// Start: Thu Jul 31 22:50:21 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -48,67 +48,37 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-struct matrix{
-    int n;
-    vector<vector<int>> mat;
-
-    matrix(int siz, bool id = false) : n(siz), mat(siz, vector<int>(siz, 3e18)) {
-        if(id) {
-            for(int i = 0; i < n; i++) mat[i][i] = 0;
-        }
-    }
-
-    void add(int a, int b, int c) {
-        ckmin(mat[a][b], c);
-    }
-
-    matrix operator*(const matrix &rhs) const {
-        matrix res(n);
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
-                __int128 acc = 3e18;
-                for (int k = 0; k < n; ++k) {
-                    ckmin(acc, __int128(mat[i][k]) + rhs.mat[k][j]);
-                }
-                res.mat[i][j] = acc;
-            }
-        }
-        return res;
-    }
-
-    void exp(int p) {
-        matrix res(n, true);
-        matrix base = *this;
-        while(p > 0) {
-            if(p & 1) res = res * base;
-            base = base * base;
-            p >>=1;
-        }
-        mat = std::move(res.mat);
-    }
-};
-
 void shiina_mashiro() {
-    int n, m, k; cin >> n >> m >> k;
-    
-    matrix M(n);
-    for(int i = 0; i < m; i++) {
-        int a, b, c; cin >> a >> b >> c;
-        --a; --b;
-        M.add(a, b, c);
+    int n, s; cin >> n >> s;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+    auto sum = reduce(all(vi));
+    if(sum > s) {
+        cout << vi << nl;
+        return;
     }
+    if(sum == s) {
+        cout << -1 << nl;
+        return;
+    }
+    if(s - sum == 1) {
+        ar<int, 3> freq{};
+        for(int i = 0; i < n; i++) freq[vi[i]]++;
+        for(int i = 0; i < freq[1]; i++) cout << 1 << " ";
+        for(int i = 0; i < freq[2]; i++) cout << 2 << " ";
+        for(int i = 0; i < freq[0]; i++) cout << 0 << " ";
+        cout << nl;
+        return;
+    }
+    cout << -1 << nl;
 
-    M.exp(k);
-    auto get = M.mat[0][n-1];
-    cout << (get > 2e18 ? -1 : get) << nl;
-    
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

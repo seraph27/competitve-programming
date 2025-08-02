@@ -1,8 +1,8 @@
-// Problem: Graph Paths II
-// Contest: CSES Problem Set
-// URL: https://cses.fi/problemset/task/1724
-// Time Limit: 1000
-// Start: Thu Jul 31 15:44:32 2025
+// Problem: E1. Interactive RBS (Easy Version)
+// Contest: Codeforces Round 1040 (Div. 2)
+// URL: https://codeforces.com/contest/2130/problem/E1
+// Time Limit: 2000
+// Start: Fri Aug  1 01:10:43 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -48,67 +48,38 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-struct matrix{
-    int n;
-    vector<vector<int>> mat;
-
-    matrix(int siz, bool id = false) : n(siz), mat(siz, vector<int>(siz, 3e18)) {
-        if(id) {
-            for(int i = 0; i < n; i++) mat[i][i] = 0;
-        }
-    }
-
-    void add(int a, int b, int c) {
-        ckmin(mat[a][b], c);
-    }
-
-    matrix operator*(const matrix &rhs) const {
-        matrix res(n);
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
-                __int128 acc = 3e18;
-                for (int k = 0; k < n; ++k) {
-                    ckmin(acc, __int128(mat[i][k]) + rhs.mat[k][j]);
-                }
-                res.mat[i][j] = acc;
-            }
-        }
-        return res;
-    }
-
-    void exp(int p) {
-        matrix res(n, true);
-        matrix base = *this;
-        while(p > 0) {
-            if(p & 1) res = res * base;
-            base = base * base;
-            p >>=1;
-        }
-        mat = std::move(res.mat);
-    }
-};
-
 void shiina_mashiro() {
-    int n, m, k; cin >> n >> m >> k;
-    
-    matrix M(n);
-    for(int i = 0; i < m; i++) {
-        int a, b, c; cin >> a >> b >> c;
-        --a; --b;
-        M.add(a, b, c);
+    int n; cin >> n;
+
+    auto ask = [&](int k, int l, int r) -> int {
+        cout << "? " << k << " ";
+        for(int i = l; i <= r; i++) cout << i << " ";
+        cout << endl;
+
+        int res; cin >> res;
+        return res;
+    };
+
+
+    int L = 1, R = n, ans = L;
+    while(L <= R) {
+        int mid = (L + R) >> 1;
+        auto get = ask(mid, 1, mid, 1);
+        if(get > 0) { //s[mid] = ')'
+            R = mid - 1, ans = mid;
+        } else {
+            L = mid + 1;
+        }
     }
 
-    M.exp(k);
-    auto get = M.mat[0][n-1];
-    cout << (get > 2e18 ? -1 : get) << nl;
-    
+
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 
