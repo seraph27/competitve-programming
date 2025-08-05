@@ -1,3 +1,4 @@
+from collections import Counter
 import sys, inspect
 sys.setrecursionlimit(10**7)
 INF = 10**18
@@ -31,6 +32,18 @@ def read(*types):
 
 def solve():
     n = read(int)
+    A = [read(int) for _ in range(n)]
+    mp = Counter(A)
+
+    ans = 0
+    for i in range(0, n+1):
+        cnt = 0
+        for k, v in mp.items():
+            if k >= i:
+                cnt += v
+        if cnt >= i:
+            ans = max(ans, i)
+    print(ans)
 
 def main():
     MULTITEST = False

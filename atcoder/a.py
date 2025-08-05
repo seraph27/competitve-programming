@@ -31,6 +31,13 @@ def read(*types):
 
 def solve():
     n = read(int)
+    s = read(str)
+    t = read(str)
+    for i in range(n):
+        if s[i] == t[i] == 'o':
+            print('Yes')
+            return
+    print('No')
 
 def main():
     MULTITEST = False

@@ -25,18 +25,33 @@ _data = sys.stdin.read().split()
 _it = iter(_data)
 
 def read(*types):
-    vals = [t(next(_it)) for t in types]
-    return vals[0] if len(vals) == 1 else tuple(vals)
+    return tuple(t(next(_it)) for t in types)
 
+def tobase(num, base):
+    if num == 0: return "0"
+    digits = []
+    while num:
+        digits.append(str(num % base))
+        num //= base
+    return "".join(reversed(digits))
 
 def solve():
-    n = read(int)
+    a, n = read(int, int)
+    ans = 0
+    for i in range(1, min(10**6 + 5, n + 5)):
+        s = str(i)
+
+        t = s + s[::-1]
+        for t in (s + s[::-1], s + s[-2::-1]):
+            v = int(t)
+            nb = tobase(v, a)
+            if v <= n and nb == nb[::-1]:
+                ans += v
+       
+    print(ans)
 
 def main():
-    MULTITEST = False
-    t = read(int) if MULTITEST else 1
-    for _ in range(t):
-        solve()
+    solve()
 
 if __name__ == "__main__":
     main()

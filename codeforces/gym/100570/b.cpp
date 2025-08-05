@@ -1,3 +1,9 @@
+// Problem: B. ShortestPath Query
+// Contest: Hello 2015 (Div.1)
+// URL: https://codeforces.com/gym/100570/problem/B
+// Time Limit: 1000
+// Start: Mon Aug  4 12:07:39 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -42,21 +48,47 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-class Solution {
-public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-        return {1};
-    }
-};
-
 void shiina_mashiro() {
-    int n; cin >> n;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    int t; cin >> t;
+    int n, m, c; cin >> n >> m >> c;
 
-    Solution s;
-    cout << s.twoSum(vi, t) << nl;
+    vector<vector<ar<int, 3>>> adj(n + 1);
+    for(int i = 0; i < m; i++) {
+        int v, u, w, c; cin >> v >> u >> w >> c;
+        adj[v].pb({u, w, c});
+    }
+
+    int s, q; cin >> s >> q;
+    vector<map<int, int>> dist(n + 1);
+    priority_queue<ar<int, 3>, vector<ar<int, 3>>,greater<ar<int, 3>>> pq;
+    dist[s][-1] = 0;
+    pq.push({0, s, -1});
+    while(!pq.empty()){
+        auto [d, node, lst_color] = pq.top(); pq.pop();
+        if(d != dist[node][lst_color]) continue;
+        for(auto &[e, w, new_color]: adj[node]) if(new_color != lst_color) {
+            int nd = d + w;
+            auto it = dist[e].find(new_color);
+            if(it == dist[e].end() || nd < it->second) {
+                dist[e][new_color] = nd;
+                pq.push({nd, e, new_color});
+            }
+        }
+    }
+
+    for(;q--;) {
+        int t; cin >> t;
+
+        if(!sz(dist[t])) {
+            cout << -1 << nl;
+        } else {
+            int mn = 4e18;
+            for(auto&[k, v] : dist[t]) {
+                ckmin(mn, v);
+            }
+            cout << mn << nl;
+        }
+    }
+    
 }
 
 signed main() {    
