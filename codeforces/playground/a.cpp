@@ -42,28 +42,33 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-class Solution {
-public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-        return {1};
-    }
-};
-
 void shiina_mashiro() {
-    int n; cin >> n;
+    int n, q, l; cin >> n >> q >> l;
     vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    int t; cin >> t;
+    for (int i = 0; i < n; i++) cin >> vi[i];
 
-    Solution s;
-    cout << s.twoSum(vi, t) << nl;
+    while (q--) {
+        int a, k;
+        cin >> a >> k;
+        int idx = upper_bound(all(vi), k) - vi.begin();
+        int g = n - idx;
+        int ans;
+        if(g == 0) {
+            ans = a;
+        } else if(vi[idx] == vi.back()) {
+            ans = a + 2 * min(a, g);
+        } else {
+            ans = a + 2 * g;
+        }
+        debug(ans);
+        cout << ans << nl;
+    }
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
     while (t--) shiina_mashiro();
 }
 

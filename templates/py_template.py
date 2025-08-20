@@ -1,3 +1,5 @@
+# type: ignore
+from collections import Counter, defaultdict
 import sys, inspect
 sys.setrecursionlimit(10**7)
 INF = 10**18
