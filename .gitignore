@@ -1,6 +1,5 @@
 *.exe
 *.prob
-*.json
 *.sh
 *.sh~
 codeforces/.vscode/settings.json
