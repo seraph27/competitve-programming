@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
-// Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Problem: C. Smilo and Minecraft
+// Contest: Codeforces Round 1031 (Div. 2)
+// URL: https://codeforces.com/contest/2113/problem/C
+// Time Limit: 2000
+// Start: Sun Aug 24 20:55:13 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,29 +49,32 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> vi(n);
+    int n, m, k; cin >> n >> m >> k;
+    vector<string> vi(n);
     for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
-        cout << "NO" << nl;
-        return;
+
+    vector<vector<int>> pref(n + 1, vector<int>(m + 1, 0));
+    int gold = 0;
+    for(int i = 0; i < n; i++) for(int j = 0; j < m; j++) {
+        if(vi[i][j] == 'g') gold++;
+        pref[i + 1][j + 1] = pref[i + 1][j] + pref[i][j + 1] - pref[i][j] + (vi[i][j] == 'g');
     }
-    cout << "YES" << nl;
-    for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
-            }
-        }
-        cout << ans << nl; 
+
+    auto query = [&](int x1, int y1, int x2, int y2) -> int {
+        return pref[x2][y2] - pref[x1][y2] - pref[x2][y1] + pref[x1][y1];
+    };
+    int ans = 0;
+    for(int i = 0; i < n; i++) for(int j = 0; j < m; j++) {
+        if(vi[i][j] == '.') {
+            int x1 = i - (k - 1);
+            int y1 = j - (k - 1);
+            int x2 = i + k - 1;
+            int y2 = j + k - 1;
+            auto sum = query(max(0LL, x1), max(0LL, y1), min(n, x2 + 1), min(m, y2 + 1));
+            ckmax(ans, gold - sum);
+        } 
     }
+    cout << ans << nl;
 
 }
 
@@ -79,7 +82,7 @@ signed main() {
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

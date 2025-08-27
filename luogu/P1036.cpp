@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
+// Problem: 选数
+// Contest: %E6%B4%9B%E8%B0%B7
+// URL: https://vjudge.net/problem/%E6%B4%9B%E8%B0%B7-P1036
 // Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Start: Mon Aug 25 11:33:57 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -51,27 +51,33 @@ const char nl = '\n';
 void shiina_mashiro() {
     int n, k; cin >> n >> k;
     vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
-        cout << "NO" << nl;
-        return;
-    }
-    cout << "YES" << nl;
     for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
-            }
-        }
-        cout << ans << nl; 
+        cin >> vi[i];
     }
+    int ans = 0;
+
+    vector<int> backtrack;
+    auto dfs = [&](auto&&s, int idx) -> void {
+        if(sz(backtrack) == k) {
+            int sum = accumulate(all(backtrack), 0);
+            bool isPrime = true;
+            for(int i = 2; i * i <= sum; i++) {
+                if(sum % i == 0) isPrime = false;
+            } 
+            if(isPrime) ans++;
+            return;
+        }
+        if(idx == n || sz(backtrack) + (n - idx) < k) return;
+        for(int i = idx; i < n; i++) {
+            backtrack.pb(vi[i]);
+            s(s, i + 1);
+            backtrack.pop_back();
+        }
+        return;
+    };
+    dfs(dfs, 0);
+
+    cout << ans << nl;
 
 }
 

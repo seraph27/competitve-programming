@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
+// Problem: A. Homework
+// Contest: Codeforces Round 1043 (Div. 3)
+// URL: https://codeforces.com/contest/2132/problem/A
 // Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Start: Fri Aug 22 05:04:11 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,37 +49,27 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
-        cout << "NO" << nl;
-        return;
-    }
-    cout << "YES" << nl;
-    for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
-            }
-        }
-        cout << ans << nl; 
-    }
+    int n; cin >> n;
+    string s; cin >> s;
+    int m; cin >> m;
+    string t; cin >> t;
+    string t2; cin >> t2;
 
+    for(int i = 0; i < m; i++) {
+        if(t2[i] == 'V') {
+            s = t[i] + s;
+        } else {
+            s = s + t[i];
+        }
+    }
+    cout << s << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

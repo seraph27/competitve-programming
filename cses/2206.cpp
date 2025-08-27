@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
+// Problem: Pizzeria Queries
+// Contest: CSES Problem Set
+// URL: https://cses.fi/problemset/task/2206
 // Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Start: Fri Aug 22 04:20:14 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -48,29 +48,57 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
-        cout << "NO" << nl;
-        return;
+struct segtree {
+    int n; vector<int> tr;
+    segtree(int N) : n(N) {
+        n = 1; while(n < N) n <<= 1;
+        tr.assign(2 * n, 0);
     }
-    cout << "YES" << nl;
-    for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
-            }
+
+    void update(int p, int x) {
+        p += n;
+        tr[p] = x;
+        for(p >>= 1; p ; p >>= 1) {
+            tr[p] = min(tr[p << 1], tr[p << 1 | 1]);
         }
-        cout << ans << nl; 
+    }
+
+    int query(int L, int R) {
+        int res = 4e18;
+        for(L += n, R += n; L<=R; L >>= 1, R >>= 1) {
+            if(L & 1) ckmin(res, tr[L++]);
+            if(!(R & 1)) ckmin(res, tr[R--]);
+        }
+        return res;
+    }
+};
+
+void shiina_mashiro() {
+    int n, q; cin >> n >> q;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+
+    segtree s1(n), s2(n);
+
+    for(int i = 0; i < n; i++) {
+        s1.update(i, vi[i] + i); //a>b
+        s2.update(i, vi[i] - i);
+    }
+
+    for(; q-- ;) {
+        int type; cin >> type;
+        if(type == 1) {
+            int k, x; cin >> k >> x;
+            --k;
+            s1.update(k, x + k);
+            s2.update(k, x - k);
+        } else {
+            int k; cin >> k;
+            --k;
+            int f = s1.query(k, n-1) - k;
+            int g = s2.query(0, k-1) + k;
+            cout << min(f, g) << nl;
+        }
     }
 
 }

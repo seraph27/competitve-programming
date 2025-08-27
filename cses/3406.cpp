@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
+// Problem: Triangle Number Sums
+// Contest: CSES Problem Set
+// URL: https://cses.fi/problemset/task/3406
 // Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Start: Sun Aug 24 11:52:42 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -48,38 +48,47 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+vector<int> sav;
+const int MX = 1e12;
+void init() {
+    for(int i = 0; i * (i + 1) / 2 <= MX; i++) {
+        int sum = i * (i + 1) / 2;
+        sav.pb(sum);
+    }
+}
 void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
-        cout << "NO" << nl;
+    int x; cin >> x;
+
+    __int128 y = 8 * (__int128)x + 1;
+    int sq = sqrt((long double)y);
+    if((__int128)sq * sq == y) {
+        cout << 1 << nl;
         return;
     }
-    cout << "YES" << nl;
-    for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
-            }
-        }
-        cout << ans << nl; 
-    }
 
+    int l = 0;
+    int r = upper_bound(all(sav), x) - sav.begin() - 1;
+    while(l <= r) {
+        int sum = sav[l] + sav[r];
+        if(sum == x) {
+            cout << 2 << nl;
+            return;
+        }
+        if(sum < x) {
+            l++;
+        } else {
+            r--;
+        }
+    }
+    cout << 3 << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
+    init();
     while (t--) shiina_mashiro();
 }
 

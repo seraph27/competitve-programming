@@ -1,14 +1,15 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
+// Problem: 吃奶酪
+// Contest: %E6%B4%9B%E8%B0%B7
+// URL: https://vjudge.net/problem/%E6%B4%9B%E8%B0%B7-P1433
 // Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Start: Mon Aug 25 11:53:30 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
 #define int long long
+#define db double
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
@@ -49,30 +50,40 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
-        cout << "NO" << nl;
-        return;
-    }
-    cout << "YES" << nl;
+    int n; cin >> n;
+    vector<double> vx(n), vy(n);
     for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
-            }
-        }
-        cout << ans << nl; 
+        cin >> vx[i] >> vy[i];
     }
 
+    double best_length = 4e18;
+    auto f = [&](db x1, db y1, db x2, db y2) -> db { db dx = x2 - x1; db dy = y2 - y1; return sqrt(dx * dx + dy * dy); };
+    double len[20][20];
+    memset(len, 0, sizeof len);
+    for(int i = 0; i < n; i++) for(int j = 0; j < n; j++) if(i != j) {
+        len[i][j] = f(vx[i], vy[i], vx[j], vy[j]);
+    }
+
+
+    
+    vector<vector<double>> dp(1 << n, vector<double>(n, 4e18));
+    for(int i = 0; i < n; i++) {
+        ckmin(dp[1 << i][i], f(0, 0, vx[i], vy[i]));
+    }
+    for(int msk = 0; msk < (1 << n); msk++) {
+        for(int k = 0; k < n; k++) if(msk >> k & 1) for(int j = 0; j < n; j++) {
+            if(!((msk >> j) & 1)) {
+                int nmsk = msk | (1 << j);
+                ckmin(dp[nmsk][j], dp[msk][k] + len[j][k]);
+            }
+        }
+    }
+
+    for(int i = 0; i < n; i++) {
+        ckmin(best_length, dp[(1 << n) - 1][i]);
+    }
+
+    cout << setprecision(2) << fixed << best_length << nl;
 }
 
 signed main() {    

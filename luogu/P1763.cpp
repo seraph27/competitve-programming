@@ -1,9 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
+// Problem: P1763 埃及分数
+// Contest: unknown_contest
+// URL: https://www.luogu.com.cn/problem/P1763
 // Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
-// mintemplate
+// Start: Mon Aug 25 15:03:51 2025
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -48,38 +47,71 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
-        cout << "NO" << nl;
+int gcd(int x,int y){
+	if(y==0)return x;
+	else return gcd(y,x%y);
+}
+int deep = 1;
+int now[11], ans[11];
+bool ok = false;
+void dfs(int a, int b, int d) {
+    if(d > deep) return;
+    if(a==1 && b > now[d - 1]) {
+        now[d] = b;
+        if(!ok || now[d] < ans[d]) memcpy(ans, now, sizeof(int) * (deep + 1));
+        ok = 1;
         return;
     }
-    cout << "YES" << nl;
-    for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
-            }
+    if(d == deep - 1) {
+        int K = iceil(4 * b, a * a);
+        for(int k = K; ; k++) {
+            int get = -1;
+            int delta = a*a*k*k - 4*b*k;
+            auto sq = isqrt(delta);
+            if(sq*sq==delta) get = sq;
+            else if((sq+1)*(sq+1)==delta) get = sq+1;
+            else if((sq-1)*(sq-1)==delta) get = sq-1;
+            int x = (a*k-get)/2;
+            int y = (a*k+get)/2;
+            if(y > 1e7 || (ok && y >= ans[deep])) break;
+            if(get<=0 || (a*k-get) & 1) continue;
+            now[deep-1] = x;
+            now[deep] = y;
+            memcpy(ans, now, sizeof(int) * (deep + 1));
+            ok = 1;
+            break;
         }
-        cout << ans << nl; 
+        return;
     }
-
+    int L = max(iceil(b, a), now[d-1] + 1);
+    int R = (deep - d + 1) * b / a;
+    if(ok && R >= ans[deep]) R = ans[deep] - 1;
+    for(int i = L; i < R; i++) {
+        now[d] = i;
+        int gd = gcd(a*i-b, b*i);
+        dfs((a*i-b)/gd, b*i/gd, d + 1);
+    }
 }
 
-signed main() {    
+
+
+void shiina_mashiro() {
+    int a, b; cin >> a >> b;
+    int gd = gcd(a, b);
+    a/=gd, b/=gd;
+    for(deep = 1; deep < 10; deep++) {
+        ok = 0;
+        dfs(a, b, 1);
+        if(ok) {
+            for(int i = 1; i <= deep; i++) cout << ans[i] << " ";
+            cout << nl;
+            return;
+        }
+    }
+}
+
+signed main() {
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
     while (t--) shiina_mashiro();
 }
-

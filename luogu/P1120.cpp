@@ -1,9 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
-// Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
-// mintemplate
+// Problem: P1120 小木棍
+// Contest: unknown_contest
+// URL: https://www.luogu.com.cn/problem/P1120
+// Time Limit: 260000
+// Start: Mon Aug 25 13:22:35 2025
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
@@ -49,37 +48,52 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, k; cin >> n >> k;
+    int n; cin >> n;
     vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
-        cout << "NO" << nl;
-        return;
-    }
-    cout << "YES" << nl;
-    for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
-            }
-        }
-        cout << ans << nl; 
-    }
+    for (int i = 0; i < n; i++) cin >> vi[i];
+    sort(all(vi), greater<int>());
+    int st = vi[0];
 
+    vector<int> vis(n, 0);
+    bool ok = false;
+    int cnt = 0;
+
+    auto dfs = [&](auto&& s, int target, int now, int rest) -> void {
+        if (ok) return;
+        if (!rest) {
+            if (cnt == n) { ok = 1; return; }
+            int i = 0; while (i < n && vis[i]) ++i;
+            vis[i] = 1; cnt++;
+            s(s, target, i, target - vi[i]);
+            if (ok) return;
+            vis[i] = 0; cnt--;
+            return;
+        }
+        int start = (rest == target ? 0 : now + 1);
+        int prev = -1;
+        for (int i = start; i < n; i++) if (!vis[i] && vi[i] <= rest && vi[i] != prev) {
+            vis[i] = 1; cnt++;
+            s(s, target, i, rest - vi[i]);
+            if (ok) return;
+            vis[i] = 0; cnt--;
+            prev = vi[i];
+            if (rest == target) return;
+            if (vi[i] == rest) return;
+        }
+    };
+
+    int sum = accumulate(all(vi), 0LL);
+    for (int i = st; i <= sum; i++) {
+        if (sum % i) continue;
+        fill(all(vis), 0);
+        ok = false; cnt = 0;
+        dfs(dfs, i, 0, i);
+        if (ok) { cout << i << nl; return; }
+    }
 }
 
-signed main() {    
+signed main() {
     cin.tie(0)->sync_with_stdio(0);
-    //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
     while (t--) shiina_mashiro();
 }
-

@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
-// Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Problem: B. The Secret Number
+// Contest: Codeforces Round 1043 (Div. 3)
+// URL: https://codeforces.com/contest/2132/problem/B
+// Time Limit: 2000
+// Start: Fri Aug 22 05:07:26 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,37 +49,27 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
-        cout << "NO" << nl;
+    int n; cin >> n;
+    vector<int> ans;
+    for(__int128 i = 10; i <= n; i *= 10) {
+        int t = i + 1;
+        debug(t, n);
+        if(n % t == 0) ans.pb(n / t);
+    }
+    if(!sz(ans)) {
+        cout << 0 << nl;
         return;
     }
-    cout << "YES" << nl;
-    for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
-            }
-        }
-        cout << ans << nl; 
-    }
-
+    cout << sz(ans) << nl;
+    sort(all(ans));
+    cout << ans << nl; 
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

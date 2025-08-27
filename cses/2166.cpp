@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
+// Problem: Prefix Sum Queries
+// Contest: CSES Problem Set
+// URL: https://cses.fi/problemset/task/2166
 // Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Start: Thu Aug 21 14:36:34 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -48,31 +48,69 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
-        cout << "NO" << nl;
-        return;
-    }
-    cout << "YES" << nl;
-    for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
-            }
-        }
-        cout << ans << nl; 
+struct Node {
+    int sum, pref;
+};
+
+Node make(int x) {
+    return {x, max(0LL, x)};
+}
+
+Node combine(Node a, Node b) {
+    Node res;
+    res.sum = a.sum + b.sum;
+    res.pref = max(a.pref, a.sum + b.pref);
+    return res;
+}
+
+struct segtree {
+    int n; vector<Node> tr;
+    segtree(int x) {
+        n = 1; while(n < x) n <<= 1;
+        tr.assign(2 * n, {0, 0});
     }
 
+    void build(vector<int>&v) {
+        for(int i = 0; i < sz(v); i++) tr[i + n] = make(v[i]);
+        for(int i = n-1; i > 0; i--) tr[i] = combine(tr[i << 1], tr[i << 1 | 1]);
+    }
+    
+    void update(int p, int x) {
+        p += n;
+        tr[p] = make(x);
+        for(p >>= 1; p; p >>= 1) tr[p] = combine(tr[p << 1], tr[p << 1 | 1]);
+    }
+
+    Node query(int l, int r) {
+        Node L = {0, 0}, R = {0, 0};
+        for(l += n, r += n; l <= r; l>>=1, r>>=1) {
+            if(l & 1) L = combine(L, tr[l++]);
+            if(!(r & 1)) R = combine(tr[r--], R);
+        }
+        return combine(L, R);
+    }
+};
+void shiina_mashiro() {
+    int n, q; cin >> n >> q;
+    vector<int> vi(n);
+    for(auto&a: vi) cin >> a;
+
+    segtree seg(n);
+    seg.build(vi);
+
+    for(int i = 0; i < q; i++) {
+        int type; cin >> type;
+        if(type == 1) {
+            int k, u; cin >> k >> u;
+            --k;
+            seg.update(k, u);
+        } else {
+            int a, b; cin >> a >> b;
+            --a; --b;
+            auto nd = seg.query(a, b);
+            cout << nd.pref << nl;
+        }
+    }
 }
 
 signed main() {    

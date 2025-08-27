@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
-// Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Problem: D. From 1 to Infinity
+// Contest: Codeforces Round 1043 (Div. 3)
+// URL: https://codeforces.com/contest/2132/problem/D
+// Time Limit: 1500
+// Start: Fri Aug 22 05:40:52 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,29 +49,22 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
-        cout << "NO" << nl;
-        return;
+    int k; cin >> k;
+    //1-9 9 lette
+    //10-99 90 * 2 letter
+    //100-999 900*3 -> let's say we want to find kth position
+    //100-199 (100 position will all be 1s) 
+    //
+    int base = 9, len = 1;
+    while(k-base*len > 0) {
+        k-=base*len;
+        base*=10;
+        len++;
     }
-    cout << "YES" << nl;
-    for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
-            }
-        }
-        cout << ans << nl; 
-    }
+    --k;
+    k /= len;
+    k += 1 << len;
+    debug(k);
 
 }
 
@@ -79,7 +72,7 @@ signed main() {
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

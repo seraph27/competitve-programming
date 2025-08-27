@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
+// Problem: Word Combinations
+// Contest: CSES Problem Set
+// URL: https://cses.fi/problemset/task/1731
 // Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Start: Sun Aug 24 07:55:28 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -48,31 +48,74 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
-        cout << "NO" << nl;
-        return;
-    }
-    cout << "YES" << nl;
-    for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
-            }
-        }
-        cout << ans << nl; 
+struct trie {
+    static const int MX = 1e6+ 5;
+    int cnt;
+    int nex[MX][26];
+    bool exist[MX];
+
+    trie() { init(); }
+
+    void init() {
+        cnt = 0;
+        memset(nex, -1, sizeof(nex));
+        memset(exist, 0, sizeof(exist));
     }
 
+    void insert(const string &s) {
+        int vtx = 0;
+        for (char c : s) {
+            int d = c - 'a';
+            int &nx = nex[vtx][d];
+            if (nx == -1) nx = ++cnt;
+            vtx = nx;
+        }
+        exist[vtx] = true;
+    }
+
+    string search(string &s) {
+        int vtx = 0; string ans;
+        for (char c : s) {
+            int d = c - 'a';
+            ans += c;
+            int nx = nex[vtx][d];
+            if (nx == -1) return s;
+            vtx = nx;
+            if (exist[vtx]) return ans;
+        }
+        return s;
+    }
+};
+
+void shiina_mashiro() {
+    string s; cin >> s;
+    int k; cin >> k;
+
+    trie tr;
+    for(int i = 0; i < k; i++) {
+        string t; cin >> t;
+        tr.insert(t);
+    }
+
+    int n = sz(s);
+    const int mod = 1e9 + 7;
+    vector<int> dp(n + 1, 0);
+    dp[0] = 1;
+    for(int i = 0; i < n; i++) {
+        if(!dp[i]) continue;
+        int u = 0;
+        for(int j = i; j < n; j++) {
+            int c = s[j] - 'a';
+            u = tr.nex[u][c];
+            if(u==-1) break;
+            if(tr.exist[u]) {
+                dp[j + 1] += dp[i];
+                dp[j + 1] %= mod;
+            }
+        }
+    }
+    debug(dp);
+    cout << dp[n] << nl;
 }
 
 signed main() {    

@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
+// Problem: Filling Trominos
+// Contest: CSES Problem Set
+// URL: https://cses.fi/problemset/task/2423
 // Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Start: Sun Aug 24 15:13:41 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,37 +49,51 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
+    int n, m; cin >> n >> m;
+    if((n%2 || m%3) && (n%3 || m%2)) {
         cout << "NO" << nl;
         return;
     }
-    cout << "YES" << nl;
-    for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
-            }
-        }
-        cout << ans << nl; 
+    bool transpose = false;
+    if(n % 3 == 0 && m % 2 == 0) {
+        swap(n, m);
+        transpose = true;
     }
-
+    vector<string> ans(n, string(m, '*'));
+    debug(ans);
+    char now = 'A';
+    for(int i = 0; i < n; i+=2) {
+        for(int j = 0; j < m; j += 3) {
+            if(i-1>=0 && ans[i-1][j] == now) {
+                now++;
+                if(now > 'Z') now = 'A';
+            }
+            ans[i][j] = ans[i+1][j] = ans[i][j + 1] = now++;
+            if(now > 'Z') now = 'A';
+            if(i-1>=0 && ans[i-1][j + 2] == now) {
+                now++;
+                if(now > 'Z') now = 'A';
+            }
+            ans[i][j + 2] = ans[i + 1][j + 2] = ans[i + 1][j + 1] = now++;
+            if(now > 'Z') now = 'A';
+        }
+    }
+    cout << "YES" << nl;
+    if (!transpose) {
+        for (int i = 0; i < n; ++i) cout << ans[i] << nl;
+    } else {
+        for (int r = 0; r < m; ++r) {
+            for (int c = 0; c < n; ++c) cout << ans[c][r];
+            cout << nl;
+        }
+    }
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

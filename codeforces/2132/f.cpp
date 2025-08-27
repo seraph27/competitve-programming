@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
-// Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Problem: F. Rada and the Chamomile Valley
+// Contest: Codeforces Round 1043 (Div. 3)
+// URL: https://codeforces.com/contest/2132/problem/F
+// Time Limit: 3000
+// Start: Fri Aug 22 06:44:38 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -48,38 +48,88 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
-        cout << "NO" << nl;
-        return;
-    }
-    cout << "YES" << nl;
-    for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
+vector<pii> st_bridges(int n, const vector<vector<int>> &adj, int s, int t) {
+    vector<int> tin(n, -1), low(n, 0), vis(n, 0);
+    vector<int> hasT(n, 0);
+    int timer = 0;
+    vector<pii> res;
+    auto dfs = [&](auto &&self, int u, int p) -> void {
+        vis[u] = 1;
+        tin[u] = low[u] = timer++;
+        hasT[u] = (u == t);
+        for (int v : adj[u]) {
+            if (v == p) continue;
+            if (vis[v]) {
+                low[u] = min(low[u], tin[v]);
+            } else {
+                self(self, v, u);
+                low[u] = min(low[u], low[v]);
+                if (low[v] > tin[u] && hasT[v]) res.pb({u, v}); 
+                hasT[u] = hasT[u] | hasT[v];
             }
         }
-        cout << ans << nl; 
+    };
+
+    if (!vis[s]) dfs(dfs, s, -1);
+    return res;
+}
+
+void shiina_mashiro() {
+    int n, m; cin >> n >> m;
+    vector<vector<int>> adj(n);
+    map<pii, int> mp;
+    for(int i = 0; i < m; i++) {
+        int u, v; cin >> u >> v;
+        --u; --v;
+        adj[u].pb(v);
+        adj[v].pb(u);
+        mp[{u, v}] = i;
+        mp[{v, u}] = i;
     }
 
+    auto res = st_bridges(n, adj, 0, n-1);
+
+    queue<int> q;
+    
+    vector<int> dist(n, 4e18), near(n, 4e18);
+    for(auto&[a, b] : res) {
+        int id = mp[{a, b}];
+        ckmin(near[a], id), ckmin(near[b], id);
+        dist[a] = 0;
+        dist[b] = 0;
+    }
+
+    for(int u = 0; u < n; u++) if(dist[u] == 0 && near[u] != 4e18) q.push(u);
+
+    while(!q.empty()) {
+        auto f = q.front(); q.pop();
+        for(auto &e : adj[f]) {
+            if(dist[e] == 4e18){
+                dist[e] = dist[f] + 1;
+                near[e] = near[f];
+                q.push(e);
+            } else if(dist[e] == dist[f] + 1 && near[f] < near[e]) {
+                near[e] = near[f];
+                q.push(e);
+            }
+        }
+    }
+    debug(res, dist);
+    int qq; cin >> qq;
+    for(;qq--;) {
+        int c; cin >> c;
+        --c; 
+        if(!sz(res) || near[c] == 4e18) {cout << -1 << " "; continue;}
+        cout << near[c] + 1 << " ";
+    }
+    cout << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

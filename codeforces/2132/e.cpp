@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
-// Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Problem: E. Arithmetics Competition
+// Contest: Codeforces Round 1043 (Div. 3)
+// URL: https://codeforces.com/contest/2132/problem/E
+// Time Limit: 3000
+// Start: Fri Aug 22 06:14:57 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,37 +49,41 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
-        cout << "NO" << nl;
-        return;
-    }
-    cout << "YES" << nl;
-    for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
+    int n, m, q; cin >> n >> m >> q;
+    vector<int> a(n), b(m);
+    for(auto&x : a) cin >> x;
+    for(auto&x : b) cin >> x;
+    sort(all(a), greater<int>());
+    sort(all(b), greater<int>());
+
+    vector<int> prefa(n + 1), prefb(m + 1);
+    for(int i = 0; i < n; i++) prefa[i + 1] += prefa[i] + a[i];
+    for(int j = 0; j < m; j++) prefb[j + 1] += prefb[j] + b[j];
+
+    auto f = [&](int x, int z) -> int {
+        return prefa[x] + prefb[z - x];
+    };  
+    for(int i = 0; i < q; i++) {
+        int x, y, z; cin >> x >> y >> z;
+    
+        int L = max(0LL, z - y), R = min(x, z);
+        while(L<R) {
+            int mid = (L+R) >> 1;
+            if(f(mid, z) >= f(mid + 1, z)) {
+                R = mid;
+            } else {
+                L = mid + 1;
             }
         }
-        cout << ans << nl; 
+        cout << f(L, z) << nl;
     }
-
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

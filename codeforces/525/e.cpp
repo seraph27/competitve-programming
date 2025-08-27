@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
-// Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Problem: E. Anya and Cubes
+// Contest: Codeforces Round 297 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/525/E
+// Time Limit: 2000
+// Start: Tue Aug 26 08:42:55 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,30 +49,60 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
-        cout << "NO" << nl;
-        return;
-    }
-    cout << "YES" << nl;
-    for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
+    int n, k, s; cin >> n >> k >> s;
+    vector<int> cube(n);
+    for(int i = 0; i < n; i++) cin >> cube[i];
+    const int LIM = 18;
+    vector<int> pref(18);
+    iota(all(pref), 1);
+    for(int i = 0; i < LIM - 1; i++) pref[i + 1] *= pref[i]; 
+    int ans = 0;
+
+    auto f = [&](vector<int> &v) {
+        int siz = sz(v);
+        vector<vector<int>> dp(k + 1);
+        int facmask = 0;
+        for(int i = 0; i < siz; i++) if(v[i] <= LIM && pref[v[i] - 1] <= s) facmask |= (1 << i);
+        for(int msk = 0; msk < 1 << siz; msk++) {
+            auto left = msk & facmask;
+            for(int sub = left; ; sub = (sub-1) & left) {
+                int sum = 0;
+                for(int i = 0; i < siz; i++) {
+                    if((msk & sub) >> i & 1) {
+                        sum += pref[v[i] - 1];
+                    } else if(msk >> i & 1) {
+                        sum += v[i];
+                    }
+                    if(sum > s) break;
+                }
+                if(sum <= s) {
+                    auto used = __builtin_popcount(msk & sub);
+                    if(used <= k) {
+                        dp[used].pb(sum);
+                    }
+                }
+                if(sub==0)break;
             }
         }
-        cout << ans << nl; 
+        return dp;
+    };
+    int mid = n / 2;
+    vector<int> L(cube.begin(), cube.begin() + mid), R(cube.begin() + mid, cube.end());
+    auto h1 = f(L);
+    auto h2 = f(R);
+    debug(h1, h2);
+    for(auto&x : h1) sort(all(x));
+    for(auto&x : h2) sort(all(x));
+    for(int b1 = 0; b1 <= k; b1++) {
+        for(auto&x : h1[b1]) {
+            for(int b2 = min(sz(h2) - 1, k - b1); b2 >= 0; b2--) {
+                auto lb = lower_bound(all(h2[b2]), s - x) - h2[b2].begin();
+                auto rb = upper_bound(all(h2[b2]), s - x) - h2[b2].begin();
+                ans += rb - lb; 
+            }
+        }
     }
-
+    cout << ans << nl;
 }
 
 signed main() {    

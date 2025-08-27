@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
+// Problem: Necessary Roads
+// Contest: CSES Problem Set
+// URL: https://cses.fi/problemset/task/2076
 // Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Start: Fri Aug 22 17:15:41 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,30 +49,44 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, k; cin >> n >> k;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
-    auto tmp = vi;
-    sort(all(tmp));
-    int color = tmp.back() - tmp[0];
-    if(color > k) {
-        cout << "NO" << nl;
-        return;
+    int n, m; cin >> n >> m;
+    vector<vector<int>> adj(n);
+    for(int i = 0; i < m; i++) {
+        int a, b; cin >> a >> b;
+        --a; --b;
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
-    cout << "YES" << nl;
-    for(int i = 0; i < n; i++) {
-        vector<int> ans(vi[i]);
-        iota(all(ans), 1);
-        int bk = 0;
-        for(int i = 0; i < sz(ans); i++) {
-            if(ans[i] > color) {
-                ans[i] = (bk % k) + 1;
-                bk++;
+    
+    vector<int> dep(n, 0), par(n, -1), dp(n, 0);
+    vector<pii> ans;
+    int cnt = 0;
+    auto dfs = [&](auto&&s, int u) -> void {
+        for(auto&e : adj[u]) {
+            if(!dep[e]) {
+                par[e] = u;
+                dep[e] = dep[u] + 1;
+                s(s, e);
+                dp[u] += dp[e];
+            } else if(dep[e] > dep[u]) {
+                dp[u]--;
+            } else if(dep[e] < dep[u]) {
+                dp[u]++;
             }
         }
-        cout << ans << nl; 
-    }
+        dp[u]--;
+        
+        if(dp[u] == 0) {
+            cnt++;
+            ans.pb({u, par[u]});
+        }
+    };
+    dfs(dfs, 0);
 
+    cout << cnt << nl;
+    for(auto&[u, v] : ans) {
+        cout << u + 1 << " " << v + 1 << nl;
+    }
 }
 
 signed main() {    
