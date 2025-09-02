@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
-// Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Problem: P8183 [USACO22FEB] Sleeping in Class B
+// Contest: unknown_contest
+// URL: https://www.luogu.com.cn/problem/P8183
+// Time Limit: 2000
+// Start: Tue Sep  2 11:56:57 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,14 +49,37 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int t; cin >> t;
-    for(int i = 1; i <= t; i++) {
-        string s; cin >> s;
-        set<char> st;
-        for(auto c : s) {
-            st.insert(tolower(c));
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto&x: vi) cin >> x;
+    int sum = accumulate(all(vi), 0);
+    if(sum == 0) {
+        cout << 0 << nl;
+        return;
+    }
+    vector<int> len;
+    for(int i = sum; i >= 1; i--) {
+        if(sum % i == 0) len.pb(i);
+    }
+    for(int i = 0; i < sz(len); i++) {
+        int need = sum / len[i];
+        int cnt = 0; 
+        bool ok = 1;
+        for(int j = 0; j < n;) {
+            do {
+                cnt += vi[j];
+                j++;
+            } while(j < n && cnt < need);
+            debug(cnt, need);
+            if(cnt > need) {
+                ok = 0;
+                break;
+            }
+            cnt = 0;
         }
-        cout << "Case #" << i << ": " << 100 - sz(st) * 5 << nl;
+        if(!ok) continue;
+        cout << n - len[i] << nl;
+        return;
     }
 }
 
@@ -64,7 +87,7 @@ signed main() {
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

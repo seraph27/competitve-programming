@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
-// Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Problem: C. Serval and The Formula
+// Contest: Codeforces Round 1011 (Div. 2)
+// URL: https://codeforces.com/contest/2085/problem/C
+// Time Limit: 2000
+// Start: Sun Aug 31 17:41:21 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,22 +49,23 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int t; cin >> t;
-    for(int i = 1; i <= t; i++) {
-        string s; cin >> s;
-        set<char> st;
-        for(auto c : s) {
-            st.insert(tolower(c));
-        }
-        cout << "Case #" << i << ": " << 100 - sz(st) * 5 << nl;
+    int x, y; cin >> x >> y;
+    if(x == y) {
+        cout << -1 << nl;
+        return;
     }
+    if(x < y) swap(x, y);
+    auto add = 1 << (__lg(x) + 1);
+    auto need = add - x;
+    assert(x + need * 2 + y == ((x + need) ^ (y + need)));
+    cout << need << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

@@ -44,28 +44,42 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, l, r; cin>> n >> l >> r;
-    vector<int> vi(n+1);
+    int n, l, r; cin >> n >> l >> r;
+    vector<int> vi(n + 1);
     for(int i = 1; i <= n; i++) {
-        int x; cin >> x;
-        vi[i] = x;
+        cin >> vi[i];
     }
+    vector<int> pref(n + 1);
+    for(int i = 1; i <= n; i++) pref[i] = pref[i - 1] ^ vi[i];
+    if(n%2==0) {
+        vi.pb(pref[n / 2]);
+        pref.pb(pref.back() ^ vi.back());
+        n++;
+    }
+    assert(n&1);
 
-    int ans;
-    if(l<=n) {
-        cout << vi[l] << nl;
-        return;
-    } else {
-        while(l>n) {
-            l>>=1;
+    vector<int> stk;
+    while(l) {
+        if(l/2 <= n) break;
+        stk.pb(l);
+        l/=2;
+    }
+    stk.pb(l);
+
+    int ans = -1;
+    for(int i = sz(stk) - 1; i >= 0; i--) {
+        int m = stk[i];
+        if(m / 2 <= n) {
+            if(m <= n) ans = vi[m];
+            else ans = pref[m / 2];
         }
-        ans = vi[l];
-        while(l>=1) {
-            l>>=1;
-            ans^= vi[l];
+        else {
+            int t = m / 2;
+            ans = (t % 2 ? pref.back() : pref.back() ^ ans);
         }
     }
     cout << ans << nl;
+   
 }
 
 signed main() {    

@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
-// Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Problem: C. Dining Hall
+// Contest: Codeforces Round 1012 (Div. 2)
+// URL: https://codeforces.com/contest/2090/problem/C
+// Time Limit: 2000
+// Start: Sun Aug 31 22:13:44 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,14 +49,38 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int t; cin >> t;
-    for(int i = 1; i <= t; i++) {
-        string s; cin >> s;
-        set<char> st;
-        for(auto c : s) {
-            st.insert(tolower(c));
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(int i = 0; i < n; i++) cin >> vi[i];
+    
+    set<ar<int, 4>> s;
+    set<ar<int, 4>> tables;
+    int table = 0;
+    for(int d = 0; d < n; d++) for(int x = 0; x <= d; x++) {
+        int y = d - x;
+        s.insert({2 * d, x * 3 + 1, y * 3 + 1, table});
+        s.insert({2 * d + 1, x * 3 + 1, y * 3 + 2, table});
+        s.insert({2 * d + 1, x * 3 + 2, y * 3 + 1, table});
+        s.insert({2 * d + 3, x * 3 + 2, y * 3 + 2, table});
+        tables.insert({table, x * 3 + 1, y * 3 + 1, 2 * d});
+        table++;
+        if(table == n) goto done;
+    }
+    done:;
+    debug(s);
+    for(int i = 0; i < n; i++) {
+        if(!vi[i])  {
+            assert(!tables.empty());
+            auto f = *tables.begin();
+            cout << f[1] << " " << f[2] << nl;
+            tables.erase(tables.begin());
+            s.erase({f[3], f[1], f[2], f[0]});
+        } else {
+            auto f = *s.begin();
+            cout << f[1] << " " << f[2] << nl;
+            s.erase(s.begin());
+            tables.erase({f[3], f[1], f[2], f[0]});
         }
-        cout << "Case #" << i << ": " << 100 - sz(st) * 5 << nl;
     }
 }
 
@@ -64,7 +88,7 @@ signed main() {
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

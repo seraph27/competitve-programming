@@ -156,12 +156,11 @@ void shiina_mashiro() {
     string s; cin >> s;
     reverse(all(s));
     vector<mint> dp(n + 5);
-    dp[0] = 0;
-    for(int i = 0; i < n - 1; i++) {
-        if(s[i] == '0') dp[i + 1] = dp[i] + 1;
-        else dp[i + 1] = dp[i] * mint(3) * mint(2).inv();
+    for(int i = 1; i < n; i++) {
+        if(s[i - 1] == '0') dp[i] = dp[i - 1] * mint(2).inv();
+        else dp[i] = dp[i - 1] + (mint(1) - dp[i - 1]) * mint(2).inv();
     }
-    cout << dp[n - 1].v << nl;
+    cout << n - 1 + dp[n - 1].v << nl;
 }
 
 signed main() {    
