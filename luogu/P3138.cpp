@@ -1,8 +1,8 @@
-// Problem: B. Painting Pebbles
-// Contest: Codeforces Round 289 (Div. 2, ACM ICPC Rules)
-// URL: https://codeforces.com/contest/509/problem/B
+// Problem: P3138 [USACO16FEB] Load Balancing S
+// Contest: unknown_contest
+// URL: https://www.luogu.com.cn/problem/P3138
 // Time Limit: 1000
-// Start: Sun Aug 24 15:43:03 2025
+// Start: Mon Sep  1 22:19:06 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -49,15 +49,43 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int t; cin >> t;
-    for(int i = 1; i <= t; i++) {
-        string s; cin >> s;
-        set<char> st;
-        for(auto c : s) {
-            st.insert(tolower(c));
-        }
-        cout << "Case #" << i << ": " << 100 - sz(st) * 5 << nl;
+    int n; cin >> n;
+    vector<pii> vi(n);
+    vector<pii> vi2(n);
+    for(int i = 0; i < n; i++) {
+        int x, y; cin >> x >> y;
+        vi[i] = {x, y};
+        vi2[i] = {y, x};
     }
+    sort(all(vi));
+    sort(all(vi2));
+    
+    int mx = 1e9;
+    for(int i = 0; i < n; i++) {
+        while(i+1 < n && vi[i+1].first == vi[i].first) i++;
+        int lefttop = i + 1, righttop = n - lefttop;
+        int leftbot = 0, rightbot = 0;
+        int vert_divide = vi[i].first + 1;
+        auto add = [&](int x) {
+            if(x < vert_divide) {
+                lefttop--;
+                leftbot++;
+            } else {
+                righttop--;
+                rightbot++;
+            }
+        };
+        ckmin(mx, max({lefttop, righttop, leftbot, rightbot}));
+        for(int j = 0; j < n;) {
+            int y = vi2[j].first;
+            do {
+                add(vi2[j].second);
+                j++;
+            } while(j < n && vi2[j].first == y);
+            ckmin(mx, max({lefttop, righttop, leftbot, rightbot}));
+        }
+    }
+    cout << mx << nl;
 }
 
 signed main() {    
