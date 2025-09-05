@@ -1,26 +1,20 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// atcoder
+// Problem: P11838 [USACO25FEB] Printing Sequences B
+// Contest: unknown_contest
+// URL: https://www.luogu.com.cn/problem/P11838
+// Time Limit: 2000
+// Start: Wed Sep  3 16:23:47 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#include <atcoder/modint>
-
 #define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
-#define eb emplace_back
-#define db double
-
 using namespace std;
-using namespace atcoder;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -52,16 +46,47 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const char nl = '\n';
 
 void shiina_mashiro() {
+    int n, r; cin >> n >> r;
+    vector<int> vi(n);
+    for(int i = 0; i < n; i++) {
+        cin >> vi[i];
+    }
+
+    vector<vector<int>> dp(n+1, vector<int>(n+1, 0));
+    for(int len = 1; len <= n; len++) {
+        for(int i = 0; i + len <= n; i++) {
+            int j = i + len - 1;
+            dp[i][j] = len;
+            for(int k = i; k < j; k++) {
+                ckmin(dp[i][j], dp[i][k] + dp[k + 1][j]);
+            }
+            for(int L = 1; L < len; L++) {
+                if(len % L == 0) {
+                    bool match = true;
+                    for(int k = i + L; k <= j; k++) {
+                        if(vi[k] != vi[i + (k - i) % L]) {
+                            match = false;
+                            break;
+                        }
+                    }
+                    if(match) {
+                        ckmin(dp[i][j], dp[i][i + L - 1]);
+                    }
+                }
+            }
+        }
+    }
+    cout << (dp[0][n - 1] > r ? "NO" : "YES") << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
+

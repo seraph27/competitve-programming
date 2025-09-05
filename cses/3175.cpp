@@ -1,26 +1,20 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// atcoder
+// Problem: Beautiful Permutation II
+// Contest: CSES Problem Set
+// URL: https://cses.fi/problemset/task/3175
+// Time Limit: 1000
+// Start: Wed Sep  3 11:43:34 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#include <atcoder/modint>
-
 #define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
-#define eb emplace_back
-#define db double
-
 using namespace std;
-using namespace atcoder;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -52,10 +46,48 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
-using mint = modint998244353;
 const char nl = '\n';
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    if(n == 1) {
+        cout << 1 << nl;
+    } else if(n == 2 || n == 3) {
+        cout << "NO SOLUTION" << nl;
+    } else if(n == 4) {
+        cout << 2 << " " << 4 << " "  << 1 << " " << 3 << nl;
+    } else {
+        set<int> s;
+        vector<int> ans;
+        for(int i = 1; i <= n; i++) s.insert(i);
+        for(int i = 0; i < n - 4; i++) {
+            auto it = s.begin();
+            if(ans.empty()) {
+                ans.pb(*it);
+                s.erase(it);
+                continue;
+            }
+            while(abs(*it - ans.back()) <= 1) {
+                it++;
+                assert(it != s.end());
+            }
+
+            ans.pb(*it);
+            s.erase(it);
+        }
+        vector<int> left(all(s));
+        sort(all(left));
+        do {
+            int ok = 1;
+            if(abs(left[0] - ans.back()) <= 1) ok = 0; 
+            for(int i = 1; i < 4; i++) {
+                if(abs(left[i] - left[i - 1]) <= 1) ok = 0;
+            }
+            if(ok) break;
+        } while(next_permutation(all(left)));
+        ans.insert(ans.end(), all(left));
+        cout << ans << nl;
+    }
 }
 
 signed main() {    
@@ -65,3 +97,4 @@ signed main() {
     //cin >> t;
     while (t--) shiina_mashiro();
 }
+
