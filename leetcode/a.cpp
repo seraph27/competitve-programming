@@ -42,66 +42,39 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-template<typename it, typename bin_op>
-struct sparse_table {
-    using T = typename remove_reference<decltype(*declval<it>())>::type;
-    vector<vector<T>> t; bin_op F;
- 
-    sparse_table(it first, it last, bin_op op) : t(1), F(op) {
-        int n = distance(first, last);
-        t.assign(32-__builtin_clz(n), vector<T>(n));
-        t[0].assign(first, last);
-        for (int i = 1; i < sz(t); i++)
-            for (int j = 0; j < n-(1<<i)+1; j++)
-                t[i][j] = F(t[i-1][j], t[i-1][j+(1<<(i-1))]);
-    }
- 
-    T query(int l, int r) {
-        int h = 31 - __builtin_clz(r-l+1);
-        return F(t[h][l], t[h][r-(1<<h)+1]);
-    }
-};
-
 class Solution {
 public:
-    long long maxSumTrionic(vector<int>& nums) {
-        int n = sz(nums);
-        vector<int> L(n), L2(n), R(n);
-        for(int i = 0; i < n; i++) {
-            L[i] = (i-1>=0 && nums[i] > nums[i-1] ? L[i-1] + 1 : 1);
-            R[i] = (i-1>=0 && nums[i] < nums[i-1] ? R[i-1] + 1 : 1);
+    int countBinaryPalindromes(long long n) {
+        if(n == 0) return 1;
+        ll ans = 1;
+        int len = 64 - __builtin_clzll(n);
+        
+        for(int l = 1; l < len; l++) {
+            auto h = (l + 1) / 2;
+            ans += 1LL << (h - 1);
         }
 
-        for(int i = n-1; i >= 0; i--) {
-            L2[i] = (i+1<n && nums[i] < nums[i+1] ? L2[i+1] + 1 : 1);
-        }
-        debug(L, L2, R);
-
-        vector<ll> pref(n + 1);
-        for(int i = 0; i < n; i++) pref[i + 1] += pref[i] + nums[i];
-
-        ll ans = -4e18;
-        auto mn = [&](ll &a, ll &b) {return min(a, b);};
-        auto mx = [&](ll &a, ll &b) {return max(a, b);};
-        sparse_table st1(all(pref), mn);
-        sparse_table st2(all(pref), mx);
-
-        for(int i = 0; i < n; i++) {
-            int b = R[i];
-            if(b < 2) continue;
-            int r1 = i - b + 1;
-            int a = L[r1];
-            int c = L2[i];
-
-            if(a < 2 || c < 2) continue;
-
-            int l1 = r1 - a + 1;
-            int r2 = i + c - 1;
-            debug(i + 1, r2 + 1, l1, r1 -1);
-            ll MX = st2.query(i + 2, r2 + 1);
-            ll MN = st1.query(l1, r1-1);
-            debug(MX, MN);
-            ckmax(ans, MX - MN);
+        auto rev = [&](ll x, int b) -> ll {
+            ll res = 0;
+            while(b--) {
+                res = (res << 1) | (x & 1);
+                x >>= 1;
+            }
+            return res;
+        };
+        auto h = (len + 1) / 2;
+        ll L = (len == 1 ? 1LL : 1LL << (h - 1));
+        ll R = 1LL << h;
+        if(len & 1) {
+            for(int i = L; i < R; i++) {
+                ll p = (i << (h - 1)) | rev(i >> 1, h - 1);
+                if(p <= n) ans++;
+            }
+        } else {
+            for(int i = L; i < R; i++) {
+                ll p = (i << h) | rev(i, h);
+                if(p <= n) ans++;
+            }
         }
         return ans;
     }
@@ -109,11 +82,9 @@ public:
 
 void shiina_mashiro() {
     int n; cin >> n;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
     Solution s;
+    cout << s.countBinaryPalindromes(n);
 
-    cout << s.maxSumTrionic(vi);
 }
 
 signed main() {    

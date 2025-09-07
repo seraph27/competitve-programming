@@ -48,8 +48,60 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-void shiina_mashiro() {
+struct Event {
+    int t, x, y;
+    bool operator<(const Event &o) const {
+        return t < o.t;
+    } 
+};
 
+void shiina_mashiro() {
+    int n, t; cin >> n >> t;
+    string s; cin >> s;
+    vector<Event> vi(t);
+    for(int i = 0; i < t; i++) {
+        int a, b, c; cin >> a >> b >> c;
+        --b; --c;
+        vi[i] = {a, b, c};
+    }
+    sort(all(vi));
+
+    int count = 0;
+    int mnK = 1e9, mxK = 0;
+    for(int i = 0; i < n; i++) { // try every cow
+        if(s[i] == '0') continue;
+        bool has = 0;
+        for(int k = 0; k <= t; k++) {
+            string s2(n, '0');
+            s2[i] = '1';
+            vector<int> cnt(n, 0);
+            for(int x = 0; x < t; x++) {
+                auto &curr = vi[x];
+                bool x_sick = s2[curr.x] == '1' && cnt[curr.x] < k;
+                bool y_sick = s2[curr.y] == '1' && cnt[curr.y] < k;
+                if(x_sick && !y_sick) {
+                    s2[curr.y] = '1';
+                    cnt[curr.x]++;
+                } else if(!x_sick && y_sick) {
+                    s2[curr.x] = '1';
+                    cnt[curr.y]++;
+                } else if(x_sick && y_sick) {
+                    cnt[curr.y]++;
+                    cnt[curr.x]++;
+                }
+            }
+            if(s2 == s) {
+                ckmin(mnK, k);
+                ckmax(mxK, k);
+                has = 1;
+            }
+        }
+        if(has) count++;
+    }
+    if(mnK == 1e9) mnK = 0;
+    cout << count << " " << mnK << " ";
+    if(mxK == t) cout << "Infinity" << nl;
+    else cout << mxK << nl;
 }
 
 signed main() {    
