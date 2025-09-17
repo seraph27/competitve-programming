@@ -1,15 +1,14 @@
-// Problem: P11671 [USACO25JAN] Farmer John's Favorite Operation S
-// Contest: unknown_contest
-// URL: https://www.luogu.com.cn/problem/P11671
-// Time Limit: 2000
-// Start: Sat Sep  6 23:22:30 2025
+// Problem: D. Dominoes
+// Contest: The 2025 ICPC South America - Brazil First Phase
+// URL: https://codeforces.com/gym/106073/problem/D
+// Time Limit: 1500
+// Start: Tue Sep 16 18:12:43 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 
 #include <bits/stdc++.h>
-#define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
@@ -53,29 +52,38 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
-    vector<int> vi(n);
-    for(auto&a : vi) cin >> a;
-    
-    vector<int> mod(n);
+    int n; cin >> n;
+    vector<pii> vi(n);
     for(int i = 0; i < n; i++) {
-        mod[i] = vi[i] % m;
+        int a, b; cin >> a >> b;
+        vi[i] = {a, b};
     }
-    sort(all(mod));
-    for(int i = 0; i < n; i++) mod.pb(mod[i] + m);
-    vector<int> pref(2 * n + 1);
-    for(int i = 0; i < 2 * n; i++) pref[i + 1] = pref[i] + mod[i];
     
-    int ans = 4e18;
-    for(int x = 0; x < n; x++) {
-        int med = n / 2 + x;
-        int pre = (med - x) * mod[med] - (pref[med] - pref[x]);
-        int suf = (pref[x + n] - pref[med]) - (x + n - med) * mod[med];
-        ckmin(ans, pre + suf);
-    }
-    cout << ans << nl;
-    
-
+    unordered_set<int> can;
+    unordered_set<int> vis;
+    auto f = [&](int msk, int l, int r) -> int {
+        int a = (l == -1) ? 7 : l, b = (r == -1) ? 7 : r;
+        if(a > b) swap(a, b);
+        return ((msk << 6 | a << 3 | b));
+    };
+    vector<int> l, r;
+    auto dfs = [&](auto&&s, int msk, int l, int r) -> void {
+        if(!vis.insert(f(msk, l, r)).second) return;
+        for(int i = 0; i < n; i++) if(!((msk >> i) & 1)) {
+            int nmsk = msk | (1 << i);
+            int x = vi[i].first, y = vi[i].second;
+            if(l == -1 || r == -1) {
+                can.insert(nmsk);
+                s(s, nmsk, x, y);
+            }
+            if(l != -1 && y == l) { can.insert(nmsk); s(s, nmsk, x, r); }
+            if(l != -1 && x == l) { can.insert(nmsk); s(s, nmsk, y, r); }
+            if(r != -1 && x == r) { can.insert(nmsk); s(s, nmsk, l, y); }
+            if(r != -1 && y == r) { can.insert(nmsk); s(s, nmsk, l, x); }
+        }
+    };
+    dfs(dfs, 0, -1, -1);
+    cout << sz(can) << nl;
 }
 
 signed main() {    

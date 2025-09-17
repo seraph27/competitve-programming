@@ -1,8 +1,8 @@
-// Problem: P11671 [USACO25JAN] Farmer John's Favorite Operation S
-// Contest: unknown_contest
-// URL: https://www.luogu.com.cn/problem/P11671
-// Time Limit: 2000
-// Start: Sat Sep  6 23:22:30 2025
+// Problem: M. Minas Gerais' walls
+// Contest: The 2025 ICPC South America - Brazil First Phase
+// URL: https://codeforces.com/gym/106073/problem/M
+// Time Limit: 500
+// Start: Tue Sep 16 17:57:50 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -53,36 +53,43 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
+    int n, k; cin >> n >> k;
     vector<int> vi(n);
-    for(auto&a : vi) cin >> a;
-    
-    vector<int> mod(n);
     for(int i = 0; i < n; i++) {
-        mod[i] = vi[i] % m;
+        cin >> vi[i];
     }
-    sort(all(mod));
-    for(int i = 0; i < n; i++) mod.pb(mod[i] + m);
-    vector<int> pref(2 * n + 1);
-    for(int i = 0; i < 2 * n; i++) pref[i + 1] = pref[i] + mod[i];
-    
-    int ans = 4e18;
-    for(int x = 0; x < n; x++) {
-        int med = n / 2 + x;
-        int pre = (med - x) * mod[med] - (pref[med] - pref[x]);
-        int suf = (pref[x + n] - pref[med]) - (x + n - med) * mod[med];
-        ckmin(ans, pre + suf);
-    }
-    cout << ans << nl;
-    
 
+    int l = 0, r = 2e9, ans2 = 0;
+    while(l <= r) {
+        int mid = (l + r) >> 1;
+        bool can = 1;
+        auto tmp = vi;
+        for(int i = n - 1; i >= 0; i--) {
+            if(tmp[i] < mid) {
+                int h = k;
+                for(int j = i; j >= max(0LL, i - k + 1); j--) {
+                    tmp[j] += h;
+                    h--;
+                }
+                break;
+            }
+        }
+        debug(tmp, mid);
+        for(auto x : tmp) if(x < mid) can = 0;
+        if(can) {
+            l = mid + 1, ans2 = *min_element(all(tmp));
+        } else {
+            r = mid - 1;
+        }
+    }
+    cout << ans2 << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
 

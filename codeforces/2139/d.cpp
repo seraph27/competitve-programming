@@ -1,8 +1,8 @@
-// Problem: P11671 [USACO25JAN] Farmer John's Favorite Operation S
-// Contest: unknown_contest
-// URL: https://www.luogu.com.cn/problem/P11671
+// Problem: D. Antiamuny Wants to Learn Swap
+// Contest: Codeforces Round 1048 (Div. 2)
+// URL: https://codeforces.com/contest/2139/problem/D
 // Time Limit: 2000
-// Start: Sat Sep  6 23:22:30 2025
+// Start: Tue Sep  9 00:11:05 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -53,29 +53,46 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
+    int n, q; cin >> n >> q;
     vector<int> vi(n);
-    for(auto&a : vi) cin >> a;
-    
-    vector<int> mod(n);
     for(int i = 0; i < n; i++) {
-        mod[i] = vi[i] % m;
+        cin >> vi[i];
     }
-    sort(all(mod));
-    for(int i = 0; i < n; i++) mod.pb(mod[i] + m);
-    vector<int> pref(2 * n + 1);
-    for(int i = 0; i < 2 * n; i++) pref[i + 1] = pref[i] + mod[i];
-    
-    int ans = 4e18;
-    for(int x = 0; x < n; x++) {
-        int med = n / 2 + x;
-        int pre = (med - x) * mod[med] - (pref[med] - pref[x]);
-        int suf = (pref[x + n] - pref[med]) - (x + n - med) * mod[med];
-        ckmin(ans, pre + suf);
+    vector<pii> queries(q);
+    for(int i = 0; i < q; i++) {
+        int l, r; cin >> l >> r;
+        --l; --r;
+        queries[i] = {l, r};
     }
-    cout << ans << nl;
-    
 
+    vector<int> L(n, -1);
+    vector<int> st;
+    for (int j = 0; j < n; j++) {
+        while (!st.empty() && vi[st.back()] <= vi[j]) st.pop_back();
+        if (!st.empty()) L[j] = st.back();
+        st.pb(j);
+    }
+    st.clear();
+    vector<int> R(n, 4e18);
+    for (int j = n - 1; j >= 0; j--) {
+        while (!st.empty() && vi[st.back()] >= vi[j]) st.pop_back();
+        if (!st.empty()) R[j] = st.back();
+        st.pb(j);
+    }
+    vector<vector<int>> buc(n);
+    for(int i = 0; i < n; i++) if(L[i] >= 0 && R[i] < 4e18) buc[L[i]].pb(R[i]);
+    vector<int> RR(n, 4e18);
+    int cur = 4e18;;
+    for (int l = n - 1; ~l; l--) {
+        for (auto r : buc[l]) if (r < cur) cur = r;
+        RR[l] = cur;
+    }
+    vector<int> suf(n + 1, 4e18);
+    for(int i = n - 1; i >= 0; i--) suf[i] = min(suf[i + 1], RR[i]);
+    for(auto &[l, r] : queries) {
+        cout << (r < suf[l] ? "YES" : "NO") << nl;
+    }
+    debug(R);
 }
 
 signed main() {    

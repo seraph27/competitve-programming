@@ -1,8 +1,8 @@
-// Problem: P11671 [USACO25JAN] Farmer John's Favorite Operation S
-// Contest: unknown_contest
-// URL: https://www.luogu.com.cn/problem/P11671
-// Time Limit: 2000
-// Start: Sat Sep  6 23:22:30 2025
+// Problem: A. Maple and Multiplication
+// Contest: Codeforces Round 1048 (Div. 2)
+// URL: https://codeforces.com/contest/2139/problem/A
+// Time Limit: 1000
+// Start: Mon Sep  8 22:36:51 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -53,29 +53,14 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
-    vector<int> vi(n);
-    for(auto&a : vi) cin >> a;
-    
-    vector<int> mod(n);
-    for(int i = 0; i < n; i++) {
-        mod[i] = vi[i] % m;
+    int a, b; cin >> a >> b;
+    if(a == b) {
+        cout << 0 << nl;
+    } else if(a % b == 0 || b % a == 0) {
+        cout << 1 << nl;
+    } else {
+        cout << 2 << nl;
     }
-    sort(all(mod));
-    for(int i = 0; i < n; i++) mod.pb(mod[i] + m);
-    vector<int> pref(2 * n + 1);
-    for(int i = 0; i < 2 * n; i++) pref[i + 1] = pref[i] + mod[i];
-    
-    int ans = 4e18;
-    for(int x = 0; x < n; x++) {
-        int med = n / 2 + x;
-        int pre = (med - x) * mod[med] - (pref[med] - pref[x]);
-        int suf = (pref[x + n] - pref[med]) - (x + n - med) * mod[med];
-        ckmin(ans, pre + suf);
-    }
-    cout << ans << nl;
-    
-
 }
 
 signed main() {    

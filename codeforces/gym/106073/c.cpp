@@ -1,8 +1,8 @@
-// Problem: P11671 [USACO25JAN] Farmer John's Favorite Operation S
-// Contest: unknown_contest
-// URL: https://www.luogu.com.cn/problem/P11671
-// Time Limit: 2000
-// Start: Sat Sep  6 23:22:30 2025
+// Problem: C. Collatz polynomial
+// Contest: The 2025 ICPC South America - Brazil First Phase
+// URL: https://codeforces.com/gym/106073/problem/C
+// Time Limit: 500
+// Start: Tue Sep 16 17:15:09 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -53,28 +53,33 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
-    vector<int> vi(n);
-    for(auto&a : vi) cin >> a;
-    
-    vector<int> mod(n);
-    for(int i = 0; i < n; i++) {
-        mod[i] = vi[i] % m;
-    }
-    sort(all(mod));
-    for(int i = 0; i < n; i++) mod.pb(mod[i] + m);
-    vector<int> pref(2 * n + 1);
-    for(int i = 0; i < 2 * n; i++) pref[i + 1] = pref[i] + mod[i];
-    
-    int ans = 4e18;
-    for(int x = 0; x < n; x++) {
-        int med = n / 2 + x;
-        int pre = (med - x) * mod[med] - (pref[med] - pref[x]);
-        int suf = (pref[x + n] - pref[med]) - (x + n - med) * mod[med];
-        ckmin(ans, pre + suf);
+    int n; cin >> n;
+    vector<int> vi(n + 1);
+    for(int i = 0; i < n + 1; i++) cin >> vi[i];
+    int ans = 0;
+
+    auto f = [&](vector<int> a) {
+        auto b = a;
+        b.pb(0);
+        a.insert(a.begin(), 0);
+        b[sz(b) - 1]++;
+        vector<int> res(sz(b));
+        for(int i = sz(res) - 1; i >= 0; i--) {
+            int add = a[i] + b[i];
+            res[i] = add % 2;
+        }
+        return res;
+    };
+
+    while(sz(vi) != 1 || vi.back() != 1) {
+        if(sz(vi) && vi.back() == 0) {
+            vi.pop_back();
+        } else {
+            vi = f(vi);
+        }
+        ans++;
     }
     cout << ans << nl;
-    
 
 }
 
@@ -82,7 +87,7 @@ signed main() {
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
 

@@ -1,14 +1,14 @@
-// Problem: P11671 [USACO25JAN] Farmer John's Favorite Operation S
-// Contest: unknown_contest
-// URL: https://www.luogu.com.cn/problem/P11671
-// Time Limit: 2000
-// Start: Sat Sep  6 23:22:30 2025
-// mintemplate
+// Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
+// codeforces
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
-
 #include <bits/stdc++.h>
+
 #define int long long
 #define sz(x) (int)x.size()
 #define ar array
@@ -52,37 +52,56 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-void shiina_mashiro() {
-    int n, m; cin >> n >> m;
-    vector<int> vi(n);
-    for(auto&a : vi) cin >> a;
-    
-    vector<int> mod(n);
-    for(int i = 0; i < n; i++) {
-        mod[i] = vi[i] % m;
-    }
-    sort(all(mod));
-    for(int i = 0; i < n; i++) mod.pb(mod[i] + m);
-    vector<int> pref(2 * n + 1);
-    for(int i = 0; i < 2 * n; i++) pref[i + 1] = pref[i] + mod[i];
-    
-    int ans = 4e18;
-    for(int x = 0; x < n; x++) {
-        int med = n / 2 + x;
-        int pre = (med - x) * mod[med] - (pref[med] - pref[x]);
-        int suf = (pref[x + n] - pref[med]) - (x + n - med) * mod[med];
-        ckmin(ans, pre + suf);
-    }
-    cout << ans << nl;
-    
+class Solution {
+public:
+    vector<vector<int>> generateSchedule(int n) {
+       if(n <= 4) return {};
+        vector<ar<int,2>> pool; pool.reserve(n * (n - 1));
+        for(int i = 0; i < n; i++) for(int j = 0; j < n; j++) if(i != j) pool.pb({i, j});
+        vector<int> deg(n, 2 * (n - 1));
+        vector<vector<int>> vi; vi.reserve(sz(pool));
+        ar<int,2> last = {-1, -1};
+        auto lim = n * n * n * n; int tries = 0;
 
+        while(sz(pool) && tries++ < lim) {
+            int bi = -1, best = -1;
+            for(int i = 0; i < sz(pool); i++) {
+                auto [a, b] = pool[i];
+                if(a == last[0] || a == last[1] || b == last[0] || b == last[1]) continue;
+                int sc = deg[a] + deg[b];
+                if(ckmax(best, sc)) bi = i;
+            }
+            if(bi != -1) {
+                auto e = pool[bi]; pool[bi] = pool.back(); pool.pop_back();
+                vi.pb({e[0], e[1]}); deg[e[0]]--; deg[e[1]]--; last = e;
+            } else {
+                if(vi.empty()) return {};
+                ar<int,2> e = {vi.back()[0], vi.back()[1]}; vi.pop_back();
+                deg[e[0]]++; deg[e[1]]++;
+                last = vi.empty() ? ar<int,2>{-1, -1} : ar<int,2>{ vi.back()[0], vi.back()[1] };
+                pool.pb(e);
+            }
+        }
+        if(sz(pool)) return {};
+        return vi;
+    }
+};
+
+void shiina_mashiro() {
+    int n; cin >> n;
+    Solution s;
+    for(int i = 5; i <= 50; i++) {
+        auto g = s.generateSchedule(i);
+        assert(sz(g) == i * (i - 1));
+    }
+    
+    debug(s.generateSchedule(n));
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
     while (t--) shiina_mashiro();
 }
 

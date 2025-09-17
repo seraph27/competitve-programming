@@ -1,12 +1,13 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
-// codeforces
+// Problem: B. Universal Solution
+// Contest: Educational Codeforces Round 91 (Rated for Div. 2)
+// URL: https://codeforces.com/contest/1380/problem/B
+// Time Limit: 2000
+// Start: Sat Sep 13 16:58:16 2025
+// mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
+
 #include <bits/stdc++.h>
 #define int long long
 #define sz(x) (int)x.size()
@@ -14,6 +15,9 @@
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
+#define eb emplace_back
+#define db double
+
 using namespace std;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
@@ -49,29 +53,30 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int target = 6;
-    vector<int> v = {1, 7, 4, 0, 0};
-
-    unordered_map<int, int> mp;
-    int pref_sum = 0;
-    for(int i = 0; i < v.size(); i++) {
-        pref_sum += v[i];
-        int left = pref_sum - target;
-        if(mp.count(left)) {
-            auto idx = mp[left];
-            cout << idx + 1 << " " << i << endl;
-            return;
-        }
-        mp[pref_sum] = i;
+    string s; cin >> s;
+    string ss = "RPSR";
+    
+    int n = sz(s);
+    string ans;
+    ar<pii, 3> freq;
+    freq[0].second = 'R';
+    freq[1].second = 'S';
+    freq[2].second = 'P';
+    for(int i = 0; i < n; i++) {
+        if(s[i] == 'R') freq[0].first++;
+        else if(s[i] == 'S') freq[1].first++;
+        else freq[2].first++;
     }
-    cout << -1 << endl;
+    sort(all(freq));
+    debug(freq);
+    cout << string(n, ss[ss.find(freq[2].second) + 1]) << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

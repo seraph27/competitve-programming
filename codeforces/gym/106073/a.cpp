@@ -1,8 +1,8 @@
-// Problem: P11671 [USACO25JAN] Farmer John's Favorite Operation S
-// Contest: unknown_contest
-// URL: https://www.luogu.com.cn/problem/P11671
+// Problem: A. A healthy menu
+// Contest: The 2025 ICPC South America - Brazil First Phase
+// URL: https://codeforces.com/gym/106073/problem/A
 // Time Limit: 2000
-// Start: Sat Sep  6 23:22:30 2025
+// Start: Tue Sep 16 17:08:15 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -54,35 +54,20 @@ const char nl = '\n';
 
 void shiina_mashiro() {
     int n, m; cin >> n >> m;
-    vector<int> vi(n);
-    for(auto&a : vi) cin >> a;
-    
-    vector<int> mod(n);
-    for(int i = 0; i < n; i++) {
-        mod[i] = vi[i] % m;
+    vector<int> mx(m, 0);
+    for(int i = 0; i < n; i++) for(int j = 0; j < m; j++) {
+        int x; cin >> x;
+        ckmax(mx[j], x);
     }
-    sort(all(mod));
-    for(int i = 0; i < n; i++) mod.pb(mod[i] + m);
-    vector<int> pref(2 * n + 1);
-    for(int i = 0; i < 2 * n; i++) pref[i + 1] = pref[i] + mod[i];
-    
-    int ans = 4e18;
-    for(int x = 0; x < n; x++) {
-        int med = n / 2 + x;
-        int pre = (med - x) * mod[med] - (pref[med] - pref[x]);
-        int suf = (pref[x + n] - pref[med]) - (x + n - med) * mod[med];
-        ckmin(ans, pre + suf);
-    }
-    cout << ans << nl;
-    
-
+    debug(mx);
+    cout << accumulate(all(mx), 0LL) << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
 

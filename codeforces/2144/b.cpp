@@ -1,8 +1,8 @@
-// Problem: P11671 [USACO25JAN] Farmer John's Favorite Operation S
-// Contest: unknown_contest
-// URL: https://www.luogu.com.cn/problem/P11671
+// Problem: B. Maximum Cost Permutation
+// Contest: Educational Codeforces Round 182 (Rated for Div. 2)
+// URL: https://codeforces.com/contest/2144/problem/B
 // Time Limit: 2000
-// Start: Sat Sep  6 23:22:30 2025
+// Start: Mon Sep 15 22:45:37 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -53,29 +53,37 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
+    int n; cin >> n;
     vector<int> vi(n);
-    for(auto&a : vi) cin >> a;
+    for(auto&x : vi) cin >> x;
     
-    vector<int> mod(n);
+    int cnt = 0;
+    vector<int> used(n + 1, 0);
     for(int i = 0; i < n; i++) {
-        mod[i] = vi[i] % m;
+        if(vi[i]) used[vi[i]] = 1;
     }
-    sort(all(mod));
-    for(int i = 0; i < n; i++) mod.pb(mod[i] + m);
-    vector<int> pref(2 * n + 1);
-    for(int i = 0; i < 2 * n; i++) pref[i + 1] = pref[i] + mod[i];
     
-    int ans = 4e18;
-    for(int x = 0; x < n; x++) {
-        int med = n / 2 + x;
-        int pre = (med - x) * mod[med] - (pref[med] - pref[x]);
-        int suf = (pref[x + n] - pref[med]) - (x + n - med) * mod[med];
-        ckmin(ans, pre + suf);
-    }
-    cout << ans << nl;
-    
+    vector<int> v;
+    for(int i = 1; i <= n; i++) if(!used[i]) v.pb(i);
+    debug(v);
 
+    if(sz(v) == 1) {
+        for(int i = 0; i < sz(vi); i++) {
+            if(!vi[i] && v[0] == i + 1) vi[i] = v[0];
+        }
+    }
+    int l = -1, r = -1;
+    for(int i = 0; i < n; i++) {
+        if(!vi[i] || (vi[i] && vi[i] != i + 1)) r = i;
+    }
+    for(int i = n - 1; i >= 0; i--) {
+        if(!vi[i] || (vi[i] && vi[i] != i + 1)) l = i;
+    }
+    if(l == -1 || r == -1) {
+        cout << 0 << nl;
+        return;
+    }
+    cout << r - l + 1 << nl;
 }
 
 signed main() {    

@@ -1,0 +1,15 @@
+6
+the -15 0
+world 7 6
+star -4 2
+wars 10 12
+peace 10 -11
+trek 13 1
+12
+the peace the war the trek the star
+star wars star peace
+4 3
+3 i love star
+3 this is the
+4 star trek is very
+3 star star star

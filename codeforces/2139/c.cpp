@@ -1,8 +1,8 @@
-// Problem: P11671 [USACO25JAN] Farmer John's Favorite Operation S
-// Contest: unknown_contest
-// URL: https://www.luogu.com.cn/problem/P11671
+// Problem: C. Cake Assignment
+// Contest: Codeforces Round 1048 (Div. 2)
+// URL: https://codeforces.com/contest/2139/problem/C
 // Time Limit: 2000
-// Start: Sat Sep  6 23:22:30 2025
+// Start: Mon Sep  8 22:58:44 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -53,29 +53,34 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
-    vector<int> vi(n);
-    for(auto&a : vi) cin >> a;
-    
-    vector<int> mod(n);
-    for(int i = 0; i < n; i++) {
-        mod[i] = vi[i] % m;
+    int k, x; cin >> k >> x;
+    //x = chocola 
+    //1 = chocola gives 
+    //2 = vanilla gives
+    int y = (1LL << (k + 1)) - x;
+    debug(y, x);
+    if(y == x) {
+        cout << 0 << nl;
+        return;
     }
-    sort(all(mod));
-    for(int i = 0; i < n; i++) mod.pb(mod[i] + m);
-    vector<int> pref(2 * n + 1);
-    for(int i = 0; i < 2 * n; i++) pref[i + 1] = pref[i] + mod[i];
-    
-    int ans = 4e18;
-    for(int x = 0; x < n; x++) {
-        int med = n / 2 + x;
-        int pre = (med - x) * mod[med] - (pref[med] - pref[x]);
-        int suf = (pref[x + n] - pref[med]) - (x + n - med) * mod[med];
-        ckmin(ans, pre + suf);
+    //IF THIS AC IM CRASHING OUT FUCK CODEFROCES ADFSIOUHJDASHIUJIAHJNSUD
+    vector<int> sav; //who moved 
+    while(x != y) {
+        if(x < y) {
+            y -= x;
+            x += x;
+            sav.pb(1);
+        } else {
+            x -= y;
+            y += y;
+            sav.pb(2);
+        }
     }
-    cout << ans << nl;
-    
-
+    debug(sav);
+    reverse(all(sav));
+    cout << sz(sav) << nl;
+    for(auto&x : sav) cout << x << " ";
+    cout << nl;
 }
 
 signed main() {    

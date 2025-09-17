@@ -1,8 +1,8 @@
-// Problem: P11671 [USACO25JAN] Farmer John's Favorite Operation S
-// Contest: unknown_contest
-// URL: https://www.luogu.com.cn/problem/P11671
+// Problem: C. Good Subarrays
+// Contest: Educational Codeforces Round 93 (Rated for Div. 2)
+// URL: https://codeforces.com/contest/1398/problem/C
 // Time Limit: 2000
-// Start: Sat Sep  6 23:22:30 2025
+// Start: Tue Sep  9 17:17:37 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -53,29 +53,22 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n, m; cin >> n >> m;
-    vector<int> vi(n);
-    for(auto&a : vi) cin >> a;
+    int n; cin >> n; 
+    string s; cin >> s;
     
-    vector<int> mod(n);
+    int ans = 0;
+    vector<int> pref(n + 1);
     for(int i = 0; i < n; i++) {
-        mod[i] = vi[i] % m;
+        pref[i + 1] = s[i] - '0' + pref[i] - 1;
     }
-    sort(all(mod));
-    for(int i = 0; i < n; i++) mod.pb(mod[i] + m);
-    vector<int> pref(2 * n + 1);
-    for(int i = 0; i < 2 * n; i++) pref[i + 1] = pref[i] + mod[i];
-    
-    int ans = 4e18;
-    for(int x = 0; x < n; x++) {
-        int med = n / 2 + x;
-        int pre = (med - x) * mod[med] - (pref[med] - pref[x]);
-        int suf = (pref[x + n] - pref[med]) - (x + n - med) * mod[med];
-        ckmin(ans, pre + suf);
+    map<int, int> mp;
+    mp[0] = 1;
+    for(int i = 1; i <= n; i++) {
+        ans += mp[pref[i]];
+        mp[pref[i]]++;
     }
+    debug(pref);
     cout << ans << nl;
-    
-
 }
 
 signed main() {    
