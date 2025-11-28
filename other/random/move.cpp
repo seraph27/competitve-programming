@@ -1,8 +1,8 @@
-// Problem: C. Cyclic Merging
-// Contest: Codeforces Round 1064 (Div. 2)
-// URL: https://codeforces.com/contest/2166/problem/C
-// Time Limit: 2000
-// Start: 2025/11/16 7:00:48
+// Problem: $(PROBLEM)
+// Contest: $(CONTEST)
+// URL: $(URL)
+// Time Limit: $(TIMELIM)
+// Start: $(DATE)
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -53,21 +53,28 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n; cin >> n;
-    vector<int> vi(n);
-    for(int i = 0; i < n; i++) cin >> vi[i];
+    vector<int> vi = {1, 2, 3, 4, 5};
 
-    int ans = 0;
-    for(int i = 0; i < n; i++) ans += max(vi[i], vi[(i+1)%n]);
-    ans -= *max_element(all(vi));
-    cout <<ans << nl;
+    auto v2 = std::move(vi);
+    cout << vi.size() << nl;
+    cout << vi.empty() << nl;
+    debug(v2);
+
+    int x = 5;
+    auto f = [=]() mutable {
+        x++;
+        cout << x;
+    };
+    f(x);
+    cout << x;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while (t--) shiina_mashiro();
 }
+
 
