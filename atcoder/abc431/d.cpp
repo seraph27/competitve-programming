@@ -1,8 +1,8 @@
-// Problem: B - Robot Weight
+// Problem: D - Robot Customize
 // Contest: TOYOTA SYSTEMS Programming Contest 2025（AtCoder Beginner Contest 431)
-// URL: https://atcoder.jp/contests/abc431/tasks/abc431_b
+// URL: https://atcoder.jp/contests/abc431/tasks/abc431_d
 // Time Limit: 2000
-// Start: Thu 27 Nov 2025 06:46:19 PM PST
+// Start: Thu Nov 27 23:49:09 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -53,20 +53,24 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int x; cin >> x;
     int n; cin >> n;
-    vector<int> w(n);
-    for(auto &x : w) cin >> x;
+    int dp[250001]; //best for heads;
+    memset(dp, 0, sizeof dp);
+    int weight = 0;
 
-    vector<bool> has(n, false);
-    int q; cin >> q;
-    for(;q--;) {
-        int p; cin >> p;
-        p--;
-        x += w[p] * (has[p] ? -1 : 1);
-        has[p] = !has[p];
-        cout << x << nl;
+    for(int i = 0; i < n; i++) {
+        int w, h, b; cin >> w >> h >> b;
+        weight += w;
+        for(int j = 250000; j >= 0; j--) {
+            if(w + j >= 250000) continue;
+            ckmax(dp[w + j], dp[j] + h);
+            ckmax(dp[j], dp[j] + b);
+        }
     }
+    int half = weight / 2;
+    int mx = 0;
+    for(int i = 0; i <= half; i++) ckmax(mx, dp[i]);
+    cout << mx << nl;
 }
 
 signed main() {    

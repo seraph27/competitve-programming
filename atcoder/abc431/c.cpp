@@ -1,8 +1,8 @@
-// Problem: B - Robot Weight
+// Problem: C - Robot Factory
 // Contest: TOYOTA SYSTEMS Programming Contest 2025（AtCoder Beginner Contest 431)
-// URL: https://atcoder.jp/contests/abc431/tasks/abc431_b
+// URL: https://atcoder.jp/contests/abc431/tasks/abc431_c
 // Time Limit: 2000
-// Start: Thu 27 Nov 2025 06:46:19 PM PST
+// Start: Thu Nov 27 23:42:35 2025
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -53,20 +53,28 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int x; cin >> x;
-    int n; cin >> n;
-    vector<int> w(n);
-    for(auto &x : w) cin >> x;
-
-    vector<bool> has(n, false);
-    int q; cin >> q;
-    for(;q--;) {
-        int p; cin >> p;
-        p--;
-        x += w[p] * (has[p] ? -1 : 1);
-        has[p] = !has[p];
-        cout << x << nl;
+    int n, m, k; cin >> n >> m >> k;
+    multiset<int> h, b;
+    for(int i = 0; i < n; i++) {
+        int x; cin >> x;
+        h.insert(x);
     }
+    for(int i = 0; i < m; i++) {
+        int x; cin >> x;
+        b.insert(x);
+    }
+
+    int ans = 0;
+    for(auto &x : h | views::reverse) {
+        auto it = b.lower_bound(x);
+        if(it == b.end()) {
+            continue;
+        }
+        b.erase(it);
+        ans++;
+    }
+    cout << (ans >= k ? "Yes" : "No") << nl;
+    
 }
 
 signed main() {    
