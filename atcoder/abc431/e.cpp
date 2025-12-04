@@ -1,8 +1,8 @@
-// Problem: D - Robot Customize
+// Problem: E - Reflection on Grid
 // Contest: TOYOTA SYSTEMS Programming Contest 2025（AtCoder Beginner Contest 431)
-// URL: https://atcoder.jp/contests/abc431/tasks/abc431_d
+// URL: https://atcoder.jp/contests/abc431/tasks/abc431_e
 // Time Limit: 2000
-// Start: Thu Nov 27 23:49:09 2025
+// Start: Fri 28 Nov 2025 10:49:18 PM PST
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -53,30 +53,47 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n; cin >> n;
-    int dp[250001]; //best for heads;
-    memset(dp, 0, sizeof dp);
-    int weight = 0;
-    for(int i = 0; i < n; i++) {
-        int w, h, b; cin >> w >> h >> b;
-        weight += w;
-        for(int j = 250000; j >= 0; j--) {
-            if(w + j >= 250000) continue;
-            ckmax(dp[w + j], dp[j] + h);
-            ckmax(dp[j], dp[j] + b);
+    int h, w; cin >> h >> w;
+    vector<string> grid(h);
+    for(int i = 0; i < h; i++) cin >> grid[i];
+
+    //ar<int, 4> dir = {0, 1, 2, 3};  //DOWN, UP, RIGHT, LEFT
+    pii dirs[4] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    
+    const int INF = 4e18;
+    vector dp(h + 1, vector(w + 1, ar<int, 4>({INF, INF, INF, INF})));
+    
+    map<char, int> mp;
+    mp['A'] = 0;
+    mp['B'] = 2;
+    mp['C'] = 3;
+    deque<ar<int, 4>> bfs;
+    bfs.pb({0, 0, -1, 2});
+    while(!bfs.empty()) {
+        auto [c, y, x, dir] = bfs.front(); bfs.pop_front();
+        int yy = y + dirs[dir].first;
+        int xx = x + dirs[dir].second;
+        if(yy < 0 || xx < 0 || yy >= h || xx >= w) continue;
+        for(int k = 0; k < 4; k++) {
+            if((dir ^ k) == 1) continue;
+            auto now = grid[yy][xx];
+
+            int cost = c;
+            if((dir ^ k) != mp[now]) cost++;
+            if(ckmin(dp[yy][xx][k], cost)) {
+                if(cost == c) bfs.push_front({cost, yy, xx, k});
+                else bfs.pb({cost, yy, xx, k});
+            }
         }
     }
-    int half = weight / 2;
-    int mx = 0;
-    for(int i = 0; i <= half; i++) ckmax(mx, dp[i]);
-    cout << mx << nl;
+    cout << dp[h - 1][w - 1][2] << nl;
 }
 
 signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
+    cin >> t;
     while (t--) shiina_mashiro();
 }
 

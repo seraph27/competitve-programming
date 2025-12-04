@@ -1,8 +1,8 @@
-// Problem: D - Robot Customize
-// Contest: TOYOTA SYSTEMS Programming Contest 2025（AtCoder Beginner Contest 431)
-// URL: https://atcoder.jp/contests/abc431/tasks/abc431_d
-// Time Limit: 2000
-// Start: Thu Nov 27 23:49:09 2025
+// Problem: A. Square?
+// Contest: Codeforces Round 1062 (Div. 4)
+// URL: https://codeforces.com/contest/2167/problem/A
+// Time Limit: 1000
+// Start: Sat 01 Nov 2025 12:12:28 AM PDT
 // mintemplate
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -53,23 +53,7 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 void shiina_mashiro() {
-    int n; cin >> n;
-    int dp[250001]; //best for heads;
-    memset(dp, 0, sizeof dp);
-    int weight = 0;
-    for(int i = 0; i < n; i++) {
-        int w, h, b; cin >> w >> h >> b;
-        weight += w;
-        for(int j = 250000; j >= 0; j--) {
-            if(w + j >= 250000) continue;
-            ckmax(dp[w + j], dp[j] + h);
-            ckmax(dp[j], dp[j] + b);
-        }
-    }
-    int half = weight / 2;
-    int mx = 0;
-    for(int i = 0; i <= half; i++) ckmax(mx, dp[i]);
-    cout << mx << nl;
+
 }
 
 signed main() {    

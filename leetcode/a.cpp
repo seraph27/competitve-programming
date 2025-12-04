@@ -42,49 +42,127 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-class Solution {
-public:
-    int countBinaryPalindromes(long long n) {
-        if(n == 0) return 1;
-        ll ans = 1;
-        int len = 64 - __builtin_clzll(n);
-        
-        for(int l = 1; l < len; l++) {
-            auto h = (l + 1) / 2;
-            ans += 1LL << (h - 1);
+template<typename T> struct fenwick {
+    int n; vector<T> bit;
+    fenwick(int a) : n(a), bit(a+1) {}
+    
+    T sum(int pos) {
+        T s = 0;
+        for (; pos; s += bit[pos], pos -= pos&-pos);
+        return s;
+    }
+    T query(int l, int r) {
+        return sum(r+1) - sum(l);
+    }
+    void update(int pos, T x) {
+        pos++;
+        for (; pos <= n; bit[pos] += x, pos += pos&-pos);
+    }
+    
+    // find k-th smallest (1-indexed k), returns 0-indexed position
+    int kth(T k) {
+        int pos = 0;
+        for (int j = __lg(n); j >= 0; j--) {
+            if (pos + (1 << j) <= n && bit[pos + (1 << j)] < k) {
+                pos += 1 << j;
+                k -= bit[pos];
+            }
         }
+        return pos;
+    }
+};
 
-        auto rev = [&](ll x, int b) -> ll {
-            ll res = 0;
-            while(b--) {
-                res = (res << 1) | (x & 1);
-                x >>= 1;
-            }
-            return res;
-        };
-        auto h = (len + 1) / 2;
-        ll L = (len == 1 ? 1LL : 1LL << (h - 1));
-        ll R = 1LL << h;
-        if(len & 1) {
-            for(int i = L; i < R; i++) {
-                ll p = (i << (h - 1)) | rev(i >> 1, h - 1);
-                if(p <= n) ans++;
-            }
-        } else {
-            for(int i = L; i < R; i++) {
-                ll p = (i << h) | rev(i, h);
-                if(p <= n) ans++;
-            }
+template<typename Add, typename Rem, typename Calc>
+struct mo {
+    int n, B;
+    Add add; Rem rem; Calc calc;
+    
+    mo(int n_, int q, Add add_, Rem rem_, Calc calc_) 
+        : n(n_), B(max(1, (int)(n_ / sqrt(q + 1) + 1))), 
+          add(add_), rem(rem_), calc(calc_) {}
+    
+    template<typename Ans>
+    vector<Ans> solve(vector<pair<int,int>>& queries) {
+        int q = sz(queries);
+        vector<int> ord(q);
+        iota(all(ord), 0);
+        sort(all(ord), [&](int i, int j) {
+            int bi = queries[i].first / B, bj = queries[j].first / B;
+            if (bi != bj) return bi < bj;
+            return (bi & 1) ? queries[i].second > queries[j].second 
+                            : queries[i].second < queries[j].second;
+        });
+        
+        vector<Ans> ans(q);
+        int cl = 0, cr = -1;
+        for (int i : ord) {
+            auto [l, r] = queries[i];
+            while (cr < r) add(++cr);
+            while (cl > l) add(--cl);
+            while (cr > r) rem(cr--);
+            while (cl < l) rem(cl++);
+            ans[i] = calc();
         }
         return ans;
     }
 };
 
+class Solution {
+public:
+    vector<long long> minOperations(vector<int>& nums, int k, vector<vector<int>>& queries) {
+        int n = sz(nums), q = sz(queries);
+        
+        vector<int> r(n);
+        vector<ll> v(n);
+        for (int i = 0; i < n; i++) {
+            r[i] = nums[i] % k;
+            v[i] = nums[i] / k;
+        }
+        
+        vector<ll> vv = v;
+        sort_unique(vv);
+        int V = sz(vv);
+        auto id = [&](ll x) { return (int)(lower_bound(all(vv), x) - vv.begin()); };
+        
+        fenwick<ll> cnt(V), sum(V);
+        map<int, int> mp;
+        int diff = 0;
+        ll tot = 0;
+        
+        auto add = [&](int i) {
+            if (mp[r[i]]++ == 0) diff++;
+            int j = id(v[i]);
+            cnt.update(j, 1);
+            sum.update(j, v[i]);
+            tot++;
+        };
+        auto rem = [&](int i) {
+            if (--mp[r[i]] == 0) diff--;
+            int j = id(v[i]);
+            cnt.update(j, -1);
+            sum.update(j, -v[i]);
+            tot--;
+        };
+        auto calc = [&]() -> ll {
+            if (diff > 1) return -1;
+            if (tot <= 1) return 0;
+            int m = cnt.kth((tot + 1) / 2);
+            ll med = vv[m];
+            ll L = cnt.sum(m + 1), Ls = sum.sum(m + 1);
+            ll Rs = sum.sum(V) - Ls;
+            return med * L - Ls + Rs - med * (tot - L);
+        };
+        
+        vector<pii> qs(q);
+        for (int i = 0; i < q; i++) qs[i] = {queries[i][0], queries[i][1]};
+        mo solver(n, q, add, rem, calc);
+        return solver.solve<ll>(qs);   
+    }
+};
 void shiina_mashiro() {
     int n; cin >> n;
     Solution s;
-    cout << s.countBinaryPalindromes(n);
-
+    s.
 }
 
 signed main() {    

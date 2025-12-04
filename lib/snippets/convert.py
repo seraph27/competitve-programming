@@ -60,12 +60,12 @@ def main():
     parser.add_argument(
         "-r", "--root",
         help="Root templates directory",
-        default=os.path.expanduser("~/competitve-programming/lib/templates")
+        default=os.path.expanduser("~/Documents/competitve-programming/lib/templates")
     )
     parser.add_argument(
         "-o", "--outfile",
-        help="Output JSON file, e.g. '~/competitve-programming/lib/snippets/cpp.json'",
-        default=os.path.expanduser("~/competitve-programming/lib/snippets/cpp.json")
+        help="Output JSON file, e.g. '~/Documents/competitve-programming/lib/snippets/cpp.json'",
+        default=os.path.expanduser("~/Documents/competitve-programming/lib/snippets/cpp.json")
     )
     parser.add_argument(
         "--exts",
