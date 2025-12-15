@@ -160,7 +160,7 @@ void shiina_mashiro() {
     vector<int> vi(n);
     int mx = 0;
     for(auto &a : vi) cin >> a, ckmax(mx, a);
-    finit(1e5 + 5);
+    finit(1e6 + 5);
 
     mint ans = 1;
     vector<int> freq(mx + 5, 0);
