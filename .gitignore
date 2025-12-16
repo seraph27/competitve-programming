@@ -11,3 +11,9 @@ atcoder/.vscode/c_cpp_properties.json
 in
 out1
 out2
+
+# LSP hack for bits/stdc++.h
+include/
+lib/precompiled/stdc++.h
+lib/precompiled/stdc++.h.gch
+.clangd
