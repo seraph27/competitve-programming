@@ -2,6 +2,7 @@
 *.prob
 *.sh
 *.sh~
+*.dSYM
 a
 codeforces/.vscode/settings.json
 /atcoder/.vscode
@@ -17,3 +18,5 @@ include/
 lib/precompiled/stdc++.h
 lib/precompiled/stdc++.h.gch
 .clangd
+*.lua
+lib/snippets/cpp.json
