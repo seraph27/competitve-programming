@@ -12,6 +12,7 @@ struct sparse_table {
                 t[i][j] = F(t[i-1][j], t[i-1][j+(1<<(i-1))]);
     }
  
+    // [l, r]
     T query(int l, int r) {
         int h = 31 - __builtin_clz(r-l+1);
         return F(t[h][l], t[h][r-(1<<h)+1]);

@@ -7,6 +7,7 @@ struct mo {
         : n(n_), B(max(1, (int)(n_ / sqrt(q + 1) + 1))), 
           add(add_), rem(rem_), calc(calc_) {}
     
+    // queries: [l, r]
     template<typename Ans>
     vector<Ans> solve(vector<pair<int,int>>& queries) {
         int q = sz(queries);

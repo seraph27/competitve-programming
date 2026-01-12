@@ -7,6 +7,7 @@ template<typename T> struct fenwick {
         for (; pos; s += bit[pos], pos -= pos&-pos);
         return s;
     }
+    // [l, r]
     T query(int l, int r) {
         return sum(r+1) - sum(l);
     }
