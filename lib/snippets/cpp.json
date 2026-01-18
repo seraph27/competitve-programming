@@ -135,6 +135,30 @@
     ],
     "description": "Snippet for Strings Hash"
   },
+  "Strings Z Function": {
+    "prefix": "z_function",
+    "body": [
+      "vector<int> z_function(string s) {",
+      "    int n = s.size();",
+      "    vector<int> z(n);",
+      "    int l = 0, r = 0;",
+      "    for(int i = 1; i < n; i++) {",
+      "        if(i < r) {",
+      "            z[i] = min(r - i, z[i - l]);",
+      "        }",
+      "        while(i + z[i] < n && s[z[i]] == s[i + z[i]]) {",
+      "            z[i]++;",
+      "        }",
+      "        if(i + z[i] > r) {",
+      "            l = i;",
+      "            r = i + z[i];",
+      "        }",
+      "    }",
+      "    return z;",
+      "}"
+    ],
+    "description": "Snippet for Strings Z Function"
+  },
   "Math Fwht": {
     "prefix": "fwht",
     "body": [
@@ -471,9 +495,13 @@
       "    ",
       "    // [l, r]",
       "    void update(int l, int r, T v) { update(1, 0, N-1, l, r, v); }",
-      "    // [l, r]",
       "    T query(int l, int r) { return query(1, 0, N-1, l, r); }",
       "};",
+      "",
+      "// struct MinMonoid { T operator()(T a, T b) const { return min(a, b); } };",
+      "// struct AddLazyApply { T operator()(T val, T lazy_val) const { return val + lazy_val; } };",
+      "// struct AddLazyCombine { T operator()(T a, T b) const { return a + b; } };",
+      "// segtree<T, MinMonoid, AddLazyApply, AddLazyCombine> st(n, MinMonoid{}, numeric_limits<T>::max(), AddLazyApply{}, AddLazyCombine{}, 0);",
       ""
     ],
     "description": "Snippet for Range Query Lazyseg Monoid Iterative"
@@ -536,9 +564,13 @@
       "    ",
       "    // [l, r]",
       "    void update(int l, int r, T v) { update(1, 0, N-1, l, r, v); }",
-      "    // [l, r]",
       "    T query(int l, int r) { return query(1, 0, N-1, l, r); }",
       "};",
+      "",
+      "// struct SumMonoid { T operator()(T a, T b) const { return a + b; } };",
+      "// struct AddLazyApply { T operator()(T val, T lazy_val, int sz) const { return val + lazy_val * sz; } };",
+      "// struct AddLazyCombine { T operator()(T a, T b) const { return a + b; } };",
+      "// segtree<T, SumMonoid, AddLazyApply, AddLazyCombine> st(n, SumMonoid{}, 0, AddLazyApply{}, AddLazyCombine{}, 0);",
       ""
     ],
     "description": "Snippet for Range Query Lazyseg Monoid"
@@ -574,6 +606,9 @@
       "    // [l, r]",
       "    T query(int l, int r) { return query(1, 0, N-1, l, r); }",
       "};",
+      "",
+      "// struct MaxMonoid { int operator()(int a, int b) const { return max(a, b); } };",
+      "// segtree<int, MaxMonoid> st(n, MaxMonoid{}, 0);",
       ""
     ],
     "description": "Snippet for Range Query Segtree Monoid"
@@ -610,6 +645,9 @@
       "        return res;",
       "    }",
       "};",
+      "",
+      "// struct MinMonoid { int operator()(int a, int b) const { return min(a, b); } };",
+      "// segtree<int, MinMonoid> st(n, MinMonoid{}, numeric_limits<int>::max());",
       ""
     ],
     "description": "Snippet for Range Query Segtree Monoid Iterative"
