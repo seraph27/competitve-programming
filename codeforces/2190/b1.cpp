@@ -70,7 +70,6 @@ void shiina_mashiro() {
             }
         }
     }
-
     cout << (ok ? n - 2 : -1) << nl;
 }
 
