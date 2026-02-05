@@ -164,7 +164,6 @@ void shiina_mashiro() {
     len of the string, balance
     need 3 states: no )(. seen ")(", seen ")(....("
     if s[i] == '(' and bal == -1:ans += (len - 2) * count;
-    
     */
 
     int n; cin >> n;
@@ -182,7 +181,6 @@ void shiina_mashiro() {
     for(char c : s) {
         Node dp2[105][4];
         memcpy(dp2, dp, sizeof dp);
-        
         int bal = (c == '(' ?  1 : -1);
         for(int j = 0; j < 101; j++) for(int o = 0; o < 4; o++) { //(, ), )(, )(....(
             int nbal = j + bal;
@@ -205,9 +203,6 @@ void shiina_mashiro() {
     }
     ans = dp[0][3].len - dp[0][3].cnt * 2;
     cout << ans.v << nl;
-
-
-
 }
 
 signed main() {    
