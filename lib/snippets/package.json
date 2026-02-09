@@ -3,10 +3,16 @@
     "contributes": {
         "snippets": [
             {
-                "language": [
-                    "cpp"
-                ],
+                "language": ["cpp"],
                 "path": "./cpp.json"
+            },
+            {
+                "language": ["python"],
+                "path": "./python.json"
+            },
+            {
+                "language": ["rust"],
+                "path": "./rust.json"
             }
         ]
     }

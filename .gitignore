@@ -20,3 +20,4 @@ lib/precompiled/stdc++.h.gch
 .clangd
 *.lua
 lib/snippets/cpp.json
+/projecteuler/target

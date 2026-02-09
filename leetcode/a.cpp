@@ -42,127 +42,34 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
-template<typename T> struct fenwick {
-    int n; vector<T> bit;
-    fenwick(int a) : n(a), bit(a+1) {}
-    
-    T sum(int pos) {
-        T s = 0;
-        for (; pos; s += bit[pos], pos -= pos&-pos);
-        return s;
-    }
-    T query(int l, int r) {
-        return sum(r+1) - sum(l);
-    }
-    void update(int pos, T x) {
-        pos++;
-        for (; pos <= n; bit[pos] += x, pos += pos&-pos);
-    }
-    
-    // find k-th smallest (1-indexed k), returns 0-indexed position
-    int kth(T k) {
-        int pos = 0;
-        for (int j = __lg(n); j >= 0; j--) {
-            if (pos + (1 << j) <= n && bit[pos + (1 << j)] < k) {
-                pos += 1 << j;
-                k -= bit[pos];
-            }
-        }
-        return pos;
-    }
-};
-
-template<typename Add, typename Rem, typename Calc>
-struct mo {
-    int n, B;
-    Add add; Rem rem; Calc calc;
-    
-    mo(int n_, int q, Add add_, Rem rem_, Calc calc_) 
-        : n(n_), B(max(1, (int)(n_ / sqrt(q + 1) + 1))), 
-          add(add_), rem(rem_), calc(calc_) {}
-    
-    template<typename Ans>
-    vector<Ans> solve(vector<pair<int,int>>& queries) {
-        int q = sz(queries);
-        vector<int> ord(q);
-        iota(all(ord), 0);
-        sort(all(ord), [&](int i, int j) {
-            int bi = queries[i].first / B, bj = queries[j].first / B;
-            if (bi != bj) return bi < bj;
-            return (bi & 1) ? queries[i].second > queries[j].second 
-                            : queries[i].second < queries[j].second;
-        });
-        
-        vector<Ans> ans(q);
-        int cl = 0, cr = -1;
-        for (int i : ord) {
-            auto [l, r] = queries[i];
-            while (cr < r) add(++cr);
-            while (cl > l) add(--cl);
-            while (cr > r) rem(cr--);
-            while (cl < l) rem(cl++);
-            ans[i] = calc();
-        }
-        return ans;
-    }
-};
-
 class Solution {
 public:
-    vector<long long> minOperations(vector<int>& nums, int k, vector<vector<int>>& queries) {
-        int n = sz(nums), q = sz(queries);
-        
-        vector<int> r(n);
-        vector<ll> v(n);
-        for (int i = 0; i < n; i++) {
-            r[i] = nums[i] % k;
-            v[i] = nums[i] / k;
+    long long maxScore(vector<int>& nums1, vector<int>& nums2, int k) {
+        int dp[101][101]{};
+        memset(dp, 0xc0, sizeof dp);
+
+        int n = sz(nums1), m = sz(nums2);
+        for(int i = 0; i < m; i++) dp[i][0] = 0;
+        for(int i = 0; i < n; i++) {
+            int ndp[101][101]{};
+            memset(dp, 0xc0, sizeof dp);
+            for(int j = 0; j < m; j++) dp[j][0] = 0;
+            for(int j = 0; j < m; j++) for(int o = 0; o < k; o++) {
+                ckmax(ndp[j][o], dp[j][o]);
+                ckmax(ndp[j + 1][o], dp[j][o]);
+                ckmax(ndp[j + 1][o + 1], dp[j][o] + nums1[i] * nums2[j]);
+            }
+
+            memcpy(dp, ndp, sizeof dp);
         }
-        
-        vector<ll> vv = v;
-        sort_unique(vv);
-        int V = sz(vv);
-        auto id = [&](ll x) { return (int)(lower_bound(all(vv), x) - vv.begin()); };
-        
-        fenwick<ll> cnt(V), sum(V);
-        map<int, int> mp;
-        int diff = 0;
-        ll tot = 0;
-        
-        auto add = [&](int i) {
-            if (mp[r[i]]++ == 0) diff++;
-            int j = id(v[i]);
-            cnt.update(j, 1);
-            sum.update(j, v[i]);
-            tot++;
-        };
-        auto rem = [&](int i) {
-            if (--mp[r[i]] == 0) diff--;
-            int j = id(v[i]);
-            cnt.update(j, -1);
-            sum.update(j, -v[i]);
-            tot--;
-        };
-        auto calc = [&]() -> ll {
-            if (diff > 1) return -1;
-            if (tot <= 1) return 0;
-            int m = cnt.kth((tot + 1) / 2);
-            ll med = vv[m];
-            ll L = cnt.sum(m + 1), Ls = sum.sum(m + 1);
-            ll Rs = sum.sum(V) - Ls;
-            return med * L - Ls + Rs - med * (tot - L);
-        };
-        
-        vector<pii> qs(q);
-        for (int i = 0; i < q; i++) qs[i] = {queries[i][0], queries[i][1]};
-        mo solver(n, q, add, rem, calc);
-        return solver.solve<ll>(qs);   
+
+        return dp[m][k];
     }
 };
-void shiina_mashiro() {
-    int n; cin >> n;
+void slv() {
     Solution s;
-    s.
+    vector<int> vi = {1, 3, 2};
+    cout << s.countSubarrays(vi, 4);
 }
 
 signed main() {    
@@ -170,6 +77,6 @@ signed main() {
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
     //cin >> t;
-    while (t--) shiina_mashiro();
+    while (t--) slv();
 }
 
