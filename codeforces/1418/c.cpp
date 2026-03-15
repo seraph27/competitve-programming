@@ -35,18 +35,17 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 const int INF = 0x3f3f3f3f;
 
+
 void shiina_mashiro() {
     int n; cin >> n;
     vector<int> a(n);
     for(int i = 0; i < n; i++) cin >> a[i];
-    vector dp(n+5, vector<int>(2, INF));
-    dp[0][0] = 0; // 0 is him 1 is me
 
-    for(int i = 0; i < n; i++) {
-        for(int turn = 0; turn < 2; turn++) {
-            ckmin(dp[i + 1][turn ^ 1], dp[i][turn] + (turn ^ 1) * a[i]);
-            ckmin(dp[i + 2][turn ^ 1], dp[i][turn] + (turn ^ 1) * (a[i] + a[i + 1]));
-        }
+    vector<vector<int>> dp(n + 5, vector<int>(2, 1e9));
+    dp[0][0] = 0;
+    for(int i = 0; i < n; i++) for(int turn = 0; turn < 2; turn++){
+        ckmin(dp[i + 2][turn ^ 1], dp[i][turn] + (!turn && a[i]) + (!turn && i + 1 < n && a[i + 1]));
+        ckmin(dp[i + 1][turn ^ 1], dp[i][turn] + (!turn && a[i]));
     }
     cout << min(dp[n][0], dp[n][1]) << nl;
 }
