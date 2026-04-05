@@ -42,28 +42,111 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+vector<int> z_function(string s) {
+    int n = s.size();
+    vector<int> z(n);
+    int l = 0, r = 0;
+    for(int i = 1; i < n; i++) {
+        if(i < r) {
+            z[i] = min(r - i, z[i - l]);
+        }
+        while(i + z[i] < n && s[z[i]] == s[i + z[i]]) {
+            z[i]++;
+        }
+        if(i + z[i] > r) {
+            l = i;
+            r = i + z[i];
+        }
+    }
+    return z;
+}
+
+const int M1 = 1e9 + 7, M2 = 1e9 + 9;
+const int B1 = uniform_int_distribution<int>(137, 1e9 - 1)(rng);
+const int B2 = uniform_int_distribution<int>(137, 1e9 - 1)(rng);
+vector<int> P1{1}, P2{1};
+
+struct Hash {
+    vector<int> h1, h2;
+    Hash(const string& s) {
+        int n = s.size();
+        while (P1.size() <= n) {
+            P1.push_back(1LL * P1.back() * B1 % M1);
+            P2.push_back(1LL * P2.back() * B2 % M2);
+        }
+        h1.assign(n + 1, 0);
+        h2.assign(n + 1, 0);
+        for (int i = 0; i < n; i++) {
+            h1[i + 1] = (1LL * h1[i] * B1 + s[i]) % M1;
+            h2[i + 1] = (1LL * h2[i] * B2 + s[i]) % M2;
+        }
+    }
+    pair<int, int> query(int l, int r) {
+        int a = (h1[r + 1] - 1LL * h1[l] * P1[r - l + 1]) % M1;
+        int b = (h2[r + 1] - 1LL * h2[l] * P2[r - l + 1]) % M2;
+        return {a < 0 ? a + M1 : a, b < 0 ? b + M2 : b};
+    }
+};
+
 class Solution {
 public:
-    long long maxScore(vector<int>& nums1, vector<int>& nums2, int k) {
-        int dp[101][101]{};
-        memset(dp, 0xc0, sizeof dp);
-
-        int n = sz(nums1), m = sz(nums2);
-        for(int i = 0; i < m; i++) dp[i][0] = 0;
+    string generateString(string str1, string str2) {
+        int n = sz(str1), m = sz(str2), len = n + m - 1;
+        //abcdabcdabc....and you have T in the middle of somewhere. then you must gurantee pref[0, T] = suf[m - T, m - 1)
+        auto z = z_function(str2);
+        vector<int> t_idxs;
         for(int i = 0; i < n; i++) {
-            int ndp[101][101]{};
-            memset(dp, 0xc0, sizeof dp);
-            for(int j = 0; j < m; j++) dp[j][0] = 0;
-            for(int j = 0; j < m; j++) for(int o = 0; o < k; o++) {
-                ckmax(ndp[j][o], dp[j][o]);
-                ckmax(ndp[j + 1][o], dp[j][o]);
-                ckmax(ndp[j + 1][o + 1], dp[j][o] + nums1[i] * nums2[j]);
+            if(str1[i] == 'T') {
+                if(!t_idxs.empty()) {
+                    auto lst = t_idxs.back();
+                    int d = i - lst;
+                    if(d < m && z[d] < m - d) return "";
+                } 
             }
-
-            memcpy(dp, ndp, sizeof dp);
+            t_idxs.push_back(i);
+        }
+        
+        string ans('?', len);
+        int lstfill = -1;
+        for(auto idx : t_idxs) {
+            for(int j = max(0, lstfill - idx + 1); j < m; j++) {
+                ans[idx + j] = str2[j];
+            }
+            ckmax(lstfill, idx + m - 1);
         }
 
-        return dp[m][k];
+        Hash target(str2);
+        auto [t1, t2] = target.query(0, m - 1); 
+
+        vector<int> h1(len + 1, 0), h2(len + 1, 0);
+        for (int i = 0; i < len; i++) {
+            for (char c : {'a', 'b'}) {
+                if (ans[i] != '?' && ans[i] != c) continue; 
+                int nxt1 = (1LL * h1[i] * B1 + c) % M1;
+                int nxt2 = (1LL * h2[i] * B2 + c) % M2;
+
+                bool ok = true;
+                int start_idx = i - m + 1;
+                if (start_idx >= 0 && str1[start_idx] == 'F') {
+                    int w1 = (nxt1 - 1LL * h1[start_idx] * P1[m]) % M1;
+                    int w2 = (nxt2 - 1LL * h2[start_idx] * P2[m]) % M2;
+                    if (w1 < 0) w1 += M1;
+                    if (w2 < 0) w2 += M2;
+
+                    if (w1 == t1 && w2 == t2) {
+                        ok = false;
+                    }
+                }
+
+                if (ok) {
+                    ans[i] = c;
+                    h1[i + 1] = nxt1;
+                    h2[i + 1] = nxt2;
+                    break; 
+                }
+            }
+        }
+        return ans;
     }
 };
 void slv() {
