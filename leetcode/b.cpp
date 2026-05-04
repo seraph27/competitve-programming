@@ -43,6 +43,40 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 const char nl = '\n';
 
 
+class Solution {
+public:
+    string sortVowels(string s) {
+        int n = sz(s);
+        auto is_vowel = [&](char c) {
+            return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
+        };
+
+        map<char, int> freq, fi;
+        vector<int> pos;
+        vector<char> ss;
+
+        for (int i = 0; i < n; i++) {
+            if (is_vowel(s[i])) {
+                if (freq.find(s[i]) == freq.end()) fi[s[i]] = i;
+                freq[s[i]]++;
+                pos.pb(i);
+                ss.pb(s[i]);
+            }
+        }
+
+        if (pos.empty()) return s;
+
+        sort(all(ss), [&](char a, char b) {
+            if (freq[a] != freq[b]) return freq[a] > freq[b];
+            return fi[a] < fi[b];
+        });
+
+        string ans = s;
+        for (int i = 0; i < sz(pos); i++) ans[pos[i]] = ss[i];
+
+        return ans;
+    }
+};
 void slv() {
     Solution s;
 

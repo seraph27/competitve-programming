@@ -1,14 +1,27 @@
+// Problem: C. To Become Max
+// Contest: Codeforces Round 890 (Div. 2) supported by Constructor Institute
+// URL: https://codeforces.com/contest/1856/problem/C
+// Time Limit: 2000
+// Start: Fri Apr 17 11:43:36 2026
+// multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define ll long long
+
+#define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
+#define eb emplace_back
+#define db double
+
 using namespace std;
+using vc = vector<int>;
+using vvc = vector<vc>;
+using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -42,17 +55,42 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+void shiina_mashiro() {
+    int n, k; cin >> n >> k;
 
-void slv() {
-    Solution s;
+    vector<int> vi(n);
+    for (int i = 0; i < n; i++) cin >> vi[i];
 
+    int ans = *max_element(all(vi));
+
+    for(int i = 0; i < n - 1; i++) {
+        //try to binary search the largest number we can set vi[i] to, but also control [i, R]? 
+        int L = vi[i], R = 1e9;
+        while(L <= R) {
+            bool ok = false;
+            int mid = (L + R) / 2;
+            int need = 0;
+            int curr = mid;
+            int j = i;
+            for (; j < n - 1; j++) {
+                if(vi[j] < curr) need += curr - vi[j];
+                if(need <= k && vi[j + 1] >= curr - 1) {
+                    ckmax(ans, mid);
+                    ok = true;
+                }
+                curr--;
+            }
+            if(ok) L = mid + 1;
+            else R = mid - 1;
+        }
+    }
+    cout << ans << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
-    while (t--) slv();
+    cin >> t;
+    while (t--) shiina_mashiro();
 }
-

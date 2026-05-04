@@ -1,14 +1,27 @@
+// Problem: C. Hard problem
+// Contest: Codeforces Round 367 (Div. 2)
+// URL: https://codeforces.com/contest/706/problem/C
+// Time Limit: 1000
+// Start: Sat Apr 11 00:05:06 2026
+// multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define ll long long
+
+#define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
+#define eb emplace_back
+#define db double
+
 using namespace std;
+using vc = vector<int>;
+using vvc = vector<vc>;
+using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -42,17 +55,39 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+void shiina_mashiro() {
+    int n; cin >> n;
+    vector<int> cost(n);
+    for (int i = 0; i < n; i++) cin >> cost[i];
 
-void slv() {
-    Solution s;
+    vector<string> vi(n);
+    for (int i = 0; i < n; i++) cin >> vi[i];
+
+    vc dp(2, 4e18); //0 is didn't reverse, 1 is reversed last
+    dp[0] = 0;
+    dp[1] = cost[0];
+
+    for(int i = 1; i < n; i++) {
+        vc ndp(2, 4e18);
+        string rev(vi[i].rbegin(), vi[i].rend());
+        string prev_rev(vi[i - 1].rbegin(), vi[i - 1].rend());
+        if(vi[i] >= vi[i - 1]) ckmin(ndp[0], dp[0]);
+        if(vi[i] >= prev_rev) ckmin(ndp[0], dp[1]);
+        if(rev >= vi[i - 1]) ckmin(ndp[1], dp[0] + cost[i]);
+        if(rev >= prev_rev) ckmin(ndp[1], dp[1] + cost[i]);
+        dp = ndp;
+    }
+    debug(dp);
+
+    int ans = min(dp[0], dp[1]);
+    if(ans == 4e18) ans = -1;
+    cout << ans << nl;
 
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
-    while (t--) slv();
+    while (t--) shiina_mashiro();
 }
-

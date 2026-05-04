@@ -1,14 +1,27 @@
+// Problem: A - Frog 1
+// Contest: Educational DP Contest
+// URL: https://atcoder.jp/contests/dp/tasks/dp_a
+// Time Limit: 2000
+// Start: Sun May  3 13:11:53 2026
+// multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define ll long long
+
+#define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
+#define eb emplace_back
+#define db double
+
 using namespace std;
+using vc = vector<int>;
+using vvc = vector<vc>;
+using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -42,17 +55,25 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+void shiina_mashiro() {
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(auto &x : vi) cin >> x;
 
-void slv() {
-    Solution s;
+    vector<int> dp(n, 4e18);
+    dp[0] = 0;
 
+    for(int i = 0; i < n; i++) {
+        if(i + 1 < n) ckmin(dp[i + 1], dp[i] + abs(vi[i] - vi[i + 1]));
+        if(i + 2 < n) ckmin(dp[i + 2], dp[i] + abs(vi[i] - vi[i + 2]));
+    }
+
+    cout << dp[n - 1] << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
-    while (t--) slv();
+    while (t--) shiina_mashiro();
 }
-

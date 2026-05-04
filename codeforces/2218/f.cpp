@@ -1,14 +1,27 @@
+// Problem: F. The 67th Tree Problem
+// Contest: Codeforces Round 1090 (Div. 4)
+// URL: https://codeforces.com/contest/2218/problem/F
+// Time Limit: 4000
+// Start: Sat Apr  4 23:46:29 2026
+// multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define ll long long
+
+#define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
+#define eb emplace_back
+#define db double
+
 using namespace std;
+using vc = vector<int>;
+using vvc = vector<vc>;
+using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -42,17 +55,38 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+void shiina_mashiro() {
+    int n, m; cin >> n >> m;
+    if(n > m || (m % 2 == 0 && n == 0)) {
+        cout << "NO" << nl;
+        return;
+    }
+    int tot = n + m;
+    cout << "YES" << nl;
+    if((m - n) & 1) {
+        for(int i = 1; i < n * 2 + 1; i++) {
+            cout << i << " " << i + 1 << nl;
+        }
+        for(int i = n * 2 + 2; i <= tot; i++) {
+            cout << 1 << " " << i << nl;
+        }
+    } else {
+        for(int i = 1; i < n * 2; i++) {
+            cout << i << " " << i + 1 << nl;
+        }
+        for(int i = n * 2 + 1; i <= tot; i++) {
+            cout << 1 << " " << i << nl;
+        }
+    }
 
-void slv() {
-    Solution s;
+
 
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
-    while (t--) slv();
+    cin >> t;
+    while (t--) shiina_mashiro();
 }
-

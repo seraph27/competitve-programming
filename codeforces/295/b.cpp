@@ -1,14 +1,27 @@
+// Problem: B. Greg and Graph
+// Contest: Codeforces Round 179 (Div. 1)
+// URL: https://codeforces.com/contest/295/problem/B
+// Time Limit: 3000
+// Start: Sat Apr 25 00:57:43 2026
+// multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define ll long long
+
+#define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
+#define eb emplace_back
+#define db double
+
 using namespace std;
+using vc = vector<int>;
+using vvc = vector<vc>;
+using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -42,17 +55,38 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+void shiina_mashiro() {
+    int n; cin >> n;
+    vvc dp(n, vc(n, 4e18));
+    for(int i = 0; i < n; i++) for(int j = 0; j < n; j++) {
+        cin >> dp[i][j];
+    }
 
-void slv() {
-    Solution s;
+    vc vtx(n);
+    for(int i = 0; i < n; i++) {
+        cin >> vtx[i];
+        vtx[i]--;
+    }
 
+
+    vector<int> curr;
+    vector<int> ans(n);
+    for(int i = n - 1; i >= 0; i--) {
+        int rn = vtx[i];
+        curr.pb(rn);
+        for(int j = 0; j < n; j++) for(int k = 0; k < n; k++) {
+            ckmin(dp[j][k], dp[j][rn] + dp[rn][k]);
+        }
+        int sum = 0;
+        for(auto x : curr) for(auto y : curr) if(x != y) sum += dp[x][y];
+        ans[i] = sum;
+    }
+    cout << ans << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
-    while (t--) slv();
+    while (t--) shiina_mashiro();
 }
-

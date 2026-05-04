@@ -1,14 +1,27 @@
+// Problem: E. Sending a Sequence Over the Network
+// Contest: Codeforces Round 826 (Div. 3)
+// URL: https://codeforces.com/contest/1741/problem/E
+// Time Limit: 1000
+// Start: Sat Apr 18 00:19:31 2026
+// multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define ll long long
+
+#define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
+#define eb emplace_back
+#define db double
+
 using namespace std;
+using vc = vector<int>;
+using vvc = vector<vc>;
+using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -42,17 +55,30 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+void shiina_mashiro() {
+    int n; cin >> n;
+    vector<int> vi(n+1);
+    for (int i = 1; i <= n; i++) cin >> vi[i];
 
-void slv() {
-    Solution s;
-
+    vector<int> dp(n + 1, 0); //dp[i] can we send first i numbers
+    dp[0] = 1;
+    
+    //idea is try both constructions
+    for(int i = 1; i <= n; i++) {
+        if(i + vi[i] <= n && dp[i - 1]) {
+            dp[i + vi[i]] = 1;
+        }
+        if(i - vi[i] - 1 >= 0 && dp[i - vi[i] - 1]) {
+            dp[i] = 1;
+        }
+    }
+    cout << (dp[n] ? "YES" : "NO") << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
-    while (t--) slv();
+    cin >> t;
+    while (t--) shiina_mashiro();
 }
-

@@ -1,14 +1,29 @@
+// Problem: F - LCS
+// Contest: Educational DP Contest
+// URL: https://atcoder.jp/contests/dp/tasks/dp_f
+// Time Limit: 2000
+// Start: Sun May  3 14:23:12 2026
+// atcoder
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define ll long long
+#include <atcoder/modint>
+
+#define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
+#define eb emplace_back
+#define db double
+
 using namespace std;
+using namespace atcoder;
+using vc = vector<int>;
+using vvc = vector<vc>;
+using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -40,19 +55,43 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
+using mint = modint998244353;
 const char nl = '\n';
 
+void shiina_mashiro() {
+    string s, t; cin >> s >> t;
+    int n = sz(s), m = sz(t);
+    vvc dp(n + 1, vc(m + 1, 0));
 
-void slv() {
-    Solution s;
+    for(int i = 0; i <= n; i++) for(int j = 0; j <= m; j++) {
+        if(i + 1 <= n && j + 1 <= m && s[i] == t[j]) {
+            ckmax(dp[i + 1][j + 1], dp[i][j] + 1);
+        }
+        if(i + 1 <= n) ckmax(dp[i + 1][j], dp[i][j]);
+        if(j + 1 <= m) ckmax(dp[i][j + 1], dp[i][j]);
+    }
 
+    string ans = "";
+
+    int x = n, y = m;
+    while(x > 0 && y > 0) {
+        if(s[x - 1] == t[y - 1]) {
+            ans.pb(s[x - 1]);
+            x--;
+            y--;
+        } else if(dp[x - 1][y] >= dp[x][y - 1]) {
+            x--;
+        } else {
+            y--;
+        }
+    }
+    reverse(all(ans));
+    cout << ans << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
-    while (t--) slv();
+    while (t--) shiina_mashiro();
 }
-

@@ -1,14 +1,29 @@
+// Problem: I - Coins
+// Contest: Educational DP Contest
+// URL: https://atcoder.jp/contests/dp/tasks/dp_i
+// Time Limit: 2000
+// Start: Sun May  3 15:57:08 2026
+// atcoder
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define ll long long
+#include <atcoder/modint>
+
+#define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
+#define eb emplace_back
+#define db double
+
 using namespace std;
+using namespace atcoder;
+using vc = vector<int>;
+using vvc = vector<vc>;
+using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -40,19 +55,34 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
+using mint = modint998244353;
 const char nl = '\n';
 
+void shiina_mashiro() {
+    int n; cin >> n;
+    vector<double> p(n);
+    for(int i = 0; i < n; i++) cin >> p[i];
+    vector<double> dp(n + 1, 0); // probability of getting i heads;
 
-void slv() {
-    Solution s;
+    dp[0] = 1;
 
+    for(int i = 0; i < n; i++) {
+        vector<double> ndp(n + 1, 0);
+        for(int j = 0; j <= i + 1; j++) {
+            ndp[j] = dp[j] * (1 - p[i]) + (j - 1 >= 0 ? dp[j - 1] * p[i] : 0);
+        }
+        swap(dp, ndp);
+    }
+
+    double ans = 0;
+    for(int i = (n+1) / 2; i <= n; i++) ans += dp[i];
+    cout << fixed << setprecision(20) << ans << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
     //cin >> t;
-    while (t--) slv();
+    while (t--) shiina_mashiro();
 }
-

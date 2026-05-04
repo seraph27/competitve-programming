@@ -1,14 +1,27 @@
+// Problem: E. The 67th XOR Problem
+// Contest: Codeforces Round 1090 (Div. 4)
+// URL: https://codeforces.com/contest/2218/problem/E
+// Time Limit: 3000
+// Start: Sat Apr  4 23:34:55 2026
+// multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define ll long long
+
+#define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
+#define eb emplace_back
+#define db double
+
 using namespace std;
+using vc = vector<int>;
+using vvc = vector<vc>;
+using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -42,17 +55,22 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+void shiina_mashiro() {
+    int n; cin >> n;
+    int ans = 0;
+    vector<int> vi(n);
+    for (int i = 0; i < n; i++) cin >> vi[i];
 
-void slv() {
-    Solution s;
-
+    for(int i = 0; i < n; i++) for(int j = i + 1; j < n; j++) {
+        ckmax(ans, (vi[i] ^ vi[j]));
+    }
+    cout << ans << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
-    while (t--) slv();
+    cin >> t;
+    while (t--) shiina_mashiro();
 }
-

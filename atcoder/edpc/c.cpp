@@ -1,14 +1,29 @@
+// Problem: C - Vacation
+// Contest: Educational DP Contest
+// URL: https://atcoder.jp/contests/dp/tasks/dp_c
+// Time Limit: 2000
+// Start: Sun May  3 13:32:32 2026
+// atcoder
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define ll long long
+#include <atcoder/modint>
+
+#define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
+#define eb emplace_back
+#define db double
+
 using namespace std;
+using namespace atcoder;
+using vc = vector<int>;
+using vvc = vector<vc>;
+using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -40,19 +55,34 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
+using mint = modint998244353;
 const char nl = '\n';
 
+void shiina_mashiro() {
+    int n; cin >> n;
+    vector<ar<int, 3>> vi(n);
+    for(int i = 0; i < n; i++) {
+        cin >> vi[i][0] >> vi[i][1] >> vi[i][2];
+    }
 
-void slv() {
-    Solution s;
+    vvc dp(n, vc(3, 0));
+    dp[0][0] = vi[0][0];
+    dp[0][1] = vi[0][1];
+    dp[0][2] = vi[0][2];
 
+    for(int i = 1; i < n; i++) {
+        dp[i][0] = max(dp[i - 1][1], dp[i - 1][2]) + vi[i][0];
+        dp[i][1] = max(dp[i - 1][0], dp[i - 1][2]) + vi[i][1];
+        dp[i][2] = max(dp[i - 1][0], dp[i - 1][1]) + vi[i][2];
+    }
+
+    cout << max({dp[n - 1][0], dp[n - 1][1], dp[n - 1][2]}) << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
     //cin >> t;
-    while (t--) slv();
+    while (t--) shiina_mashiro();
 }
-

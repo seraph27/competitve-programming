@@ -1,14 +1,27 @@
+// Problem: A. Linova and Kingdom
+// Contest: Codeforces Round 635 (Div. 1)
+// URL: https://codeforces.com/contest/1336/problem/A
+// Time Limit: 2000
+// Start: Thu Apr  9 14:24:48 2026
+// multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define ll long long
+
+#define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
+#define eb emplace_back
+#define db double
+
 using namespace std;
+using vc = vector<int>;
+using vvc = vector<vc>;
+using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -42,17 +55,43 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+void shiina_mashiro() {
+    int n, k; cin >> n >> k;
+    vector<vector<int>> adj(n);
+    for(int i = 0; i < n - 1; i++) {
+        int u, v; cin >> u >> v;
+        u--, v--;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
 
-void slv() {
-    Solution s;
 
+    vector<int> dep(n), siz(n);
+    auto dfs = [&](this auto &&self, int u, int p) -> void {
+        siz[u] = 1;
+        for(auto &e : adj[u]) if(e != p) {
+            dep[e] = dep[u] + 1;
+            self(e, u);
+            siz[u] += siz[e];
+        }
+    };
+    dfs(0, -1);
+    vector<int> val(n);
+    for (int i = 0; i < n; i++) {
+        val[i] = dep[i] - siz[i] + 1;
+    }
+    debug(val);
+    sort(all(val), greater<int>());
+    int ans = 0;
+    for (int i = 0; i < k; i++) ans += val[i];
+
+
+    cout << ans << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
-    while (t--) slv();
+    while (t--) shiina_mashiro();
 }
-

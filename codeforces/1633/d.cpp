@@ -1,14 +1,26 @@
+// Problem: D. Make Them Equal
+// Contest: Educational Codeforces Round 122 (Rated for Div. 2)
+// URL: https://codeforces.com/contest/1633/problem/D
+// Time Limit: 2000
+// Start: Fri Apr 17 00:51:06 2026
+// multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define ll long long
+
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
+#define eb emplace_back
+#define db double
+
 using namespace std;
+using vc = vector<int>;
+using vvc = vector<vc>;
+using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -40,19 +52,53 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #define debug(x...)
 #endif
 
+
 const char nl = '\n';
 
+const int mx = 1e3+5;
+vector<int> vis(mx + 1, 0);
+void init() {
+    queue<pair<int, int> > q;
+    q.push({1, 0});
 
-void slv() {
-    Solution s;
-
+    while(!q.empty()) {
+        auto [u, dis] = q.front(); q.pop();
+        for(int x = 1; x <= u;) {
+            int v = u / x;
+            int val = u + v;
+            if(val <= mx && !vis[val]) {
+                vis[val] = dis + 1;
+                q.push({val, dis + 1});
+            }
+            x = u / v + 1;
+        }
+    }
 }
 
-signed main() {
+void shiina_mashiro() {
+    int n, k; cin >> n >> k;
+    vc b(n), c(n);
+    for (int i = 0; i < n; i++) cin >> b[i];
+    for (int i = 0; i < n; i++) cin >> c[i];
+
+    vector<int> need(n);
+    for(int i = 0; i < n; i++) need[i] = vis[b[i]];
+
+    vector<int> dp(k + 1, 0);
+    for(int i = 0; i < n; i++) {
+        for(int j = k; j >= need[i]; j--) {
+            ckmax(dp[j], dp[j - need[i]] + c[i]);
+        }
+    }
+
+    cout << dp[k] << nl;
+}
+
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
+    init();
     int t = 1;
-    //cin >> t;
-    while (t--) slv();
+    cin >> t;
+    while (t--) shiina_mashiro();
 }
-

@@ -1,14 +1,27 @@
+// Problem: D. Distance in Tree
+// Contest: VK Cup 2012 Round 1
+// URL: https://codeforces.com/contest/161/problem/D
+// Time Limit: 3000
+// Start: Mon Apr 13 01:03:03 2026
+// multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define ll long long
+
+#define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
+#define eb emplace_back
+#define db double
+
 using namespace std;
+using vc = vector<int>;
+using vvc = vector<vc>;
+using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -42,17 +55,44 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+void shiina_mashiro() {
+    int n, k; cin >> n >> k;
+    vector<vector<int>> adj(n);
+    for(int i = 0; i < n - 1; i++) {
+        int u, v; cin >> u >> v;
+        --u, --v;
+        adj[u].pb(v);
+        adj[v].pb(u);
+    }
 
-void slv() {
-    Solution s;
+    // find # pairs of vertices with distance == k
+    //
+    //
+    // dp[u][d] = # vertices in subtree of u with distance d to u
+    //
+    int ans = 0;
+    vector<vector<int>> dp(n, vector<int>(k + 1));
+    auto dfs = [&](this auto &&s, int u, int p) -> void {
+        dp[u][0] = 1;
+        for(auto&e : adj[u]) if(e != p) {
+            s(e, u);
+            for(int i = 0; i < k; i++) {
+                ans += dp[u][i] * dp[e][k - i - 1];
+            }
+            for(int i = 0; i < k; i++) {
+                dp[u][i + 1] += dp[e][i];
+            }
+        }
+    };
 
+    dfs(0, -1);
+
+    cout << ans << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
-    while (t--) slv();
+    while (t--) shiina_mashiro();
 }
-

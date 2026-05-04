@@ -1,14 +1,27 @@
+// Problem: D. Maximum Sum of Products
+// Contest: Educational Codeforces Round 108 (Rated for Div. 2)
+// URL: https://codeforces.com/contest/1519/problem/D
+// Time Limit: 2000
+// Start: Fri Apr 24 13:37:18 2026
+// multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define ll long long
+
+#define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
+#define eb emplace_back
+#define db double
+
 using namespace std;
+using vc = vector<int>;
+using vvc = vector<vc>;
+using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -42,17 +55,42 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+void shiina_mashiro() {
+    int n; cin >> n;
+    vector<int> a(n), b(n);
+    vc pref(n + 1, 0);
+    vvc rev(n + 1, vc(n + 1, 0));
+    for(int i = 0; i < n; i++) cin >> a[i];
+    for(int i = 0; i < n; i++) cin >> b[i];
 
-void slv() {
-    Solution s;
-
+    for(int i = 0; i < n; i++) {
+        pref[i + 1] += pref[i] + a[i] * b[i];
+        rev[i][i] = a[i] * b[i];
+    }
+    //try to expand like for even and odd lengths
+    for(int i = 0; i < n - 1; i++) {
+        rev[i][i+1] = a[i] * b[i + 1] + a[i + 1] * b[i];
+    }
+    for(int len = 3; len <= n; len++) {
+        for(int l = 0; l + len - 1 < n; l++) {
+            int r = l + len - 1;
+            rev[l][r] = rev[l + 1][r - 1] + a[l] * b[r] + a[r] * b[l];
+        }
+    }
+    int ans = pref[n];
+    for(int i = 0; i < n; i++) {
+        for(int j = i; j < n; j++) {
+            int front = pref[i];
+            int back = j < n-1 ? pref[n] - pref[j + 1] : 0;
+            ckmax(ans, front + back + rev[i][j]);
+        }
+    }
+    cout << ans << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
-    while (t--) slv();
+    while (t--) shiina_mashiro();
 }
-

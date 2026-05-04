@@ -1,14 +1,27 @@
+// Problem: D. Maximum Sum on Even Positions
+// Contest: Educational Codeforces Round 90 (Rated for Div. 2)
+// URL: https://codeforces.com/contest/1373/problem/D
+// Time Limit: 2000
+// Start: Sun Apr 19 00:23:21 2026
+// multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define ll long long
+
+#define int long long
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pb push_back
+#define eb emplace_back
+#define db double
+
 using namespace std;
+using vc = vector<int>;
+using vvc = vector<vc>;
+using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
@@ -42,17 +55,44 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+void shiina_mashiro() {
+    //idea: find the sum of even numbers at first, then consider 
+    //we need to reverse any even len segment (if odd then nothing changes)
+    //if the segment starts on an even index, then find the most negative between even and odd indices, otherwise find the most gain  
+    
+    int n; cin >> n;
+    vector<int> vi(n);
+    for(int i = 0; i < n; i++) cin >> vi[i];
 
-void slv() {
-    Solution s;
+    int ans = 0;
+    for(int i = 0; i < n; i += 2) ans += vi[i];
+    int bestans = ans;
 
+    int sum = 0, best_pos = 0;
+    int sum2 = 0, best_neg = 0;
+
+    for(int i = 0; i < n; i++) { //starting from index 1 more neg contribution = good
+        if(i + 1 < n) {
+            int curr = vi[i + 1] - vi[i];
+            if(i & 1) {
+                sum += curr;
+                ckmax(best_pos, sum);
+                ckmax(bestans, ans - (sum - best_pos));
+            } else {
+                sum2 += curr;
+                ckmin(best_neg, sum2);
+                ckmax(bestans, ans + (sum2 - best_neg));
+            }
+        }
+    }
+
+    cout << bestans << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
-    while (t--) slv();
+    cin >> t;
+    while (t--) shiina_mashiro();
 }
-

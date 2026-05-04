@@ -42,6 +42,10 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 
+class Solution {
+public:
+
+};
 
 void slv() {
     Solution s;
@@ -55,4 +59,3 @@ signed main() {
     //cin >> t;
     while (t--) slv();
 }
-
