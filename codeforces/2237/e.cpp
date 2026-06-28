@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: E. Permutation Commutation
+// Contest: Order Capital Round 2 (Codeforces Round 1104, Div. 1 + Div. 2)
+// URL: https://codeforces.com/contest/2237/problem/E
+// Time Limit: 2000
+// Start: Thu Jun 18 22:40:54 2026
 // multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -75,7 +75,85 @@ const char nl = '\n';
 const int inf = 0x3f3f3f3f3f3f3f3fLL;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vc a(n), b(n);
+    read(a), read(b);
+    for (int &x : a) x--;
+    for (int &x : b) if (x != -1) x--;
+    //b[a[i]] == a[b[i]]
+    //
+    
+    vector<bool> vis_a(n, false);
+    vc seen(n, -1);
+    for (int i = 0; i < n; i++) {
+        if (b[i] != -1) {
+            seen[b[i]] = i;
+        }
+    }
+    for(int i = 0; i < n; i++) {
+        if(b[i] == -1 || vis_a[i]) continue;
+        int tmp = i;
+        while(!vis_a[tmp]) { //check
+            vis_a[tmp] = true;
+            int nxt = a[tmp];
+            int ab = a[b[tmp]];
+            if(b[nxt] != -1 && b[nxt] != ab) {
+                cout << "No" << nl;
+                return;
+            }
+            if(seen[ab] != -1 && seen[ab] != nxt) {
+                cout << "No" << nl;
+                return;
+            }
+            b[nxt] = ab;
+            seen[ab] = nxt;
+            tmp = a[tmp];
+        }
+    }
 
+    vc len(n, -1);
+    for(int i = 0; i < n; i++) {
+        if(len[i] != -1) continue;
+        vc c;
+
+        int curr = i;
+        while(len[curr] == -1) {
+            len[curr] = inf;
+            c.pb(curr);
+            curr = a[curr];
+        }
+        for(int x : c) len[x] = sz(c);
+    }
+
+    vector<set<int>> good(n + 1);
+
+    for(int i = 0; i < n; i++) {
+        if(seen[i] == -1) good[len[i]].insert(i);
+    }
+
+    for(int i = 0; i < n; i++) {
+        if(b[i] != -1) continue;
+
+        int L = len[i];
+
+        if(good[L].empty()) {
+            cout << "No" << nl;
+            return;
+        }
+
+        int x = i, y = *good[L].begin();
+
+        for(int j = 0; j < L; j++) {
+            b[x] = y;
+            good[L].erase(y);
+            x = a[x];
+            y = a[y];
+        }
+    }
+
+    cout << "Yes" << nl;
+    for(int &x : b) x++;
+    print(b);
 }
 
 signed main() {

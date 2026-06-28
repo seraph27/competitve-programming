@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: Fullmetal Bitchemist
+// Contest: unknown_contest
+// URL: https://m1.codeforces.com/contest/2237/problem/D
+// Time Limit: 2000
+// Start: Thu Jun 18 11:31:13 2026
 // multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -75,7 +75,58 @@ const char nl = '\n';
 const int inf = 0x3f3f3f3f3f3f3f3fLL;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    string s; cin >> s;
 
+    /*
+    auto dfs = [&](auto&& s, string v) -> bool {
+        if (sz(v) == 1) return 1;
+        for (int i = 1; i < sz(v); i++) if (v[i] == v[i-1]) {
+            string nw = v.substr(0, i-1) + (v[i] == '0' ? '1' : '0') + v.substr(i+1);
+            if (s(s, nw)) return 1;
+        }
+        return 0;
+    };
+    auto dfs2 = [&](auto&& s, string cur) -> void {
+        if (sz(cur) > 8) return;
+        int sum = 0;
+        for (char c : cur) sum += c == '0' ? 1 : -1;
+        if (sz(cur) && !dfs(dfs, cur)) {
+            auto alternate = [&](const string& s) {
+                for (int i = 1; i < sz(s); i++) if (s[i] == s[i-1]) return 0;
+                return 1;
+            };
+            assert(sum % 3 == 0 || alternate(cur));
+            cout << "Bad " << cur << '\n';
+        }
+        s(s, cur+'0');
+        s(s, cur+'1');
+    };
+    dfs2(dfs2, "");
+
+    */
+    vc vi(n);
+    int ans = n * (n + 1) / 2;
+
+    ar<int, 3> mp = {1, 0, 0};
+
+    int bal = 0;
+    for(int i = 0; i < n; i++) {
+        bal += (s[i] == '0' ? 1 : 2);
+        bal %= 3;
+        ans -= mp[bal];
+        mp[bal]++;
+    }
+
+    int bad = 0;
+    int curr = 1;
+    for(int i = 1; i < n; i++) {
+        if(s[i] != s[i - 1]) curr++;
+        else curr = 1;
+        bad += (curr-1) / 2;
+    }
+    ans -= bad;
+    cout << ans << nl;
 }
 
 signed main() {

@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: D. Magical Tiered Cake
+// Contest: Codeforces Round 1101 (Div. 2)
+// URL: https://codeforces.com/contest/2232/problem/D
+// Time Limit: 2000
+// Start: Fri Jun 12 13:02:08 2026
 // multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -75,7 +75,37 @@ const char nl = '\n';
 const int inf = 0x3f3f3f3f3f3f3f3fLL;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vc a(n + 1);
+    for(int i = 1; i <= n; i++) cin >> a[i];
+    for(int i = 1; i <= n; i++) {
+        if(a[i] >= i) {
+            cout << "No" << nl;
+            return;
+        }
+    }
 
+    vector<ar<int, 3>> moves;
+    auto f = [&](this auto &&self, int k, int from, int to, int tmp) {
+        if(k == 0) return;
+        int d = k - 1 - a[k];
+
+        self(d, from, tmp, to);
+        moves.pb({k, from, to});
+
+        if(a[k] == 0) {
+            self(k - 1, tmp, to, from);
+        } else if(a[k] > 0) {
+            self(d, tmp, from, to);
+            self(k - 1, from, to, tmp);
+        }
+    };
+
+    f(n, 1, 3, 2);
+
+    cout << "Yes" << nl;
+    cout << sz(moves) << nl;
+    for(auto &[id, from, to] : moves) cout << id << " " << from << " " << to << nl;
 }
 
 signed main() {

@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: A. Convergence
+// Contest: Codeforces Round 1101 (Div. 2)
+// URL: https://codeforces.com/contest/2232/problem/A
+// Time Limit: 1000
+// Start: Sun May 31 22:42:49 2026
 // multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -75,7 +75,17 @@ const char nl = '\n';
 const int inf = 0x3f3f3f3f3f3f3f3fLL;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vc vi(n);
+    read(vi);
 
+    sort(all(vi));
+
+    int mid = vi[n / 2];
+    int L = 0, R = n - 1;
+    while(vi[L] != mid) L++;
+    while(vi[R] != mid) R--;
+    cout << max(L, n - R - 1) << nl;
 }
 
 signed main() {

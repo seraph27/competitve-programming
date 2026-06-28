@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: D. XOR, Expression and Two Binary Numbers
+// Contest: Codeforces Round 1102 (Div. 2)
+// URL: https://codeforces.com/problemset/problem/2234/D?mobile=false
+// Time Limit: 2000
+// Start: Sat Jun 13 22:52:21 2026
 // multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -73,9 +73,30 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 const char nl = '\n';
 const int inf = 0x3f3f3f3f3f3f3f3fLL;
-
+//x y x ^ y x y x ^ y x y x ^ y x y  x ^ y x  y x ^y x y
+// x y x ^ y x y 
+// 17 33 65 -> 66 / 3 == 22 * x + 22 * y + 21 * x ^ y
 void shiina_mashiro() {
-
+    int n, k; cin >> n >> k;
+    string x, y; cin >> x >> y;
+    string z;
+    for(int i = 0; i < n; i++) {
+        z.pb((x[i] == y[i]) ? '0' : '1');
+    }
+    int cx = count(all(x), '0');
+    cx = cx * (n - cx);
+    int cy = count(all(y), '0');
+    cy = cy * (n - cy);
+    int cz = count(all(z), '0');
+    cz = cz * (n - cz);
+    int tot = (1LL << k) + 1;
+    if(tot % 3 == 0) {
+        int div = tot / 3;
+        cout << (cx + cy + cz) * div << nl;
+    } else {
+        int div = (tot + 1) / 3;
+        cout << (cx + cy) * div + cz * (div - 1) << nl;
+    }
 }
 
 signed main() {

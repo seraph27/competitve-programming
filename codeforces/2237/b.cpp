@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: B. Annoying the Ghost
+// Contest: Order Capital Round 2 (Codeforces Round 1104, Div. 1 + Div. 2)
+// URL: https://codeforces.com/contest/2237/problem/B
+// Time Limit: 1500
+// Start: Thu Jun 18 10:41:48 2026
 // multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -75,7 +75,31 @@ const char nl = '\n';
 const int inf = 0x3f3f3f3f3f3f3f3fLL;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vc a(n), b(n);
+    read(a), read(b);
 
+    int ans = 0;
+    vector<bool> used(n);
+    for(int i = 0; i < n; i++) {
+        int p = -1;
+        for(int j = 0; j < n; j++) {
+            if(!used[j] and a[j] <= b[i]) {
+                p = j;
+                break;
+            }
+        }
+
+        if(p == -1) {
+            cout << -1 << nl;
+            return;
+        }
+
+        for(int i = 0; i < p; i++) if(!used[i]) ans++;
+        used[p] = 1;
+    }
+
+    cout << ans << nl;
 }
 
 signed main() {

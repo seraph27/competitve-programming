@@ -1,45 +1,39 @@
+// Problem: D. Sanae, Cross and Color
+// Contest: Codeforces Round 1098 (Div. 2)
+// URL: https://codeforces.com/contest/2228/problem/D
+// Time Limit: 2000
+// Start: Thu May 21 17:19:02 2026
+// multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#define ll long long
+
 #define sz(x) (int)x.size()
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
-#define fi first
-#define se second
 #define pb push_back
+#define eb emplace_back
+#define db double
 
 using namespace std;
-using vc = vector<ll>;
+using vc = vector<int>;
 using vvc = vector<vc>;
 using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
-
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 template<typename T, typename S> constexpr T ifloor(const T a, const S b){return a/b-(a%b&&(a^b)<0);}
-template<class T, class S> constexpr T iceil(T a, S b) { return -ifloor(-a, b); }
-template<typename T> T isqrt(T x) { T y = sqrtl((long double)x); while((__int128)(y+1)*(y+1) <= x) y++; while((__int128)y*y > x) y--; return y; }
-
-template<typename T> void sort_unique(vector<T> &vec){ sort(vec.begin(),vec.end()); vec.resize(unique(vec.begin(),vec.end())-vec.begin()); }
+template<typename T, typename S> constexpr T iceil(const T a, const S b){return ifloor(a+b-1,b);}
+template<typename T> T isqrt(const T &x){T y=sqrt(x+2); while(y*y>x) y--; return y;}
+template<typename T>
+void sort_unique(vector<T> &vec){
+    sort(vec.begin(),vec.end());
+    vec.resize(unique(vec.begin(),vec.end())-vec.begin());
+}
 template<typename T> ostream& operator<<(ostream& os, const vector<T>& v) {for (auto &x : v) os << x << " "; return os;}
-template<typename T> void read(vector<T> &a) { for(auto &x : a) cin >> x; }
-template<typename T> void print(const vector<T> &a) { for(int i = 0; i < sz(a); i++) cout << a[i] << " \n"[i == sz(a) - 1]; }
-
-template<class F> int first_true(int L, int R, F ok) { while (R - L > 1) { int mid = (L + R) / 2; if (ok(mid)) R = mid; else L = mid; } return R; }
-template<class F> int last_true(int L, int R, F ok) { while (R - L > 1) { int mid = (L + R) / 2; if (ok(mid)) L = mid; else R = mid; } return L; }
-
-template<class T> vector<T> prefix(const vector<T> &a) { vector<T> pref(sz(a) + 1); for(int i = 0; i < sz(a); i++) pref[i + 1] = pref[i] + a[i]; return pref; }
-template<class T> T rangesum(const vector<T> &pref, int L, int R) { return pref[R] - pref[L]; }
-
-int topbit(long long x) { return x == 0 ? -1 : 63 - __builtin_clzll(x); }
-int lowbit(long long x) { return x == 0 ? 64 : __builtin_ctzll(x); }
-int popcnt(long long x) { return __builtin_popcountll(x); }
-bool ispow2(long long x) { return x > 0 && (x & -x) == x; }
-long long mask(int k) { return (1LL << k) - 1; }
 
 #ifdef MISAKA
 struct _debug {
@@ -59,22 +53,46 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 #endif
 
 const char nl = '\n';
-const ll inf = 0x3f3f3f3f3f3f3f3fLL;
 
-class Solution {
-public:
+void shiina_mashiro() {
+    int n; cin >> n;
+    vector<int> xs, ys;
+    vector<vector<int>> ypts(n + 1);
+    vector<int> xcnt(n + 1);
+    for(int i = 0; i < n; i++) {
+        int x, y; cin >> x >> y;
+        xs.pb(x);
+        ys.pb(y);
+        ypts[y].pb(x);
+        xcnt[x]++;
+    }
 
-};
+    sort_unique(xs), sort_unique(ys);
 
-void slv() {
-    Solution s;
+    long long ans = 0;
 
+    int tL = 1e9, tR = -1;
+    int bL = 0, bR = sz(xcnt) - 1;
+    for(auto &y : ys) {
+        for(auto x : ypts[y]) {
+            xcnt[x]--;
+            ckmin(tL, x);
+            ckmax(tR, x);
+        }
+        while(bL <= n && !xcnt[bL]) bL++;
+        while(bR >= 0 && !xcnt[bR]) bR--;
+        int L = max(tL, bL);
+        int R = min(tR, bR);
+        int d = lower_bound(all(xs), R) - lower_bound(all(xs), L);
+        ans += max(0, d);
+    }
+    cout << ans << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;
-    //cin >> t;
-    while (t--) slv();
+    cin >> t;
+    while (t--) shiina_mashiro();
 }

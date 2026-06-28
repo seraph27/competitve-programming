@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: C2. Seating Arrangement (Hard Version)
+// Contest: Codeforces Round 1101 (Div. 2)
+// URL: https://codeforces.com/contest/2232/problem/C2
+// Time Limit: 2000
+// Start: Tue Jun  2 17:05:11 2026
 // multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -55,6 +55,7 @@ bool ispow2(long long x) { return x > 0 && (x & -x) == x; }
 long long mask(int k) { return (1LL << k) - 1; }
 
 #ifdef MISAKA
+
 struct _debug {
 template<typename T, size_t N> static void __print(const T (&a)[N]) { cerr << '{'; for (size_t i = 0; i < N; ++i) { if (i) cerr << ',';__print(a[i]); }cerr << '}'; }
 template<typename T> static void __print(const T &x) {
@@ -75,7 +76,39 @@ const char nl = '\n';
 const int inf = 0x3f3f3f3f3f3f3f3fLL;
 
 void shiina_mashiro() {
+    int n, table, seat; cin >> n >> table >> seat;
+    string s; cin >> s;
 
+    int ans = 0;
+
+    int space = 0, left = table;
+    int special = 0;
+    for(char c : s) {
+        if(c == 'I') {
+            debug(left);
+            if(left) {
+                left--;
+                space += seat - 1;
+                ans++;
+            }
+        } else if(c == 'A') {
+            if(space) space--, ans++, special++;
+            else if(left) {
+                left--;
+                space += seat - 1;
+                ans++;
+            }
+        } else {
+            if(space) space--, ans++;
+            else if(left && special) {
+                left--;
+                special--;
+                ans++;
+                space += seat - 1;
+            }
+        }
+    }
+    cout << ans << nl;
 }
 
 signed main() {

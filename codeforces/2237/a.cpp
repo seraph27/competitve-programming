@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: A. Destroying Towers
+// Contest: Order Capital Round 2 (Codeforces Round 1104, Div. 1 + Div. 2)
+// URL: https://codeforces.com/contest/2237/problem/A
+// Time Limit: 1000
+// Start: Thu Jun 18 10:36:30 2026
 // multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -75,7 +75,15 @@ const char nl = '\n';
 const int inf = 0x3f3f3f3f3f3f3f3fLL;
 
 void shiina_mashiro() {
-
+    int n; cin >> n;
+    int mn = 4e18;
+    int ans = 0;
+    for(int i = 0; i < n; i++) {
+        int x; cin >> x;
+        ckmin(mn, x);
+        ans += mn;
+    }
+    cout << ans << nl;
 }
 
 signed main() {

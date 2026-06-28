@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: Q - Flowers
+// Contest: Educational DP Contest
+// URL: https://atcoder.jp/contests/dp/tasks/dp_q
+// Time Limit: 2000
+// Start: Thu May 14 00:07:19 2026
 // atcoder
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -15,8 +15,6 @@
 #define ar array
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
-#define fi first
-#define se second
 #define pb push_back
 #define eb emplace_back
 #define db double
@@ -28,33 +26,17 @@ using vvc = vector<vc>;
 using vvvc = vector<vvc>;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 #define rint(l, r) uniform_int_distribution<int>(l, r)(rng)
-
 template<typename T> bool ckmin(T &a, const T &b) { return a > b ? a = b, 1 : 0; }
 template<typename T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 template<typename T, typename S> constexpr T ifloor(const T a, const S b){return a/b-(a%b&&(a^b)<0);}
-template<class T, class S> constexpr T iceil(T a, S b) { return -ifloor(-a, b); }
-template<typename T> T isqrt(T x) { T y = sqrtl((long double)x); while((__int128)(y+1)*(y+1) <= x) y++; while((__int128)y*y > x) y--; return y; }
-
-template<typename T> void sort_unique(vector<T> &vec){ sort(vec.begin(),vec.end()); vec.resize(unique(vec.begin(),vec.end())-vec.begin()); }
+template<typename T, typename S> constexpr T iceil(const T a, const S b){return ifloor(a+b-1,b);}
+template<typename T> T isqrt(const T &x){T y=sqrt(x+2); while(y*y>x) y--; return y;}
+template<typename T>
+void sort_unique(vector<T> &vec){
+    sort(vec.begin(),vec.end());
+    vec.resize(unique(vec.begin(),vec.end())-vec.begin());
+}
 template<typename T> ostream& operator<<(ostream& os, const vector<T>& v) {for (auto &x : v) os << x << " "; return os;}
-template<typename T> void read(vector<T> &a) { for(auto &x : a) cin >> x; }
-template<typename T> void print(const vector<T> &a) { for(int i = 0; i < sz(a); i++) cout << a[i] << " \n"[i == sz(a) - 1]; }
-
-template<class F> int first_true(int L, int R, F ok) { while (R - L > 1) { int mid = (L + R) / 2; if (ok(mid)) R = mid; else L = mid; } return R; }
-template<class F> int last_true(int L, int R, F ok) { while (R - L > 1) { int mid = (L + R) / 2; if (ok(mid)) L = mid; else R = mid; } return L; }
-
-template<class T> vector<T> prefix(const vector<T> &a) { vector<T> pref(sz(a) + 1); for(int i = 0; i < sz(a); i++) pref[i + 1] = pref[i] + a[i]; return pref; }
-template<class T> T rangesum(const vector<T> &pref, int L, int R) { return pref[R] - pref[L]; }
-
-vvc read_graph(int n, int m, bool one = true) { vvc adj(n); for(int i = 0; i < m; i++) { int u, v; cin >> u >> v; if (one) u--, v--; adj[u].pb(v); adj[v].pb(u); } return adj; }
-vvc read_digraph(int n, int m, bool one = true) { vvc adj(n); for(int i = 0; i < m; i++) { int u, v; cin >> u >> v; if (one) u--, v--; adj[u].pb(v); } return adj; }
-vvc read_tree(int n, bool one = true) { return read_graph(n, n - 1, one); }
-
-int topbit(long long x) { return x == 0 ? -1 : 63 - __builtin_clzll(x); }
-int lowbit(long long x) { return x == 0 ? 64 : __builtin_ctzll(x); }
-int popcnt(long long x) { return __builtin_popcountll(x); }
-bool ispow2(long long x) { return x > 0 && (x & -x) == x; }
-long long mask(int k) { return (1LL << k) - 1; }
 
 #ifdef MISAKA
 struct _debug {
@@ -75,12 +57,53 @@ static void _print(const T& t, const V&... v) { __print(t); if constexpr (sizeof
 
 using mint = modint998244353;
 const char nl = '\n';
-const int inf = 0x3f3f3f3f3f3f3f3fLL;
+
+struct segtree {
+    int siz; 
+    vector<int> tr;
+
+    segtree(int n) : siz(n), tr(2 * n) {};
+    
+    void assign(int p, int val) {
+        p += siz;
+        for(tr[p] = val; p > 1; p >>= 1) {
+            ckmax(tr[p>>1], max(tr[p], tr[p ^ 1]));
+        }
+    }
+
+    int query(int l, int r) {
+        int mx = -4e18;
+        for(l += siz, r += siz; l < r; l >>= 1, r >>= 1) {
+            if(l&1) ckmax(mx, tr[l++]);
+            if(r&1) ckmax(mx, tr[--r]);
+        } 
+        return mx;
+    }
+};
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vector<int> h(n), vi(n);
+    for(int i = 0; i < n; i++) cin >> h[i];
+    for(int i = 0; i < n; i++) cin >> vi[i];
+
+    //dp[i][j] := maximum sum at ith flower where last height is j
+
+    // next flower if >= j pick or no pick
+    // if < j, no pick only 
+    //
+    //
+    int mx = *max_element(all(h));
+    segtree dp(mx + 1);
+    dp.assign(h[0], vi[0]);
+    for(int i = 1; i < n; i++) {
+        auto lst = dp.query(0, h[i]);
+        dp.assign(h[i], lst + vi[i]);
+    }
+    cout << dp.query(0, mx + 1) << nl;
 }
 
-signed main() {
+signed main() {    
     cin.tie(0)->sync_with_stdio(0);
     //freopen("perimeter.in","r",stdin); freopen("perimeter.out","w",stdout);
     int t = 1;

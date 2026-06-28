@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: B. Cake Leveling
+// Contest: Codeforces Round 1101 (Div. 2)
+// URL: https://codeforces.com/contest/2232/problem/B
+// Time Limit: 1500
+// Start: Sun May 31 22:49:56 2026
 // multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -75,7 +75,18 @@ const char nl = '\n';
 const int inf = 0x3f3f3f3f3f3f3f3fLL;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vc vi(n);
+    read(vi);
 
+    int ans = 1e9;
+    int sum = 0;
+    for(int i = 0; i < n; i++) {
+        sum += vi[i];
+        ckmin(ans, sum / (i + 1));
+        cout << ans << " ";
+    }
+    cout << nl;
 }
 
 signed main() {

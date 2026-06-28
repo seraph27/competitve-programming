@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: C. Duck Surplus
+// Contest: Order Capital Round 2 (Codeforces Round 1104, Div. 1 + Div. 2)
+// URL: https://codeforces.com/contest/2237/problem/C
+// Time Limit: 2000
+// Start: Thu Jun 18 11:01:16 2026
 // multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -75,7 +75,30 @@ const char nl = '\n';
 const int inf = 0x3f3f3f3f3f3f3f3fLL;
 
 void shiina_mashiro() {
+    int n; cin >> n;
+    vc vi(n);
+    read(vi);
 
+    for(int i = 0; i < n; i++) {
+        int pref = 0;
+        int L = i;
+        while(L + 1 < n and vi[L + 1] < vi[L]) {
+            L++;
+        }
+        if(L == i) continue;
+        vector<int> tmp;
+        for(int j = L; j >= i; j--) {
+            pref += vi[j];
+            tmp.pb(pref);
+        }
+        debug(tmp);
+        for(int j = i; j <= L; j++) vi[j] = tmp[j - i];
+    }
+    cout << vi.back() << nl;
+    debug(vi);
+    //3 2 1 -> 1 3 6
+    //1 8 17
+    //8 1 8 
 }
 
 signed main() {

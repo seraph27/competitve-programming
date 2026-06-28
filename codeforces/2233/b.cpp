@@ -1,8 +1,8 @@
-// Problem: $(PROBLEM)
-// Contest: $(CONTEST)
-// URL: $(URL)
-// Time Limit: $(TIMELIM)
-// Start: $(DATE)
+// Problem: B. Different Distances
+// Contest: Educational Codeforces Round 191 (Rated for Div. 2)
+// URL: https://codeforces.com/contest/2233/problem/B
+// Time Limit: 2000
+// Start: Thu Jun 18 02:13:03 2026
 // multitest
 #ifdef MISAKA
 #define _GLIBCXX_DEBUG
@@ -75,7 +75,25 @@ const char nl = '\n';
 const int inf = 0x3f3f3f3f3f3f3f3fLL;
 
 void shiina_mashiro() {
-
+//1 2 1 1 2 2 1 2 
+//1 2 2 1 2 1 1 2
+//1 3 2 2 1 2 1 1 3 2 3 3
+//   2 1 2 1 1 2 2 1 
+    int n; cin >> n;
+    vc vi;
+    if(n & 1) {
+        cout << "1 3 2 2 1 2 1 1 3 2 3 3 ";
+        for(int i = 4; i <= n; i+=2) {
+            cout << i << " " << i + 1 << " " << i + 1 << " " << i << " ";
+            cout << i + 1 << " " << i << " " << i << " " << i + 1 << " ";
+        }
+    } else {
+        for(int i = 1; i <= n; i+=2) {
+            cout << i << " " << i + 1 << " " << i + 1 << " " << i << " ";
+            cout << i + 1 << " " << i << " " << i << " " << i + 1 << " ";
+        }
+    }
+    cout << nl;
 }
 
 signed main() {
